@@ -64,4 +64,40 @@ describe("DiscoverPage", () => {
     // Restore console.error
     console.error = consoleError;
   });
+
+  it("should filter shops based on the search query", async () => {
+    const user = { id: "123", email: "test@example.com" };
+    const initialShops = [
+      {
+        id: 1,
+        name: "Test Cafe",
+        city: "Test City",
+        isInitiallySaved: false,
+        isInitiallyVisited: false,
+        shop_photos: [],
+      },
+    ];
+
+    mockGetUser.mockResolvedValue({ data: { user } });
+    mockFrom.mockImplementation(() => ({
+      select: jest.fn(() => ({
+        eq: jest.fn(() => ({
+          range: jest.fn(() => ({ data: initialShops })),
+        })),
+        ilike: jest.fn(() => ({
+          range: jest.fn(() => ({ data: initialShops })),
+        })),
+        range: jest.fn(() => ({ data: initialShops })),
+      })),
+    }));
+
+    render(
+      await DiscoverPage({ searchParams: Promise.resolve({ search: "Test" }) })
+    );
+
+    expect(screen.getByTestId("initial-shops")).toHaveTextContent(
+      JSON.stringify(initialShops)
+    );
+    expect(screen.getByTestId("user")).toHaveTextContent(JSON.stringify(user));
+  });
 });

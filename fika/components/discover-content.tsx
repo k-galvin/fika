@@ -64,6 +64,11 @@ export function DiscoverContent({
         "has_outlets",
         searchParams.get("has_outlets") === "Yes"
       );
+    if (searchParams.get("search"))
+      query = query.ilike(
+        "name",
+        `%${(searchParams.get("search") as string).replace(/%/g, "\\%")}%`
+      );
 
     const from = page * PAGE_SIZE;
     const to = from + PAGE_SIZE - 1;

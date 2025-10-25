@@ -3,6 +3,7 @@
 import { FilterDropdown } from "@/components/ui/filter-dropdown";
 import { usePathname, useRouter } from "next/navigation";
 import { Button } from "./ui/button";
+import { SearchBar } from "./ui/search-bar";
 
 export function DiscoverFilters({
   cities,
@@ -23,24 +24,35 @@ export function DiscoverFilters({
   };
 
   return (
-    <div className="flex flex-wrap gap-4 items-center">
-      <FilterDropdown title="City" options={cities} filterKey="city" />
-      <FilterDropdown title="Parking" options={parkings} filterKey="parking" />
-      <FilterDropdown title="Seating" options={seatings} filterKey="seating" />
-      <FilterDropdown title="Vibe" options={vibes} filterKey="vibe" />
-      <FilterDropdown
-        title="Wifi"
-        options={["Yes", "No"]}
-        filterKey="has_wifi"
-      />
-      <FilterDropdown
-        title="Outlets"
-        options={["Yes", "No"]}
-        filterKey="has_outlets"
-      />
-      <Button variant="ghost" onClick={clearFilters}>
-        Clear Filters
-      </Button>
+    <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
+      <div className="flex flex-wrap gap-4 items-center">
+        <FilterDropdown title="City" options={cities} filterKey="city" />
+        <FilterDropdown
+          title="Parking"
+          options={parkings}
+          filterKey="parking"
+        />
+        <FilterDropdown
+          title="Seating"
+          options={seatings}
+          filterKey="seating"
+        />
+        <FilterDropdown title="Vibe" options={vibes} filterKey="vibe" />
+        <FilterDropdown
+          title="Wifi"
+          options={["Yes", "No"]}
+          filterKey="has_wifi"
+        />
+        <FilterDropdown
+          title="Outlets"
+          options={["Yes", "No"]}
+          filterKey="has_outlets"
+        />
+        <Button variant="ghost" onClick={clearFilters}>
+          Clear Filters
+        </Button>
+      </div>
+      <SearchBar placeholder="Search by name..." />
     </div>
   );
 }

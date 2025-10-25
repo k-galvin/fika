@@ -58,6 +58,8 @@ export default async function DiscoverPage({ searchParams: searchParamsPromise }
     query = query.eq("has_wifi", searchParams.has_wifi === "Yes");
   if (searchParams.has_outlets !== undefined)
     query = query.eq("has_outlets", searchParams.has_outlets === "Yes");
+  if (searchParams.search)
+    query = query.ilike("name", `%${(searchParams.search as string).replace(/%/g, "\\%")}%`);
 
   const from = 0;
   const to = from + PAGE_SIZE - 1;
