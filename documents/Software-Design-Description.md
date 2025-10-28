@@ -77,3 +77,7 @@ Communication in the fika architecture is primarily through a client-server mode
   * The Frontend's MapView module uses the OpenStreetMaps API to render geographical data and cafe locations.
   * The Frontend's Cafe Page CSU uses the Vega/Vega-Lite library to render visualizations after retrieving the necessary aggregated data from the Backend API
 
+### 6.2.3  Architectural Design Diagrams Section
+
+UML Use Case Diagram:      
+<img width="813" height="266" alt="1graph" src="https://github.com/user-attachments/assets/daaaa23f-5db9-41fa-b41e-d675e23acc65" />
