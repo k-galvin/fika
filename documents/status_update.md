@@ -53,9 +53,13 @@
 **Period Covered:** 8/25/2025 - 10/17/2025
 
 **Accomplishments since last report:**
+- Cafe details page created
+- Information about each cafe displayed
+- Software developement plan created
+- Requirements specification created
 
 - **Scheduled tasks to be done by next report:**
-
+- Bug fixes
 - **Noteworthy risks, concerns, or problems:**
 
 - ***
