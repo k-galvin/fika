@@ -81,3 +81,7 @@ Communication in the fika architecture is primarily through a client-server mode
 
 UML Use Case Diagram:      
 <img width="813" height="266" alt="1graph" src="https://github.com/user-attachments/assets/daaaa23f-5db9-41fa-b41e-d675e23acc65" />
+
+Deployment Diagram:      
+<img width="710" height="356" alt="2graph" src="https://github.com/user-attachments/assets/50cc85d5-6aad-40dc-baf2-115f22c448ba" />
+
