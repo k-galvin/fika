@@ -85,3 +85,5 @@ UML Use Case Diagram:
 Deployment Diagram:      
 <img width="710" height="356" alt="2graph" src="https://github.com/user-attachments/assets/50cc85d5-6aad-40dc-baf2-115f22c448ba" />
 
+Component Diagram:      
+<img width="662" height="545" alt="3graph" src="https://github.com/user-attachments/assets/69ac0461-aba0-41e7-a8e0-be54226ae9cd" />
