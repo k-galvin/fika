@@ -14,7 +14,12 @@ type FooterProps = {
   user: User | null;
 };
 
-export function Footer({ isAfterHours, setIsAfterHours, isWineBar, user }: FooterProps) {
+export function Footer({
+  isAfterHours,
+  setIsAfterHours,
+  isWineBar,
+  user,
+}: FooterProps) {
   const [isSuggestCafeOpen, setIsSuggestCafeOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
@@ -55,18 +60,7 @@ export function Footer({ isAfterHours, setIsAfterHours, isWineBar, user }: Foote
           <Button variant="link" onClick={handleSuggestClick}>
             Know a great spot? Suggest it for our list!
           </Button>
-          <p>
-            Powered by{" "}
-            <a
-              href="https://supabase.com/?utm_source=create-next-app&utm_medium=template&utm_term=nextjs"
-              target="_blank"
-              className="font-bold hover:underline"
-              rel="noreferrer"
-            >
-              Supabase
-            </a>
-          </p>
-          <p>© 2025 fika</p>
+          <p>© fika</p>
         </div>
       </footer>
       <SuggestCafeForm
