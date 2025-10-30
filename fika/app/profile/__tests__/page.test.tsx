@@ -15,11 +15,15 @@ jest.mock("@/app/actions", () => ({
   getVisitedCafes: jest.fn(),
 }));
 
-// Mock the redirect function to assert that it's called and to prevent errors.
+// Mock the next/navigation module
 jest.mock("next/navigation", () => ({
   redirect: jest.fn(() => {
     throw new Error("NEXT_REDIRECT");
   }),
+  useRouter: () => ({
+    push: jest.fn(),
+  }),
+  usePathname: () => "/profile", // Mock usePathname
 }));
 
 // Mock the ProfileCafes component to isolate the page component from its children.

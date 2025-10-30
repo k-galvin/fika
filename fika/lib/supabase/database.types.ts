@@ -16,6 +16,7 @@ export type Database = {
     Tables: {
       coffee_shops: {
         Row: {
+          address: string | null
           busyness: Database["public"]["Enums"]["Busyness"] | null
           city: Database["public"]["Enums"]["Cities"] | null
           has_outlets: boolean | null
@@ -32,6 +33,7 @@ export type Database = {
           wine_bar: boolean | null
         }
         Insert: {
+          address?: string | null
           busyness?: Database["public"]["Enums"]["Busyness"] | null
           city?: Database["public"]["Enums"]["Cities"] | null
           has_outlets?: boolean | null
@@ -48,6 +50,7 @@ export type Database = {
           wine_bar?: boolean | null
         }
         Update: {
+          address?: string | null
           busyness?: Database["public"]["Enums"]["Busyness"] | null
           city?: Database["public"]["Enums"]["Cities"] | null
           has_outlets?: boolean | null
@@ -68,14 +71,17 @@ export type Database = {
       profiles: {
         Row: {
           id: string
+          role: Database["public"]["Enums"]["user_role"]
           username: string | null
         }
         Insert: {
           id: string
+          role?: Database["public"]["Enums"]["user_role"]
           username?: string | null
         }
         Update: {
           id?: string
+          role?: Database["public"]["Enums"]["user_role"]
           username?: string | null
         }
         Relationships: []
@@ -158,6 +164,63 @@ export type Database = {
           },
         ]
       }
+      suggested_cafes: {
+        Row: {
+          address: string | null
+          busyness: Database["public"]["Enums"]["Busyness"] | null
+          city: Database["public"]["Enums"]["Cities"] | null
+          created_at: string
+          description: string | null
+          has_outlets: boolean | null
+          has_wifi: boolean | null
+          id: number
+          is_laptop_friendly: boolean | null
+          name: string
+          parking: Database["public"]["Enums"]["Parking Difficulty"] | null
+          pricing: Database["public"]["Enums"]["Pricing"] | null
+          seating: Database["public"]["Enums"]["Seating Availability"] | null
+          submitted_by: string | null
+          vibe: Database["public"]["Enums"]["Vibe"] | null
+          wine_bar: boolean | null
+        }
+        Insert: {
+          address?: string | null
+          busyness?: Database["public"]["Enums"]["Busyness"] | null
+          city?: Database["public"]["Enums"]["Cities"] | null
+          created_at?: string
+          description?: string | null
+          has_outlets?: boolean | null
+          has_wifi?: boolean | null
+          id?: number
+          is_laptop_friendly?: boolean | null
+          name: string
+          parking?: Database["public"]["Enums"]["Parking Difficulty"] | null
+          pricing?: Database["public"]["Enums"]["Pricing"] | null
+          seating?: Database["public"]["Enums"]["Seating Availability"] | null
+          submitted_by?: string | null
+          vibe?: Database["public"]["Enums"]["Vibe"] | null
+          wine_bar?: boolean | null
+        }
+        Update: {
+          address?: string | null
+          busyness?: Database["public"]["Enums"]["Busyness"] | null
+          city?: Database["public"]["Enums"]["Cities"] | null
+          created_at?: string
+          description?: string | null
+          has_outlets?: boolean | null
+          has_wifi?: boolean | null
+          id?: number
+          is_laptop_friendly?: boolean | null
+          name?: string
+          parking?: Database["public"]["Enums"]["Parking Difficulty"] | null
+          pricing?: Database["public"]["Enums"]["Pricing"] | null
+          seating?: Database["public"]["Enums"]["Seating Availability"] | null
+          submitted_by?: string | null
+          vibe?: Database["public"]["Enums"]["Vibe"] | null
+          wine_bar?: boolean | null
+        }
+        Relationships: []
+      }
       user_saved_cafes: {
         Row: {
           coffee_shop_id: number
@@ -235,7 +298,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_admin: { Args: never; Returns: boolean }
     }
     Enums: {
       Busyness: "Quiet" | "Medium" | "Very"
@@ -249,6 +312,7 @@ export type Database = {
       "Parking Difficulty": "Easy" | "Medium" | "Hard"
       Pricing: "$" | "$$" | "$$$"
       "Seating Availability": "None" | "Some" | "Plenty"
+      user_role: "user" | "admin"
       Vibe: "Minimalistic" | "Cool" | "Corporate" | "Cozy" | "Beachy" | "Trendy"
     }
     CompositeTypes: {
@@ -389,6 +453,7 @@ export const Constants = {
       "Parking Difficulty": ["Easy", "Medium", "Hard"],
       Pricing: ["$", "$$", "$$$"],
       "Seating Availability": ["None", "Some", "Plenty"],
+      user_role: ["user", "admin"],
       Vibe: ["Minimalistic", "Cool", "Corporate", "Cozy", "Beachy", "Trendy"],
     },
   },

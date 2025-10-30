@@ -3,8 +3,12 @@ import { Footer } from "@/components/footer";
 import Image from "next/image";
 import { FeaturedCafes } from "./featured-cafes";
 import { CafeCardSkeleton } from "@/components/cafe-card-skeleton";
+import { createClient } from "@/lib/supabase/server";
 
-export default function Home() {
+export default async function Home() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
   return (
     <main className="min-h-screen flex flex-col items-center pt-12 relative">
       <Image
@@ -75,8 +79,8 @@ export default function Home() {
             <FeaturedCafes />
           </Suspense>
         </div>
-        <Footer />
       </div>
+      <Footer user={user} />
     </main>
   );
 }

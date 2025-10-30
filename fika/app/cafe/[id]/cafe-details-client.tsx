@@ -200,6 +200,7 @@ export default function CafeDetailsClient({
         </div>
       </div>
       <Footer
+        user={user}
         isAfterHours={isAfterHours}
         setIsAfterHours={setIsAfterHours}
         isWineBar={shop.wine_bar}

@@ -7,12 +7,21 @@ import {
   getVisitedCafes,
   hasUserVisitedCafe,
   logout,
+  suggestCafe,
+  getSuggestedCafes,
+  approveSuggestion,
+  denySuggestion,
 } from "../actions";
 import { createClient } from "@/lib/supabase/server";
+import { createClient as createServiceRoleClient } from "@supabase/supabase-js";
 import { revalidatePath } from "next/cache";
 
 // Mock the Supabase client to prevent actual database calls during tests.
 jest.mock("@/lib/supabase/server", () => ({
+  createClient: jest.fn(),
+}));
+
+jest.mock("@supabase/supabase-js", () => ({
   createClient: jest.fn(),
 }));
 
@@ -228,12 +237,10 @@ describe("Server Actions", () => {
         from: jest.fn().mockReturnThis(),
         select: jest.fn().mockReturnThis(),
         eq: jest.fn().mockReturnThis(),
-        single: jest
-          .fn()
-          .mockResolvedValue({
-            data: null,
-            error: { message: "Database error" },
-          }),
+        single: jest.fn().mockResolvedValue({
+          data: null,
+          error: { message: "Database error" },
+        }),
       });
 
       const result = await isCafeSaved(1);
@@ -513,6 +520,147 @@ describe("Server Actions", () => {
       expect(signOut).toHaveBeenCalled();
       expect(revalidatePath).toHaveBeenCalledWith("/");
       expect(revalidatePath).toHaveBeenCalledWith("/discover");
+    });
+  });
+
+  describe("suggestCafe", () => {
+    const user = { id: "user-123" };
+    const formData = new FormData();
+    formData.append("name", "New Cafe");
+    formData.append("address", "456 Suggestion Ave");
+
+    it("should return an error if user is not authenticated", async () => {
+      (createClient as jest.Mock).mockReturnValue({
+        auth: {
+          getUser: jest.fn().mockResolvedValue({ data: { user: null } }),
+        },
+      });
+      const result = await suggestCafe({ message: "" }, formData);
+      expect(result.message).toContain("You must be logged in");
+    });
+
+    it("should successfully insert a new suggestion", async () => {
+      const insert = jest.fn().mockResolvedValue({ error: null });
+      (createClient as jest.Mock).mockReturnValue({
+        auth: { getUser: jest.fn().mockResolvedValue({ data: { user } }) },
+        from: jest.fn(() => ({ insert })),
+      });
+
+      const result = await suggestCafe({ message: "" }, formData);
+
+      expect(insert).toHaveBeenCalled();
+      expect(result.message).toContain("Thank you");
+      expect(revalidatePath).toHaveBeenCalledWith("/discover");
+    });
+
+    it("should return an error message on insertion failure", async () => {
+      const insert = jest
+        .fn()
+        .mockResolvedValue({ error: { message: "Insert failed" } });
+      (createClient as jest.Mock).mockReturnValue({
+        auth: { getUser: jest.fn().mockResolvedValue({ data: { user } }) },
+        from: jest.fn(() => ({ insert })),
+      });
+
+      const result = await suggestCafe({ message: "" }, formData);
+      expect(result.message).toContain("Insert failed");
+    });
+  });
+
+  describe("getSuggestedCafes", () => {
+    it("should return a list of suggestions", async () => {
+      const mockData = [{ id: 1, name: "Suggestion 1" }];
+      const order = jest
+        .fn()
+        .mockResolvedValue({ data: mockData, error: null });
+      const select = jest.fn(() => ({ order }));
+      (createClient as jest.Mock).mockReturnValue({ from: () => ({ select }) });
+
+      const result = await getSuggestedCafes();
+      expect(result).toEqual(mockData);
+    });
+
+    it("should return null on error", async () => {
+      const order = jest
+        .fn()
+        .mockResolvedValue({ data: null, error: { message: "DB Error" } });
+      const select = jest.fn(() => ({ order }));
+      (createClient as jest.Mock).mockReturnValue({ from: () => ({ select }) });
+
+      const result = await getSuggestedCafes();
+      expect(result).toBeNull();
+    });
+  });
+
+  describe("approveSuggestion", () => {
+    const suggestion = { id: 1, name: "The Best Cafe" };
+
+    interface MockSupabaseClient {
+      from: jest.Mock;
+    }
+    let serviceRoleClient: MockSupabaseClient;
+
+    beforeEach(() => {
+      const single = jest
+        .fn()
+        .mockResolvedValue({ data: suggestion, error: null });
+      const select = jest.fn(() => ({ eq: () => ({ single }) }));
+      const insert = jest.fn().mockResolvedValue({ error: null });
+      const del = jest.fn().mockResolvedValue({ error: null });
+      const deleteFn = jest.fn(() => ({ eq: del }));
+
+      serviceRoleClient = {
+        from: jest.fn((table: string) => {
+          if (table === "suggested_cafes") {
+            return { select, delete: deleteFn };
+          }
+          if (table === "coffee_shops") {
+            return { insert };
+          }
+        }),
+      };
+      (createServiceRoleClient as jest.Mock).mockReturnValue(serviceRoleClient);
+    });
+
+    it("should approve a suggestion successfully", async () => {
+      const result = await approveSuggestion(1);
+
+      expect(serviceRoleClient.from).toHaveBeenCalledWith("coffee_shops");
+      expect(serviceRoleClient.from).toHaveBeenCalledWith("suggested_cafes");
+      expect(revalidatePath).toHaveBeenCalledWith("/admin/suggestions");
+      expect(result.success).toBe(true);
+    });
+
+    it("should fail if suggestion not found", async () => {
+      const single = jest
+        .fn()
+        .mockResolvedValue({ data: null, error: { message: "Not found" } });
+      const select = jest.fn(() => ({ eq: () => ({ single }) }));
+      serviceRoleClient.from.mockImplementation((table: string) => {
+        if (table === "suggested_cafes") return { select };
+        return {};
+      });
+
+      const result = await approveSuggestion(1);
+      expect(result.success).toBe(false);
+      expect(result.message).toBe("Not found");
+    });
+  });
+
+  describe("denySuggestion", () => {
+    it("should deny a suggestion successfully", async () => {
+      const del = jest.fn().mockResolvedValue({ error: null });
+      const deleteFn = jest.fn(() => ({ eq: del }));
+      (createServiceRoleClient as jest.Mock).mockReturnValue({
+        from: () => ({ delete: deleteFn }),
+      });
+
+      const result = await denySuggestion(1);
+
+      expect(deleteFn).toHaveBeenCalled();
+      expect(del).toHaveBeenCalledWith("id", 1);
+      expect(revalidatePath).toHaveBeenCalledWith("/admin/suggestions");
+      expect(result.success).toBe(true);
     });
   });
 });

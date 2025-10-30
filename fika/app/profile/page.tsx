@@ -82,7 +82,7 @@ export default async function ProfilePage() {
           />
         </div>
       </div>
-      <Footer />
+      <Footer user={user} />
     </main>
   );
 }

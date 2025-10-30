@@ -3,7 +3,6 @@
 import { CafeQuickView } from "@/components/cafe-quick-view";
 import { DiscoverFilters } from "@/components/discover-filters";
 import { CafeCardSkeleton } from "@/components/cafe-card-skeleton";
-import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
 
 import { Constants } from "@/lib/supabase/database.types";
@@ -13,6 +12,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 
 import { User } from "@supabase/supabase-js";
+import { Footer } from "@/components/footer";
 
 const PAGE_SIZE = 20;
 
@@ -168,7 +168,7 @@ export function DiscoverContent({
           </div>
         )}
       </div>
-      <Footer />
+      <Footer user={user} />
     </>
   );
 }

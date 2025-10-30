@@ -22,6 +22,7 @@ const createMockCoffeeShop = (id: number): CoffeeShop => ({
   isInitiallySaved: false,
   isInitiallyVisited: false,
   ratings: [],
+  address: "",
 });
 
 const MOCK_SHOPS: CoffeeShop[] = [
@@ -116,6 +117,8 @@ jest.mock("@/lib/supabase/database.types", () => ({
         "Parking Difficulty": [],
         "Seating Availability": [],
         Vibe: [],
+        Pricing: [],
+        Busyness: [],
       },
     },
   },
