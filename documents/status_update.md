@@ -1,3 +1,72 @@
+## Week 10 (10/31/2025)
+
+### Kate Galvin
+
+**Project:** Fika
+**Period Covered:** 10/17/2025 - 10/31/2025
+
+**Accomplishments since last report:**
+
+- Added ghost loaders for cafe cards
+- Added pagination to the discover page
+- Refined UI for saving and logging buttons
+- Edited page layouts to ensure responsiveness
+- Added a form for suggesting new cafes
+- Added a page for admin to review and approve suggested cafes
+- Created comprehensive unit tests
+- Added a search bar to the discover page for finding cafes by name
+
+**Scheduled tasks to be done by next report:**
+
+- Add a popularity data visualization to the cafe details page
+- Manually add cafe addresses to existing rows in table
+- Allow users to contribute cafe photos (subject to admin approval)
+
+**Noteworthy risks, concerns, or problems:**
+- None
+
+---
+
+### Jillian Hunter
+
+**Project:** Fika
+**Period Covered:** 10/17/2025 - 10/31/2025
+
+**Accomplishments since last report:**
+- 
+- **Scheduled tasks to be done by next report:**
+- 
+- **Noteworthy risks, concerns, or problems:**
+
+- ***
+
+### Giselle Eliasi
+
+**Project:** Fika
+**Period Covered:** 10/17/2025 - 10/31/2025
+
+**Accomplishments since last report:**
+- 
+
+- **Scheduled tasks to be done by next report:**
+- 
+- **Noteworthy risks, concerns, or problems:**
+
+- ***
+
+### Ahtziri Gutierrez
+
+**Project:** Fika
+**Period Covered:** 10/17/2025 - 10/31/2025
+
+**Accomplishments since last report:**
+
+- 
+
+- **Scheduled tasks to be done by next report:**
+
+- **Noteworthy risks, concerns, or problems:**
+
 ## Week 8 (10/17/2025)
 
 ### Kate Galvin
