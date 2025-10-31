@@ -64,7 +64,8 @@
 
 **Accomplishments since last report:**
 
--
+- Implemented form for users to update cafe info and set up corresponding Supabase table
+- Tested and confirmed that updates are being submitted correctly
 
 - **Scheduled tasks to be done by next report:**
 
