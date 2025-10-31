@@ -412,7 +412,6 @@ export async function submitCafeUpdates(
     user_id: user.id,
   }));
 
-  // filters out empty rows
   const validUpdates = formattedUpdates.filter(
     (u) => u.field_name && u.suggested_value
   );

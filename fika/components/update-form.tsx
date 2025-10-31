@@ -166,7 +166,6 @@ export function UpdateForm({ shopId }: { shopId: number }) {
         </DialogContent>
       </Dialog>
 
-      {/* popup thanking user for update */}
       {showPopup && (
         <div className="fixed inset-0 z-[300] flex items-center justify-center">
           <div className="bg-[#f8f5f0] text-neutral-800 px-8 py-4 rounded-xl shadow-lg border border-neutral-300">

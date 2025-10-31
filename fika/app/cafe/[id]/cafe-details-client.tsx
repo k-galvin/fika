@@ -191,7 +191,7 @@ export default function CafeDetailsClient({
           </CardContent>
         </Card>
 
-        <UpdateForm shopId={shop.id} currentInfo={shop} />
+        <UpdateForm shopId={shop.id} />
 
         <div className="w-full relative h-64 md:h-80">
           <Image
