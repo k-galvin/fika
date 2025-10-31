@@ -41,13 +41,13 @@ export function SignUpForm({
     }
 
     try {
-      const {
-        data: { user },
-        error,
-      } = await supabase.auth.signUp({
+      const { error } = await supabase.auth.signUp({
         email,
         password,
         options: {
+          data: {
+            full_name: name,
+          },
           emailRedirectTo: `${window.location.origin}/auth/login`,
         },
       });
@@ -56,18 +56,17 @@ export function SignUpForm({
         throw error;
       }
 
-      if (user) {
-        const { error: profileError } = await supabase
-          .from("profiles")
-          .insert([{ id: user.id, username: name }]);
-
-        if (profileError) {
-          throw profileError;
-        }
-      }
       router.push("/auth/sign-up-success");
     } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : "An error occurred");
+      const errorMessage =
+        error instanceof Error ? error.message : "An error occurred";
+      if (errorMessage.includes("User already registered")) {
+        setError(
+          "An account with this email already exists. Please log in instead."
+        );
+      } else {
+        setError(errorMessage);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -84,11 +83,11 @@ export function SignUpForm({
           <form onSubmit={handleSignUp}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-2">
-                <Label htmlFor="name">Name</Label>
+                <Label htmlFor="name">Username</Label>
                 <Input
                   id="name"
                   type="text"
-                  placeholder="John Doe"
+                  placeholder="johndoe"
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
