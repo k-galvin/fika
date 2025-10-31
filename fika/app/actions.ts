@@ -358,3 +358,75 @@ export async function logout() {
   revalidatePath("/");
   revalidatePath("/discover");
 }
+
+// --- Updating Cafes Info ---
+
+function getUpdateValue(value: FormDataEntryValue | null): string | null {
+  if (typeof value === "string" && value.trim() !== "") {
+    return value;
+  }
+  return null;
+}
+
+export async function submitCafeUpdates(
+  _prevState: { message: string },
+  formData: FormData
+) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { message: "You must be logged in to submit an update." };
+  }
+
+  const cafeId = formData.get("cafe_id");
+  const updatesRaw = formData.get("updates");
+
+  if (!updatesRaw) {
+    return { message: "No updates provided." };
+  }
+
+  let updates;
+  try {
+    updates = JSON.parse(updatesRaw as string);
+  } catch {
+    return { message: "Invalid update data format." };
+  }
+
+  if (!Array.isArray(updates) || updates.length === 0) {
+    return { message: "No valid updates provided." };
+  }
+
+  type CafeUpdate = {
+    field_name: string;
+    suggested_value: string;
+  };
+
+  const formattedUpdates = updates.map((update: CafeUpdate) => ({
+    cafe_id: cafeId,
+    field_name: getUpdateValue(update.field_name),
+    suggested_value: getUpdateValue(update.suggested_value),
+    approved: false,
+    user_id: user.id,
+  }));
+
+  const validUpdates = formattedUpdates.filter(
+    (u) => u.field_name && u.suggested_value
+  );
+
+  if (validUpdates.length === 0) {
+    return { message: "No valid updates found to submit." };
+  }
+
+  const { error } = await supabase.from("cafe_updates").insert(validUpdates);
+
+  if (error) {
+    console.error("Error submitting cafe updates:", error.message);
+    return { message: `Failed to submit updates: ${error.message}` };
+  }
+
+  revalidatePath(`/cafe/${cafeId}`);
+  revalidatePath("/discover");
+}

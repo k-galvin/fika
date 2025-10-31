@@ -13,6 +13,7 @@ import clsx from "clsx";
 import { Database } from "@/lib/supabase/database.types";
 import { SaveButton } from "@/components/save-button";
 import { LogVisitButton } from "@/components/log-visit-button";
+import { UpdateForm } from "@/components/update-form";
 
 type CoffeeShop = Database["public"]["Tables"]["coffee_shops"]["Row"];
 
@@ -48,7 +49,7 @@ export default function CafeDetailsClient({
             <div className="flex items-center gap-2">
               <LogVisitButton
                 shopId={shop.id}
-                isInitiallyVisited={isInitiallyVisited} // Passed prop
+                isInitiallyVisited={isInitiallyVisited}
                 size="icon-lg"
               />
               {user ? (
@@ -189,6 +190,8 @@ export default function CafeDetailsClient({
             </div>
           </CardContent>
         </Card>
+
+        <UpdateForm shopId={shop.id} />
 
         <div className="w-full relative h-64 md:h-80">
           <Image

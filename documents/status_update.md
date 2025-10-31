@@ -23,6 +23,7 @@
 - Allow users to contribute cafe photos (subject to admin approval)
 
 **Noteworthy risks, concerns, or problems:**
+
 - None
 
 ---
@@ -33,9 +34,10 @@
 **Period Covered:** 10/17/2025 - 10/31/2025
 
 **Accomplishments since last report:**
-- 
+
+-
 - **Scheduled tasks to be done by next report:**
-- 
+-
 - **Noteworthy risks, concerns, or problems:**
 
 - ***
@@ -46,10 +48,11 @@
 **Period Covered:** 10/17/2025 - 10/31/2025
 
 **Accomplishments since last report:**
-- 
+
+-
 
 - **Scheduled tasks to be done by next report:**
-- 
+-
 - **Noteworthy risks, concerns, or problems:**
 
 - ***
@@ -61,7 +64,8 @@
 
 **Accomplishments since last report:**
 
-- 
+- Implemented form for users to update cafe info and set up corresponding Supabase table
+- Tested and confirmed that updates are being submitted correctly
 
 - **Scheduled tasks to be done by next report:**
 
@@ -104,14 +108,15 @@
 **Period Covered:** 8/25/2025 - 10/17/2025
 
 **Accomplishments since last report:**
-- Profile page created 
+
+- Profile page created
 - Saved button added
 - Add saved to profile
-- Profile button added to all pages 
-- Implemented find cafe button which redirects to main page 
-- Displays users name 
+- Profile button added to all pages
+- Implemented find cafe button which redirects to main page
+- Displays users name
 - **Scheduled tasks to be done by next report:**
-- bug fixes 
+- bug fixes
 - **Noteworthy risks, concerns, or problems:**
 
 - ***
@@ -122,6 +127,7 @@
 **Period Covered:** 8/25/2025 - 10/17/2025
 
 **Accomplishments since last report:**
+
 - Cafe details page created
 - Information about each cafe displayed
 - Software developement plan created
@@ -143,7 +149,9 @@
 - Updated bookmark button
 - Updated log in page
 - Fixed inconsistency with bookmark button when logged out
+- Fixed save button logic to remove and add cafes correctly
 
 - **Scheduled tasks to be done by next report:**
+- Bug fixes
 
 - **Noteworthy risks, concerns, or problems:**
