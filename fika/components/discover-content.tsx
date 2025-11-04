@@ -115,10 +115,10 @@ export function DiscoverContent({
   return (
     <>
       <div className="text-center px-4">
-        <h1 className="text-4xl tracking-tight text-black sm:text-6xl font-kate">
+        <h1 className="tracking-tight text-gray-900 text-7xl font-kate">
           Discover Cafes
         </h1>
-        <p className="mt-6 text-lg leading-8 text-black font-kate">
+        <p className="mt-6 text-2xl leading-8 text-black font-kate">
           Browse our collection of coffee shops.
         </p>
       </div>
