@@ -14,6 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
+      cafe_updates: {
+        Row: {
+          approved: boolean | null
+          cafe_id: number | null
+          created_at: string | null
+          field_name: string | null
+          id: number
+          suggested_value: string | null
+          user_id: string | null
+        }
+        Insert: {
+          approved?: boolean | null
+          cafe_id?: number | null
+          created_at?: string | null
+          field_name?: string | null
+          id?: number
+          suggested_value?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          approved?: boolean | null
+          cafe_id?: number | null
+          created_at?: string | null
+          field_name?: string | null
+          id?: number
+          suggested_value?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cafe_updates_cafe_id_fkey"
+            columns: ["cafe_id"]
+            isOneToOne: false
+            referencedRelation: "coffee_shops"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cafe_updates_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       coffee_shops: {
         Row: {
           address: string | null
@@ -309,6 +354,7 @@ export type Database = {
         | "London"
         | "San Francisco"
         | "Copenhagen"
+        | "San Diego"
       "Parking Difficulty": "Easy" | "Medium" | "Hard"
       Pricing: "$" | "$$" | "$$$"
       "Seating Availability": "None" | "Some" | "Plenty"
@@ -449,6 +495,7 @@ export const Constants = {
         "London",
         "San Francisco",
         "Copenhagen",
+        "San Diego",
       ],
       "Parking Difficulty": ["Easy", "Medium", "Hard"],
       Pricing: ["$", "$$", "$$$"],
