@@ -13,6 +13,7 @@ import { User } from "lucide-react"; // Added History icon
 import { getSavedCafes, getVisitedCafes } from "@/app/actions"; // Import server actions
 
 import { ProfileCafes } from "@/components/profile-cafes";
+import ProfileCharts from "@/components/ProfileCharts";
 
 export default async function ProfilePage() {
   const supabase = await createClient();
@@ -75,6 +76,8 @@ export default async function ProfilePage() {
               </div>
             </CardContent>
           </Card>
+
+          <ProfileCharts visitedCafes={visitedCafes || []} />
 
           <ProfileCafes
             savedCafes={savedCafes || []}

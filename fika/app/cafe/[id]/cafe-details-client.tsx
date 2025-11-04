@@ -14,6 +14,7 @@ import { Database } from "@/lib/supabase/database.types";
 import { SaveButton } from "@/components/save-button";
 import { LogVisitButton } from "@/components/log-visit-button";
 import { UpdateForm } from "@/components/update-form";
+import CafeActivityChart from "@/components/CafeActivityChart";
 
 type CoffeeShop = Database["public"]["Tables"]["coffee_shops"]["Row"];
 
@@ -192,6 +193,7 @@ export default function CafeDetailsClient({
         </Card>
 
         <UpdateForm shopId={shop.id} />
+        <CafeActivityChart cafeId={shop.id} />
 
         <div className="w-full relative h-64 md:h-80">
           <Image
