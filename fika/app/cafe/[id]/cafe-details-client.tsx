@@ -16,6 +16,7 @@ import { LogVisitButton } from "@/components/log-visit-button";
 import { UpdateForm } from "@/components/update-form";
 import CafeActivityChart from "@/components/CafeActivityChart";
 import { CafePhotoGallery } from "@/components/cafe-photo-gallery";
+import { CafeMap } from "@/components/cafe-map";
 
 type ShopPhoto = Database["public"]["Tables"]["shop_photos"]["Row"];
 type CoffeeShopWithPhotos =
@@ -198,6 +199,24 @@ export default function CafeDetailsClient({
             </div>
           </CardContent>
         </Card>
+
+        <div className="w-full">
+          <h2 className="text-2xl font-bold mb-4 font-kate">Location</h2>
+          {shop.address ? (
+            <>
+              <CafeMap address={shop.address} cafeName={shop.name || "Cafe"} />
+              <p className="text-muted-foreground mt-2 text-center">
+                {shop.address}
+              </p>
+            </>
+          ) : (
+            <div className="w-full h-[400px] rounded-lg bg-muted flex items-center justify-center">
+              <p className="text-muted-foreground">
+                No address available for this cafe
+              </p>
+            </div>
+          )}
+        </div>
 
         <UpdateForm shopId={shop.id} />
         <CafeActivityChart cafeId={shop.id} />
