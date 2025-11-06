@@ -8,13 +8,22 @@ import { Button } from "@/components/ui/button";
 import { Constants } from "@/lib/supabase/database.types";
 import { createClient } from "@/lib/supabase/client";
 import { CoffeeShop } from "@/lib/types";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 
 import { User } from "@supabase/supabase-js";
 import { Footer } from "@/components/footer";
 
 const PAGE_SIZE = 20;
+
+// Custom hook to get the previous value of a prop or state
+function usePrevious<T>(value: T): T | undefined {
+  const ref = useRef<T | undefined>(undefined);
+  useEffect(() => {
+    ref.current = value;
+  });
+  return ref.current;
+}
 
 export function DiscoverContent({
   initialShops,
@@ -23,17 +32,38 @@ export function DiscoverContent({
   initialShops: CoffeeShop[];
   user: User | null;
 }) {
-  const [shops, setShops] = useState<CoffeeShop[]>(initialShops || []);
+  const [shops, setShops] = useState<CoffeeShop[]>(initialShops);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(initialShops.length === PAGE_SIZE);
   const [loading, setLoading] = useState(false);
   const searchParams = useSearchParams();
+  const paramsString = searchParams.toString();
+  const prevParamsString = usePrevious(paramsString);
 
   useEffect(() => {
-    setShops(initialShops);
-    setPage(1);
-    setHasMore(initialShops.length === PAGE_SIZE);
-  }, [initialShops]);
+    if (paramsString !== prevParamsString) {
+      setShops(initialShops);
+      setPage(1);
+      setHasMore(initialShops.length === PAGE_SIZE);
+    } else {
+      // If the filters haven't changed, we're just updating the existing shops
+      // with new data (e.g. after a save or visit)
+      setShops((currentShops) => {
+        const newShopsMap = new Map(initialShops.map((s) => [s.id, s]));
+        return currentShops.map((shop) => {
+          const updatedShopData = newShopsMap.get(shop.id);
+          if (updatedShopData) {
+            return {
+              ...shop,
+              isInitiallySaved: updatedShopData.isInitiallySaved,
+              isInitiallyVisited: updatedShopData.isInitiallyVisited,
+            };
+          }
+          return shop;
+        });
+      });
+    }
+  }, [initialShops, paramsString, prevParamsString]);
 
   const fetchMoreShops = useCallback(async () => {
     setLoading(true);

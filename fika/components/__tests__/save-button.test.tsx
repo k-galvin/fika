@@ -19,16 +19,21 @@ jest.mock("@/app/actions", () => ({
 }));
 
 const mockPush = jest.fn();
+const mockRefresh = jest.fn();
 // Mock the next/navigation module
 jest.mock("next/navigation", () => ({
   useRouter: () => ({
     push: mockPush,
-    refresh: jest.fn(),
+    refresh: mockRefresh,
   }),
   usePathname: () => "/",
 }));
 
 describe("SaveButton", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it("renders with the correct initial state (saved)", () => {
     (useTheme as jest.Mock).mockReturnValue({ isAfterHours: false });
     render(<SaveButton shopId={1} isInitiallySaved={true} />);
@@ -62,6 +67,30 @@ describe("SaveButton", () => {
 
     await waitFor(() => {
       expect(saveCafe).toHaveBeenCalledWith(1);
+    });
+  });
+
+  it("calls router.refresh() on successful save", async () => {
+    (useTheme as jest.Mock).mockReturnValue({ isAfterHours: false });
+    render(<SaveButton shopId={1} isInitiallySaved={false} />);
+    const button = screen.getByRole("button");
+    fireEvent.click(button);
+
+    await waitFor(() => {
+      expect(saveCafe).toHaveBeenCalledWith(1);
+      expect(mockRefresh).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  it("calls router.refresh() on successful unsave", async () => {
+    (useTheme as jest.Mock).mockReturnValue({ isAfterHours: false });
+    render(<SaveButton shopId={1} isInitiallySaved={true} />);
+    const button = screen.getByRole("button");
+    fireEvent.click(button);
+
+    await waitFor(() => {
+      expect(unsaveCafe).toHaveBeenCalledWith(1);
+      expect(mockRefresh).toHaveBeenCalledTimes(1);
     });
   });
 

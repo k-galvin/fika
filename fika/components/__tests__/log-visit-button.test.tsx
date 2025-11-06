@@ -7,11 +7,12 @@ jest.mock("next/cache", () => ({
 }));
 
 const mockPush = jest.fn();
+const mockRefresh = jest.fn();
 // Mock the next/navigation module
 jest.mock("next/navigation", () => ({
   useRouter: () => ({
     push: mockPush,
-    refresh: jest.fn(),
+    refresh: mockRefresh,
   }),
   usePathname: () => "/",
 }));
@@ -53,6 +54,17 @@ describe("LogVisitButton", () => {
 
     await waitFor(() => {
       expect(toggleVisitedCafe).toHaveBeenCalledWith(1, false);
+    });
+  });
+
+  it("calls router.refresh() on successful toggle", async () => {
+    render(<LogVisitButton shopId={1} isInitiallyVisited={false} />);
+    const button = screen.getByRole("button");
+    fireEvent.click(button);
+
+    await waitFor(() => {
+      expect(toggleVisitedCafe).toHaveBeenCalledWith(1, false);
+      expect(mockRefresh).toHaveBeenCalledTimes(1);
     });
   });
 

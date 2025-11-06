@@ -39,6 +39,7 @@ export function LogVisitButton({
         }
       } else {
         setHasVisited(!hasVisited); // Toggle state only on success
+        router.refresh(); // Refresh the page data
       }
     } finally {
       setIsLogging(false);

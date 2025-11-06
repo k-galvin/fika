@@ -91,6 +91,7 @@ describe("Server Actions", () => {
       expect(result).toEqual({ success: true });
       expect(revalidatePath).toHaveBeenCalledWith("/cafe/1");
       expect(revalidatePath).toHaveBeenCalledWith("/profile");
+      expect(revalidatePath).toHaveBeenCalledWith("/discover");
     });
 
     it("should return success: false if there is a database error", async () => {
@@ -155,6 +156,7 @@ describe("Server Actions", () => {
       expect(result).toEqual({ success: true });
       expect(revalidatePath).toHaveBeenCalledWith("/cafe/1");
       expect(revalidatePath).toHaveBeenCalledWith("/profile");
+      expect(revalidatePath).toHaveBeenCalledWith("/discover");
     });
 
     it("should return success: false if there is a database error", async () => {
@@ -337,6 +339,7 @@ describe("Server Actions", () => {
       expect(result).toEqual({ success: true });
       expect(revalidatePath).toHaveBeenCalledWith("/cafe/1");
       expect(revalidatePath).toHaveBeenCalledWith("/profile");
+      expect(revalidatePath).toHaveBeenCalledWith("/discover");
     });
 
     it("should delete a visited cafe and return success: true", async () => {
@@ -359,6 +362,7 @@ describe("Server Actions", () => {
       expect(result).toEqual({ success: true });
       expect(revalidatePath).toHaveBeenCalledWith("/cafe/1");
       expect(revalidatePath).toHaveBeenCalledWith("/profile");
+      expect(revalidatePath).toHaveBeenCalledWith("/discover");
     });
   });
 

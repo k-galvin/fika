@@ -1,7 +1,12 @@
-import { render, screen, fireEvent } from "@testing-library/react";
-import { DiscoverContent } from "../discover-content";
-import { CoffeeShop } from "@/lib/types";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { DiscoverContent } from "@/components/discover-content";
+import { act } from "react";
 import { useTheme } from "@/app/theme-context";
+import { CoffeeShop } from "@/lib/types";
+
+jest.mock("@/app/theme-context", () => ({
+  useTheme: jest.fn(),
+}));
 
 const createMockCoffeeShop = (id: number): CoffeeShop => ({
   id,
@@ -31,18 +36,8 @@ const MOCK_SHOPS: CoffeeShop[] = [
 ];
 
 const MOCK_SHOPS_FULL_PAGE: CoffeeShop[] = Array.from({ length: 20 }, (_, i) =>
-  createMockCoffeeShop(i + 1)
+  createMockCoffeeShop(i)
 );
-
-const MOCK_SHOPS_NEXT_PAGE: CoffeeShop[] = Array.from({ length: 5 }, (_, i) =>
-  createMockCoffeeShop(i + 21)
-);
-
-// Mock the useTheme hook
-jest.mock("@/app/theme-context", () => ({
-  ...jest.requireActual("@/app/theme-context"),
-  useTheme: jest.fn(),
-}));
 
 // Mock URLSearchParams for next/navigation
 const mockSearchParams = new URLSearchParams();
@@ -61,45 +56,37 @@ jest.mock("next/navigation", () => ({
 // Mock the Supabase client
 jest.mock("@/lib/supabase/client", () => ({
   createClient: jest.fn(() => ({
-    from: jest.fn((tableName) => {
-      if (tableName === "coffee_shops") {
-        return {
-          select: jest.fn(() => ({
-            eq: jest.fn().mockReturnThis(),
-            is: jest.fn().mockReturnThis(),
-            range: jest.fn((from) => {
-              if (from === 0) {
-                return {
-                  then: jest.fn((resolve) =>
-                    resolve({ data: MOCK_SHOPS_FULL_PAGE, error: null })
-                  ),
-                };
-              } else if (from === 20) {
-                return {
-                  then: jest.fn((resolve) =>
-                    resolve({ data: MOCK_SHOPS_NEXT_PAGE, error: null })
-                  ),
-                };
-              }
-              return {
-                then: jest.fn((resolve) => resolve({ data: [], error: null })),
-              };
+    from: jest.fn(() => ({
+      select: jest.fn(() => ({
+        eq: jest.fn(() => ({
+          ilike: jest.fn(() => ({
+            range: jest.fn((from, to) => {
+              const data = Array.from({ length: to - from + 1 }, (_, i) => ({
+                id: i + from,
+                name: `Cafe ${i + from}`,
+              }));
+              return Promise.resolve({ data });
             }),
           })),
-        };
-      } else if (tableName === "ratings") {
-        return {
-          select: jest.fn(() => ({
-            eq: jest.fn().mockReturnThis(),
-            then: jest.fn((resolve) => resolve({ data: [], error: null })),
-          })),
-        };
-      }
-      return {};
-    }),
-    auth: {
-      getUser: jest.fn().mockResolvedValue({ data: { user: null } }),
-    },
+        })),
+        ilike: jest.fn(() => ({
+          range: jest.fn((from, to) => {
+            const data = Array.from({ length: to - from + 1 }, (_, i) => ({
+              id: i + from,
+              name: `Cafe ${i + from}`,
+            }));
+            return Promise.resolve({ data });
+          }),
+        })),
+        range: jest.fn((from, to) => {
+          const data = Array.from({ length: to - from + 1 }, (_, i) => ({
+            id: i + from,
+            name: `Cafe ${i + from}`,
+          }));
+          return Promise.resolve({ data });
+        }),
+      })),
+    })),
   })),
 }));
 
@@ -124,7 +111,21 @@ jest.mock("@/lib/supabase/database.types", () => ({
   },
 }));
 
+import { User } from "@supabase/supabase-js";
+
+
+
 describe("DiscoverContent", () => {
+
+  const mockUser: User = { id: "user-1" } as User;
+
+  beforeEach(() => {
+    (useTheme as jest.Mock).mockReturnValue({ isAfterHours: false });
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
   it("renders a list of cafe cards", async () => {
     (useTheme as jest.Mock).mockReturnValue({ isAfterHours: false });
     render(<DiscoverContent initialShops={MOCK_SHOPS} user={null} />);
@@ -155,9 +156,68 @@ describe("DiscoverContent", () => {
     render(<DiscoverContent initialShops={MOCK_SHOPS_FULL_PAGE} user={null} />);
 
     const loadMoreButton = screen.getByText("Load More");
-    fireEvent.click(loadMoreButton);
+    await act(async () => {
+      fireEvent.click(loadMoreButton);
+    });
 
     expect(await screen.findByText("Cafe 21")).toBeInTheDocument();
-    expect(screen.getByText("Cafe 25")).toBeInTheDocument();
+  });
+
+  test("should not collapse the list when a cafe is saved after loading more", async () => {
+    const initialShops = Array.from({ length: 20 }, (_, i) =>
+      createMockCoffeeShop(i)
+    );
+    const { rerender } = render(
+      <DiscoverContent initialShops={initialShops} user={mockUser} />
+    );
+
+    const loadMoreButton = screen.getByText("Load More");
+    fireEvent.click(loadMoreButton);
+
+    await waitFor(() => {
+      expect(screen.getAllByText(/Cafe \d+/)).toHaveLength(40);
+    });
+
+    const refreshedInitialShops = Array.from({ length: 20 }, (_, i) => ({
+      ...createMockCoffeeShop(i),
+      isInitiallySaved: i === 0 ? true : false,
+    }));
+
+    rerender(
+      <DiscoverContent initialShops={refreshedInitialShops} user={mockUser} />
+    );
+
+    await waitFor(() => {
+      expect(screen.getAllByText(/Cafe \d+/)).toHaveLength(40);
+    });
+  });
+
+  test("should not collapse the list when a cafe visit is logged after loading more", async () => {
+    const initialShops = Array.from({ length: 20 }, (_, i) =>
+      createMockCoffeeShop(i)
+    );
+    const { rerender } = render(
+      <DiscoverContent initialShops={initialShops} user={mockUser} />
+    );
+
+    const loadMoreButton = screen.getByText("Load More");
+    fireEvent.click(loadMoreButton);
+
+    await waitFor(() => {
+      expect(screen.getAllByText(/Cafe \d+/)).toHaveLength(40);
+    });
+
+    const refreshedInitialShops = Array.from({ length: 20 }, (_, i) => ({
+      ...createMockCoffeeShop(i),
+      isInitiallyVisited: i === 0 ? true : false,
+    }));
+
+    rerender(
+      <DiscoverContent initialShops={refreshedInitialShops} user={mockUser} />
+    );
+
+    await waitFor(() => {
+      expect(screen.getAllByText(/Cafe \d+/)).toHaveLength(40);
+    });
   });
 });

@@ -182,6 +182,7 @@ export async function saveCafe(
 
   revalidatePath(`/cafe/${cafeId}`);
   revalidatePath("/profile");
+  revalidatePath("/discover");
   return { success: true };
 }
 
@@ -209,6 +210,7 @@ export async function unsaveCafe(
 
   revalidatePath(`/cafe/${cafeId}`);
   revalidatePath("/profile");
+  revalidatePath("/discover");
   return { success: true };
 }
 
@@ -300,6 +302,7 @@ export async function toggleVisitedCafe(
 
   revalidatePath(`/cafe/${cafeId}`);
   revalidatePath("/profile");
+  revalidatePath("/discover");
   return { success: true };
 }
 

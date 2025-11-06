@@ -53,6 +53,7 @@ export function SaveButton({
           // If it was saved and now unsaved
           onUnsave(shopId);
         }
+        router.refresh(); // Refresh the page data
       }
     } finally {
       setIsLoading(false);
