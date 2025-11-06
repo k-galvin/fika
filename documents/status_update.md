@@ -51,12 +51,14 @@
 
 - Added OpenStreetMap API
 - Added all the addresses in database
-  
+
 **Scheduled tasks to be done by next report:**
+
 - Make sure all the tests are working and passing
-- What if addresses do not load 
+- What if addresses do not load
 
 **Noteworthy risks, concerns, or problems:**
+
 - None
 
 ### Ahtziri Gutierrez
@@ -66,12 +68,19 @@
 
 **Accomplishments since last report:**
 
-- Implemented form for users to update cafe info and set up corresponding Supabase table
+- Implemented a form for users to update cafe info and set up corresponding Supabase table
 - Tested and confirmed that updates are being submitted correctly
+- Added a way to search for and friend other users, along with implementation of the corresponding Supabase table
+- Implemented a way to accept or deny friend requests
 
-- **Scheduled tasks to be done by next report:**
+**Scheduled tasks to be done by next report:**
 
-- **Noteworthy risks, concerns, or problems:**
+- Ensure that all actions are working as expected
+- Make sure all tests are working and passing
+
+**Noteworthy risks, concerns, or problems:**
+
+- None
 
 ## Week 8 (10/17/2025)
 
@@ -153,7 +162,8 @@
 - Fixed inconsistency with bookmark button when logged out
 - Fixed save button logic to remove and add cafes correctly
 
-- **Scheduled tasks to be done by next report:**
+**Scheduled tasks to be done by next report:**
+
 - Bug fixes
 
-- **Noteworthy risks, concerns, or problems:**
+**Noteworthy risks, concerns, or problems:**
