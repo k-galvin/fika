@@ -19,6 +19,19 @@ export function CafeQuickView({
   isInitiallySaved,
   isInitiallyVisited,
 }: CafeQuickViewProps) {
+  const primaryPhoto = shop.shop_photos?.find(
+    (photo) => photo.is_primary && photo.is_approved
+  );
+  const approvedPhotos = shop.shop_photos?.filter(
+    (photo) => photo.is_approved
+  );
+
+  const imageUrl = primaryPhoto
+    ? primaryPhoto.photo_url
+    : approvedPhotos && approvedPhotos.length > 0
+    ? approvedPhotos[0].photo_url
+    : "/hotLatte.png";
+
   return (
     <Card className="w-full flex flex-col relative">
       <div className="flex justify-between items-center p-4 pl-6 pr-[1.1rem]">
@@ -34,26 +47,14 @@ export function CafeQuickView({
         </div>
       </div>
       <CardContent className="flex-grow flex flex-col justify-between gap-4">
-        {shop.shop_photos && shop.shop_photos.length > 0 ? (
-          <Image
-            src={shop.shop_photos[0].photo_url}
-            alt={shop.name || "No name found"}
-            width={300}
-            height={300}
-            priority
-            className="w-full aspect-square object-cover rounded-md"
-          />
-        ) : (
-          <div className="flex justify-center items-center w-full h-full">
-            <Image
-              src="/hotLatte.png"
-              alt="Hot Latte"
-              width={300}
-              height={300}
-              className="rounded-md object-cover"
-            />
-          </div>
-        )}
+        <Image
+          src={imageUrl}
+          alt={shop.name || "No name found"}
+          width={300}
+          height={300}
+          priority
+          className="w-full aspect-square object-cover rounded-md"
+        />
         <Button asChild className="w-full uppercase">
           <Link href={`/cafe/${shop.id}`}>View Details</Link>
         </Button>

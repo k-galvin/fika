@@ -113,6 +113,42 @@ export type Database = {
         }
         Relationships: []
       }
+      friendships: {
+        Row: {
+          friend_id: string | null
+          id: number
+          status: string | null
+          user_id: string | null
+        }
+        Insert: {
+          friend_id?: string | null
+          id?: number
+          status?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          friend_id?: string | null
+          id?: number
+          status?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "friendships_friend_id_fkey"
+            columns: ["friend_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "friendships_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           id: string
@@ -173,6 +209,8 @@ export type Database = {
       shop_photos: {
         Row: {
           id: number
+          is_approved: boolean
+          is_primary: boolean | null
           photo_url: string
           shop_id: number
           uploaded_at: string | null
@@ -180,6 +218,8 @@ export type Database = {
         }
         Insert: {
           id?: number
+          is_approved?: boolean
+          is_primary?: boolean | null
           photo_url: string
           shop_id: number
           uploaded_at?: string | null
@@ -187,6 +227,8 @@ export type Database = {
         }
         Update: {
           id?: number
+          is_approved?: boolean
+          is_primary?: boolean | null
           photo_url?: string
           shop_id?: number
           uploaded_at?: string | null
@@ -343,7 +385,21 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      is_admin: { Args: never; Returns: boolean }
+      get_coffee_shop_activity_over_time: {
+        Args: {
+          end_date: string
+          start_date: string
+          target_coffee_shop_id: number
+        }
+        Returns: {
+          daily_save_count: number
+          daily_visit_count: number
+          time_period: string
+        }[]
+      }
+      is_admin:
+        | { Args: never; Returns: boolean }
+        | { Args: { user_id: string }; Returns: boolean }
     }
     Enums: {
       Busyness: "Quiet" | "Medium" | "Very"

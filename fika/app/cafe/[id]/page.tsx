@@ -14,9 +14,21 @@ export default async function CafeDetailsPage({ params }: Props) {
     data: { user },
   } = await supabase.auth.getUser();
 
+  let userRole: "user" | "admin" | null = null;
+  if (user) {
+    const { data: profileData } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .single();
+    if (profileData) {
+      userRole = profileData.role;
+    }
+  }
+
   const { data: shop } = await supabase
     .from("coffee_shops")
-    .select("*, shop_photos(photo_url)")
+    .select("*, shop_photos(id, photo_url, is_primary, is_approved)")
     .eq("id", resolvedParams.id)
     .single();
 
@@ -51,6 +63,7 @@ export default async function CafeDetailsPage({ params }: Props) {
     <CafeDetailsClient
       shop={shop}
       user={user}
+      userRole={userRole} // New prop
       isInitiallySaved={isInitiallySaved}
       isInitiallyVisited={isInitiallyVisited}
     />

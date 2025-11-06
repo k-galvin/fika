@@ -73,7 +73,10 @@ export function DiscoverContent({
       `
       *,
       shop_photos (
-        photo_url
+        id,
+        photo_url,
+        is_primary,
+        is_approved
       )
     `
     );

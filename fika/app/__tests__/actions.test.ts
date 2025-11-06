@@ -11,6 +11,7 @@ import {
   getSuggestedCafes,
   approveSuggestion,
   denySuggestion,
+  uploadShopPhoto,
 } from "../actions";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createServiceRoleClient } from "@supabase/supabase-js";
@@ -665,6 +666,42 @@ describe("Server Actions", () => {
       expect(del).toHaveBeenCalledWith("id", 1);
       expect(revalidatePath).toHaveBeenCalledWith("/admin/suggestions");
       expect(result.success).toBe(true);
+    });
+  });
+
+  describe("uploadShopPhoto", () => {
+    it("should successfully insert a new shop photo", async () => {
+      const insert = jest.fn().mockResolvedValue({ error: null });
+      (createClient as jest.Mock).mockReturnValue({
+        from: jest.fn(() => ({ insert })),
+      });
+
+      const result = await uploadShopPhoto(1, "http://example.com/photo.jpg", "user-123");
+
+      expect(insert).toHaveBeenCalledWith([
+        {
+          shop_id: 1,
+          photo_url: "http://example.com/photo.jpg",
+          user_id: "user-123",
+          is_primary: false,
+          is_approved: false,
+        },
+      ]);
+      expect(revalidatePath).toHaveBeenCalledWith("/cafe/1");
+      expect(result).toEqual({ success: true });
+    });
+
+    it("should return success: false if there is a database error", async () => {
+      const insert = jest.fn().mockResolvedValue({ error: { message: "DB error" } });
+      (createClient as jest.Mock).mockReturnValue({
+        from: jest.fn(() => ({ insert })),
+      });
+
+      const result = await uploadShopPhoto(1, "http://example.com/photo.jpg", "user-123");
+
+      expect(insert).toHaveBeenCalled();
+      expect(revalidatePath).not.toHaveBeenCalled();
+      expect(result).toEqual({ success: false, message: "DB error" });
     });
   });
 });

@@ -4,6 +4,16 @@ import { createClient } from "@/lib/supabase/server";
 import { createClient as createServiceRoleClient } from "@supabase/supabase-js";
 import { revalidatePath } from "next/cache";
 import { SuggestedCafe, UserSavedCafe, UserVisit } from "@/lib/types"; // Import new types
+import { Database } from "@/lib/supabase/database.types";
+
+type ShopPhoto = Database["public"]["Tables"]["shop_photos"]["Row"];
+type CoffeeShop = Database["public"]["Tables"]["coffee_shops"]["Row"];
+type Profile = Database["public"]["Tables"]["profiles"]["Row"];
+
+type UnapprovedPhoto = ShopPhoto & {
+  coffee_shops: Pick<CoffeeShop, "name"> | null;
+  profiles: Pick<Profile, "username"> | null;
+};
 
 // --- Cafe Suggestion Actions ---
 
@@ -432,4 +442,184 @@ export async function submitCafeUpdates(
 
   revalidatePath(`/cafe/${cafeId}`);
   revalidatePath("/discover");
+}
+
+export async function uploadShopPhoto(
+  cafeId: number,
+  photoUrl: string,
+  userId: string
+): Promise<{ success: boolean; message?: string }> {
+  const supabase = await createClient();
+
+  const { error } = await supabase.from("shop_photos").insert([
+    {
+      shop_id: cafeId,
+      photo_url: photoUrl,
+      user_id: userId,
+      is_primary: false, // New photos are not primary by default
+      is_approved: false, // New photos are not approved by default
+    },
+  ]);
+
+  if (error) {
+    console.error("Error uploading shop photo:", error.message);
+    return { success: false, message: error.message };
+  }
+
+  revalidatePath(`/cafe/${cafeId}`);
+  return { success: true };
+}
+
+export async function setPrimaryPhoto(
+  photoId: number,
+  cafeId: number
+): Promise<{ success: boolean; message?: string }> {
+  // Use createClient for auth operations
+  const authSupabase = await createClient();
+  const { 
+    data: { user },
+  } = await authSupabase.auth.getUser();
+
+  if (!user) {
+    return { success: false, message: "User not found" };
+  }
+
+  // Use createServiceRoleClient for privileged database operations
+  const supabase = createServiceRoleClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+
+  // Check if user is admin
+  // The is_admin RPC function also needs to be called with the regular client
+  // because it checks the role of the *current* user.
+  const { data: isAdminData, error: isAdminError } = await authSupabase.rpc(
+    "is_admin"
+  );
+
+  if (isAdminData === null || isAdminError) {
+    return { success: false, message: "Unauthorized: Not an admin" };
+  }
+
+  // 1. Set all photos for this cafe to not primary
+  const { error: resetError } = await supabase
+    .from("shop_photos")
+    .update({ is_primary: false })
+    .eq("shop_id", cafeId);
+
+  if (resetError) {
+    console.error("Error resetting primary photos:", resetError.message);
+    return { success: false, message: resetError.message };
+  }
+
+  // 2. Set the selected photo as primary
+  const { error: setError } = await supabase
+    .from("shop_photos")
+    .update({ is_primary: true })
+    .eq("id", photoId)
+    .eq("shop_id", cafeId); // Ensure we're updating the correct photo for the cafe
+
+  if (setError) {
+    console.error("Error setting primary photo:", setError.message);
+    return { success: false, message: setError.message };
+  }
+
+  revalidatePath(`/cafe/${cafeId}`);
+  return { success: true };
+}
+
+export async function getUnapprovedPhotos(): Promise<UnapprovedPhoto[] | null> {  const supabase = createServiceRoleClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+
+  const { data, error } = await supabase
+    .from("shop_photos")
+    .select("*, coffee_shops(name), profiles(username)")
+    .eq("is_approved", false)
+    .order("uploaded_at", { ascending: false });
+
+  if (error) {
+    console.error("Error fetching unapproved photos:", error.message);
+    return null;
+  }
+
+  console.log("Fetched unapproved photos:", data); // Added log
+  data?.forEach(photo => console.log("Unapproved photo URL:", photo.photo_url));
+
+  return data;
+}
+
+export async function approvePhoto(
+  photoId: number
+): Promise<{ success: boolean; message?: string }> {
+  const supabase = createServiceRoleClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+
+  // First, get the shop_id from the photo
+  const { data: photoData, error: fetchError } = await supabase
+    .from("shop_photos")
+    .select("shop_id")
+    .eq("id", photoId)
+    .single();
+
+  if (fetchError || !photoData) {
+    console.error("Error fetching photo for approval:", fetchError?.message);
+    return { success: false, message: fetchError?.message || "Photo not found." };
+  }
+
+  const shopId = photoData.shop_id;
+
+  const { error } = await supabase
+    .from("shop_photos")
+    .update({ is_approved: true })
+    .eq("id", photoId);
+
+  if (error) {
+    console.error("Error approving photo:", error.message);
+    return { success: false, message: error.message };
+  }
+
+  revalidatePath("/admin/photos");
+  revalidatePath(`/cafe/${shopId}`); // Use the fetched shopId here
+  return { success: true };
+}
+
+export async function denyPhoto(
+  photoId: number,
+  photoUrl: string
+): Promise<{ success: boolean; message?: string }> {
+  const supabase = createServiceRoleClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+
+  // Extract the file path from the URL
+  const filePath = new URL(photoUrl).pathname.split("/images/")[1];
+
+  // 1. Delete the photo from storage
+  const { error: storageError } = await supabase.storage
+    .from("images")
+    .remove([filePath]);
+
+  if (storageError) {
+    console.error("Error deleting photo from storage:", storageError.message);
+    // Don't return here, still try to delete from db
+  }
+
+  // 2. Delete the photo from the database
+  const { error: dbError } = await supabase
+    .from("shop_photos")
+    .delete()
+    .eq("id", photoId);
+
+  if (dbError) {
+    console.error("Error deleting photo from database:", dbError.message);
+    return { success: false, message: dbError.message };
+  }
+
+  revalidatePath("/admin/photos");
+  return { success: true };
 }
