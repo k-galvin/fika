@@ -49,10 +49,13 @@
 
 **Accomplishments since last report:**
 
--
+- Added OpenStreetMap API
+- Added all the addresses in database
+  
 
 - **Scheduled tasks to be done by next report:**
--
+- Make sure all the tests are working and passing
+- What if addresses do not load 
 - **Noteworthy risks, concerns, or problems:**
 
 - ***
