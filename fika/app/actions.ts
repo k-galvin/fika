@@ -5,6 +5,22 @@ import { createClient as createServiceRoleClient } from "@supabase/supabase-js";
 import { revalidatePath } from "next/cache";
 import { SuggestedCafe, UserSavedCafe, UserVisit } from "@/lib/types"; // Import new types
 
+export async function searchProfiles(searchTerm: string) {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("id, username")
+    .like("username", `%${searchTerm}%`)
+    .limit(10);
+
+  if (error) {
+    console.error("Error searching profiles:", error);
+    return [];
+  }
+
+  return data;
+}
+
 // --- Cafe Suggestion Actions ---
 
 // Helper to convert empty strings to null
@@ -432,4 +448,80 @@ export async function submitCafeUpdates(
 
   revalidatePath(`/cafe/${cafeId}`);
   revalidatePath("/discover");
+}
+
+// --- Friend Request Actions ---
+
+export async function acceptFriendRequest(requestId: string) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user)
+    return { success: false, message: "You must be logged in to accept." };
+
+  const { error } = await supabase
+    .from("friendships")
+    .update({ status: "friends" })
+    .eq("user_id", requestId)
+    .eq("friend_id", user.id);
+
+  if (error) {
+    console.error("Error accepting friend request:", error.message);
+    return { success: false, message: error.message };
+  }
+
+  revalidatePath("/friends");
+  return { success: true, message: "Friend request accepted." };
+}
+
+export async function denyFriendRequest(friendId: string) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user)
+    return { success: false, message: "You must be logged in to deny." };
+
+  const { error } = await supabase
+    .from("friendships")
+    .delete()
+    .match({ user_id: friendId, friend_id: user.id });
+
+  if (error) {
+    console.error("Error denying friend request:", error.message);
+    return { success: false, message: error.message };
+  }
+
+  revalidatePath("/friends");
+  return { success: true, message: "Friend request denied." };
+}
+
+export async function unfriendUser(friendId: string) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user)
+    return { success: false, message: "You must be logged in to unfriend." };
+
+  const { error } = await supabase
+    .from("friendships")
+    .delete()
+    .or(
+      `and(user_id.eq.${user.id},friend_id.eq.${friendId}),and(user_id.eq.${friendId},friend_id.eq.${user.id})`
+    );
+
+  if (error) {
+    console.error("Error unfriending user:", error.message);
+    return { success: false, message: error.message };
+  }
+
+  revalidatePath("/friends");
+  revalidatePath("/discover");
+
+  return { success: true, message: "Friend removed successfully." };
 }
