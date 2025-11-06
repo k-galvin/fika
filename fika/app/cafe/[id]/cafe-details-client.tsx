@@ -15,12 +15,18 @@ import { SaveButton } from "@/components/save-button";
 import { LogVisitButton } from "@/components/log-visit-button";
 import { UpdateForm } from "@/components/update-form";
 import CafeActivityChart from "@/components/CafeActivityChart";
+import { CafePhotoGallery } from "@/components/cafe-photo-gallery";
 
-type CoffeeShop = Database["public"]["Tables"]["coffee_shops"]["Row"];
+type ShopPhoto = Database["public"]["Tables"]["shop_photos"]["Row"];
+type CoffeeShopWithPhotos =
+  Database["public"]["Tables"]["coffee_shops"]["Row"] & {
+    shop_photos: ShopPhoto[];
+  };
 
 type CafeDetailsClientProps = {
-  shop: CoffeeShop;
+  shop: CoffeeShopWithPhotos;
   user: User | null;
+  userRole: "user" | "admin" | null; // New prop
   isInitiallySaved: boolean;
   isInitiallyVisited: boolean;
 };
@@ -28,6 +34,7 @@ type CafeDetailsClientProps = {
 export default function CafeDetailsClient({
   shop,
   user,
+  userRole, // New prop
   isInitiallySaved,
   isInitiallyVisited,
 }: CafeDetailsClientProps) {
@@ -194,6 +201,9 @@ export default function CafeDetailsClient({
 
         <UpdateForm shopId={shop.id} />
         <CafeActivityChart cafeId={shop.id} />
+
+        {/* New Photo Gallery Component */}
+        <CafePhotoGallery shopId={shop.id} photos={shop.shop_photos} user={user} userRole={userRole} />
 
         <div className="w-full relative h-64 md:h-80">
           <Image

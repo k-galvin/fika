@@ -1,7 +1,7 @@
 import { Database } from "./supabase/database.types";
 
 export type CoffeeShop = Database["public"]["Tables"]["coffee_shops"]["Row"] & {
-  shop_photos: { photo_url: string }[];
+  shop_photos: { id: number; photo_url: string; is_primary: boolean | null; is_approved: boolean | null }[];
   isInitiallySaved: boolean;
   isInitiallyVisited: boolean;
   ratings: { user_id: string; drinks_quality: number | null }[];
