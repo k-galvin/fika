@@ -265,20 +265,27 @@ export async function isCafeSaved(cafeId: number): Promise<boolean> {
   return !!data;
 }
 
-export async function getSavedCafes(): Promise<UserSavedCafe[] | null> {
+export async function getSavedCafes(
+  userId?: string
+): Promise<UserSavedCafe[] | null> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
 
-  if (!user) {
-    return null;
+  let idToUse = userId;
+  if (!idToUse) {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return null;
+    }
+    idToUse = user.id;
   }
 
   const { data, error } = await supabase
     .from("user_saved_cafes")
     .select("*, coffee_shops(*)") // Select all from user_saved_cafes and join coffee_shops
-    .eq("profile_id", user.id)
+    .eq("profile_id", idToUse)
     .order("saved_at", { ascending: false });
 
   if (error) {
@@ -332,20 +339,27 @@ export async function toggleVisitedCafe(
   return { success: true };
 }
 
-export async function getVisitedCafes(): Promise<UserVisit[] | null> {
+export async function getVisitedCafes(
+  userId?: string
+): Promise<UserVisit[] | null> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
 
-  if (!user) {
-    return null;
+  let idToUse = userId;
+  if (!idToUse) {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return null;
+    }
+    idToUse = user.id;
   }
 
   const { data, error } = await supabase
     .from("user_visits")
     .select("*, coffee_shops(*)") // Select all from user_visits and join coffee_shops
-    .eq("profile_id", user.id)
+    .eq("profile_id", idToUse)
     .order("visited_at", { ascending: false });
 
   if (error) {
@@ -720,4 +734,123 @@ export async function unfriendUser(friendId: string) {
   revalidatePath("/discover");
 
   return { success: true, message: "Friend removed successfully." };
+}
+
+// --- Updates Page Admin ---
+export async function getCafeUpdates() {
+  const supabase = await createServiceRoleClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+
+  const { data, error } = await supabase
+    .from("cafe_updates")
+    .select(
+      `
+      id,
+      cafe_id,
+      field_name,
+      suggested_value,
+      approved,
+      user_id,
+      created_at,
+      coffee_shops (name)
+    `
+    )
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Error fetching cafe updates:", error.message);
+    return [];
+  }
+
+  // Flatten nested structure so it's easier to use on your admin page
+  return data.map((u) => {
+    const shop = Array.isArray(u.coffee_shops)
+      ? u.coffee_shops[0]
+      : u.coffee_shops;
+    return {
+      id: u.id,
+      cafe_id: u.cafe_id,
+      cafe_name: shop?.name ?? "Unknown Café",
+      field: u.field_name,
+      new_value: u.suggested_value,
+      user_id: u.user_id,
+      created_at: u.created_at,
+    };
+  });
+}
+
+export async function approveUpdateAndDenyOthers(
+  updateId: number,
+  otherUpdateIds: number[]
+) {
+  const supabase = createServiceRoleClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+
+  // 1. Get the winning update record
+  const { data: update, error: fetchError } = await supabase
+    .from("cafe_updates")
+    .select("cafe_id, field_name, suggested_value")
+    .eq("id", updateId)
+    .single();
+
+  if (fetchError || !update) {
+    console.error("Error fetching update for approval:", fetchError?.message);
+    return { success: false, message: "Update not found." };
+  }
+
+  // 2. Apply the update to the coffee_shops table
+  const { error: updateError } = await supabase
+    .from("coffee_shops")
+    .update({ [update.field_name]: update.suggested_value })
+    .eq("id", update.cafe_id);
+
+  if (updateError) {
+    console.error("Error applying approved update:", updateError.message);
+    return { success: false, message: updateError.message };
+  }
+
+  // 3. Delete all updates in the group (the approved one and all others)
+  const allIds = [updateId, ...otherUpdateIds];
+  const { error: deleteError } = await supabase
+    .from("cafe_updates")
+    .delete()
+    .in("id", allIds);
+
+  if (deleteError) {
+    console.error(
+      "Failed to delete updates after approval:",
+      deleteError.message
+    );
+    // Note: The update was applied, but cleanup failed. Manual check might be needed.
+    return { success: false, message: deleteError.message };
+  }
+
+  revalidatePath("/admin/updates");
+  revalidatePath("/discover");
+  revalidatePath(`/cafe/${update.cafe_id}`);
+  return { success: true };
+}
+
+export async function denyUpdates(updateIds: number[]) {
+  const supabase = createServiceRoleClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+
+  const { error } = await supabase
+    .from("cafe_updates")
+    .delete()
+    .in("id", updateIds);
+
+  if (error) {
+    console.error("Error denying updates:", error.message);
+    return { success: false, message: error.message };
+  }
+
+  revalidatePath("/admin/updates");
+  return { success: true };
 }

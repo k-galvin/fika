@@ -1,19 +1,29 @@
+import { redirect } from "next/navigation";
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import ProfilePage from "../page";
+import ProfilePage from "@/app/profile/page";
 import { getSavedCafes, getVisitedCafes } from "@/app/actions";
 import { createClient } from "@/lib/supabase/server";
-import { redirect } from "next/navigation";
 import { UserVisit } from "@/lib/types";
 
-// Mock server actions and supabase client
-jest.mock("@/app/actions", () => ({
-  getSavedCafes: jest.fn(),
-  getVisitedCafes: jest.fn(),
+jest.mock("next/navigation", () => ({
+  useRouter: jest.fn(() => ({ push: jest.fn() })),
+  useSearchParams: () => ({
+    get: jest.fn(),
+  }),
+  usePathname: jest.fn(() => "/"),
+  redirect: jest.fn(() => {
+    throw new Error("redirected");
+  }),
 }));
-jest.mock('@/lib/supabase/server', () => ({
+
+// Mock server actions
+jest.mock("@/app/actions");
+jest.mock("@/lib/supabase/server", () => ({
   createClient: jest.fn(() => {
-    const mockSingle = jest.fn(() => Promise.resolve({ data: { username: 'testuser' }, error: null }));
+    const mockSingle = jest.fn(() =>
+      Promise.resolve({ data: { username: "testuser" }, error: null })
+    );
     const mockEq = jest.fn(() => ({
       single: mockSingle,
     }));
@@ -26,29 +36,49 @@ jest.mock('@/lib/supabase/server', () => ({
 
     return {
       auth: {
-        getUser: jest.fn(() => Promise.resolve({ data: { user: { id: 'user-123', email: 'test@example.com', created_at: new Date().toISOString() } }, error: null })),
+        getUser: jest.fn(() =>
+          Promise.resolve({
+            data: {
+              user: {
+                id: "user-123",
+                email: "test@example.com",
+                created_at: new Date().toISOString(),
+              },
+            },
+            error: null,
+          })
+        ),
       },
       from: mockFrom,
     };
   }),
 }));
-jest.mock("next/navigation", () => ({
-  redirect: jest.fn(() => { throw new Error("redirected"); }),
-  useRouter: jest.fn(() => ({ push: jest.fn() })),
-  usePathname: jest.fn(() => "/"),
-}));
 
 // Mock the ProfileCharts component
 jest.mock("@/components/ProfileCharts", () => {
-  const MockProfileCharts = ({ visitedCafes }: { visitedCafes: UserVisit[] }) => (
+  const MockProfileCharts = ({
+    visitedCafes,
+  }: {
+    visitedCafes: UserVisit[];
+  }) => (
     <div
       data-testid="mock-profile-charts"
       data-visited-cafes={JSON.stringify(visitedCafes)}
     ></div>
   );
-  MockProfileCharts.displayName = 'ProfileCharts';
+  MockProfileCharts.displayName = "ProfileCharts";
   return MockProfileCharts;
 });
+
+// Mock the ProfileCafes component
+jest.mock("@/components/profile-cafes", () => ({
+  ProfileCafes: () => <div data-testid="mock-profile-cafes"></div>,
+}));
+
+// Mock the FindFriends component
+jest.mock("@/components/find-friends", () => ({
+  FindFriends: () => <div data-testid="mock-find-friends"></div>,
+}));
 
 describe("ProfilePage", () => {
   it("redirects to login if no user is authenticated", async () => {

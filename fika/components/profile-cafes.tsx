@@ -16,9 +16,14 @@ import { SaveButton } from "@/components/save-button";
 type ProfileCafesProps = {
   savedCafes: UserSavedCafe[];
   visitedCafes: UserVisit[];
+  friendView?: boolean;
 };
 
-export function ProfileCafes({ savedCafes, visitedCafes }: ProfileCafesProps) {
+export function ProfileCafes({
+  savedCafes,
+  visitedCafes,
+  friendView,
+}: ProfileCafesProps) {
   const [activeTab, setActiveTab] = useState("visited");
 
   return (
@@ -52,7 +57,11 @@ export function ProfileCafes({ savedCafes, visitedCafes }: ProfileCafesProps) {
         </div>
         <CardDescription>
           {activeTab === "visited"
-            ? "A history of cafes you've visited."
+            ? friendView
+              ? "A history of cafes they have visited."
+              : "A history of cafes you've visited."
+            : friendView
+            ? "Cafes they have marked as favorites for later."
             : "Cafes you've marked as favorites for later."}
         </CardDescription>
       </CardHeader>
@@ -91,7 +100,9 @@ export function ProfileCafes({ savedCafes, visitedCafes }: ProfileCafesProps) {
             ) : (
               <div className="text-center py-6">
                 <p className="text-muted-foreground mb-4">
-                  You haven&apos;t logged any visits yet!
+                  {friendView
+                    ? "They haven't logged any visits yet!"
+                    : "You haven't logged any visits yet!"}
                 </p>
                 <Button asChild>
                   <Link href="/discover">Log a Visit</Link>
@@ -126,10 +137,12 @@ export function ProfileCafes({ savedCafes, visitedCafes }: ProfileCafesProps) {
                           ).toLocaleDateString()}
                         </span>
                       </div>
-                      <SaveButton
-                        shopId={savedCafe.coffee_shop_id}
-                        isInitiallySaved={true}
-                      />
+                      {!friendView && (
+                        <SaveButton
+                          shopId={savedCafe.coffee_shop_id}
+                          isInitiallySaved={true}
+                        />
+                      )}
                     </div>
                   );
                 })}
@@ -137,7 +150,9 @@ export function ProfileCafes({ savedCafes, visitedCafes }: ProfileCafesProps) {
             ) : (
               <div className="text-center py-6">
                 <p className="text-muted-foreground mb-4">
-                  You haven&apos;t saved any cafes yet!
+                  {friendView
+                    ? "They haven't saved any cafes yet!"
+                    : "You haven't saved any cafes yet!"}
                 </p>
                 <Button asChild>
                   <Link href="/discover">Find Cafes to Save</Link>

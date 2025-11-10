@@ -5,6 +5,7 @@ import { SearchBar } from "@/components/ui/search-bar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 import {
   acceptFriendRequest,
   denyFriendRequest,
@@ -350,7 +351,13 @@ export function FindFriends() {
                   key={friend.id}
                   className="flex items-center justify-between border rounded-lg p-2 hover:bg-gray-50 transition"
                 >
-                  <p className="text-sm">@{friend.username}</p>
+                  <Link
+                    href={`/friend/${friend.id}`}
+                    className="text-sm font-medium hover:underline"
+                  >
+                    @{friend.username}
+                  </Link>
+
                   <Button
                     variant="outline"
                     size="sm"

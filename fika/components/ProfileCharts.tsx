@@ -59,9 +59,13 @@ function capitalizeWords(str: string): string {
 
 interface ProfileChartsProps {
   visitedCafes: UserVisit[];
+  subtitle?: string;
 }
 
-const ProfileCharts: React.FC<ProfileChartsProps> = ({ visitedCafes }) => {
+const ProfileCharts: React.FC<ProfileChartsProps> = ({
+  visitedCafes,
+  subtitle,
+}) => {
   const [selectedColumn, setSelectedColumn] =
     useState<keyof CoffeeShop>("city");
 
@@ -87,7 +91,7 @@ const ProfileCharts: React.FC<ProfileChartsProps> = ({ visitedCafes }) => {
           Visited Cafes Breakdown
         </CardTitle>
         <CardDescription>
-          Analyze your visited cafe preferences.
+          {subtitle || "Analyze your visited cafe preferences."}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">

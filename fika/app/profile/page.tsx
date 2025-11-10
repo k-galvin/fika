@@ -14,6 +14,7 @@ import { getSavedCafes, getVisitedCafes } from "@/app/actions"; // Import server
 
 import { ProfileCafes } from "@/components/profile-cafes";
 import ProfileCharts from "@/components/ProfileCharts";
+import { FindFriends } from "@/components/find-friends";
 
 export default async function ProfilePage() {
   const supabase = await createClient();
@@ -63,7 +64,9 @@ export default async function ProfilePage() {
                 <User className="h-5 w-5" />
                 Account Information
               </CardTitle>
-              <CardDescription>This information is private.</CardDescription>
+              <CardDescription>
+                View and manage your account details.
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-2">
               <div className="flex justify-between items-center text-sm">
@@ -76,6 +79,8 @@ export default async function ProfilePage() {
               </div>
             </CardContent>
           </Card>
+
+          <FindFriends />
 
           <ProfileCharts visitedCafes={visitedCafes || []} />
 
