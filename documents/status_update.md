@@ -35,11 +35,14 @@
 
 **Accomplishments since last report:**
 
--
+- Added in a rating system out of 5 stars
+- Added so that when the user saves a restruant theyve been to the button transforms into the stars
+- Saves rating top user profile 
 - **Scheduled tasks to be done by next report:**
--
+- Refiine saving of ratings
+- clean up small UI quirks 
 - **Noteworthy risks, concerns, or problems:**
-
+- None
 - ***
 
 ### Giselle Eliasi
