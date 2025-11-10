@@ -7,10 +7,11 @@ import ProfileCharts from "@/components/ProfileCharts";
 export default async function FriendProfilePage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
+  const resolvedParams = await params;
   const supabase = await createClient();
-  const { id } = params; // friend’s user ID from the URL
+  const { id } = resolvedParams; // friend’s user ID from the URL
 
   const {
     data: { user: currentUser },

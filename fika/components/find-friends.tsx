@@ -145,7 +145,7 @@ export function FindFriends() {
     };
 
     fetchIncomingRequests();
-  }, []);
+  }, [supabase]);
 
   useEffect(() => {
     const loadFriendships = async () => {
@@ -174,7 +174,7 @@ export function FindFriends() {
     };
 
     loadFriendships();
-  }, []);
+  }, [supabase]);
 
   const [friends, setFriends] = useState<Friend[]>([]);
 
@@ -223,7 +223,7 @@ export function FindFriends() {
     };
 
     fetchFriends();
-  }, []);
+  }, [supabase]);
 
   return (
     <Card>
