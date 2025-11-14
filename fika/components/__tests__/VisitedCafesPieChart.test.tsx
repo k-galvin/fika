@@ -2,20 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import VisitedCafesPieChart from '../VisitedCafesPieChart';
 
-// Mock recharts components to simplify testing and avoid complex SVG rendering issues
-jest.mock('recharts', () => ({
-  ResponsiveContainer: ({ children }: { children: React.ReactNode }) => <div className="recharts-responsive-container">{children}</div>,
-  PieChart: ({ children }: { children: React.ReactNode }) => <div className="recharts-pie-chart">{children}</div>,
-  Pie: ({ data, outerRadius, dataKey, label, children }: { data: { name: string; value: number }[]; outerRadius: number; dataKey: string; label: ({ name, percent }: { name: string; percent: number }) => string; children: React.ReactNode }) => (
-    <div className="recharts-pie" data-testid="pie-chart" data-outer-radius={outerRadius} data-data-key={dataKey} data-label={label ? label({ percent: 0.1 }) : ''}>
-      <div data-testid="pie-data">{JSON.stringify(data)}</div>
-      {children}
-    </div>
-  ),
-  Cell: (props: { fill: string; key: string }) => <div className="recharts-cell" data-cell-props={JSON.stringify(props)}></div>,
-  Tooltip: () => <div className="recharts-tooltip"></div>,
-  Legend: () => <div className="recharts-legend"></div>,
-}));
+
 
 describe('VisitedCafesPieChart', () => {
   const mockData = [

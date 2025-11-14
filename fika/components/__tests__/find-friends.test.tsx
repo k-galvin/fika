@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
 import { FindFriends } from "@/components/find-friends";
 import { useSearchParams } from "next/navigation";
 
@@ -77,8 +77,10 @@ describe("FindFriends", () => {
     jest.clearAllMocks();
   });
 
-  it("renders the search bar", () => {
-    render(<FindFriends />);
+  it("renders the search bar", async () => {
+    await act(async () => {
+      render(<FindFriends />);
+    });
     expect(
       screen.getByPlaceholderText("Search for friends...")
     ).toBeInTheDocument();
@@ -88,7 +90,9 @@ describe("FindFriends", () => {
     (useSearchParams as jest.Mock).mockReturnValue(
       new URLSearchParams("search=test")
     );
-    render(<FindFriends />);
+    await act(async () => {
+      render(<FindFriends />);
+    });
 
     await waitFor(() => {
       expect(screen.getByText("testuser")).toBeInTheDocument();
@@ -99,7 +103,9 @@ describe("FindFriends", () => {
     (useSearchParams as jest.Mock).mockReturnValue(
       new URLSearchParams("search=test")
     );
-    render(<FindFriends />);
+    await act(async () => {
+      render(<FindFriends />);
+    });
 
     await waitFor(() => {
       expect(screen.getByText("testuser")).toBeInTheDocument();

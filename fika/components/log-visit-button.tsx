@@ -5,6 +5,7 @@ import { Button } from "./ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogFooter,
@@ -97,6 +98,9 @@ export function LogVisitButton({
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Rate your experience</DialogTitle>
+            <DialogDescription>
+              Rate your experience at this cafe to help others.
+            </DialogDescription>
           </DialogHeader>
           <div className="flex justify-center py-4">
             {[1, 2, 3, 4, 5].map((star) => (

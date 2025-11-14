@@ -10,9 +10,7 @@ jest.mock("next/navigation", () => ({
   useSearchParams: jest.fn(),
 }));
 
-jest.mock("use-debounce", () => ({
-  useDebouncedCallback: jest.fn((callback) => callback),
-}));
+
 
 describe("SearchBar", () => {
   it("should call router.replace with the search term", () => {
