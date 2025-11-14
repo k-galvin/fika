@@ -93,6 +93,12 @@ export function ProfileCafes({
                           ).toLocaleDateString()}
                         </span>
                       </div>
+                      {visitedCafe.rating && (
+                        <div className="flex items-center gap-1">
+                          <span className="text-yellow-500">★</span>
+                          <span>{visitedCafe.rating}</span>
+                        </div>
+                      )}
                     </div>
                   );
                 })}

@@ -3,7 +3,6 @@ import {
   unsaveCafe,
   isCafeSaved,
   getSavedCafes,
-  toggleVisitedCafe,
   getVisitedCafes,
   hasUserVisitedCafe,
   logout,
@@ -311,62 +310,6 @@ describe("Server Actions", () => {
     });
   });
 
-  describe("toggleVisitedCafe", () => {
-    it("should return success: false if user is not authenticated", async () => {
-      (createClient as jest.Mock).mockReturnValue({
-        auth: {
-          getUser: jest.fn().mockResolvedValue({ data: { user: null } }),
-        },
-      });
-
-      const result = await toggleVisitedCafe(1, false);
-
-      expect(result).toEqual({ success: false, message: "User not found" });
-    });
-
-    it("should insert a new visited cafe and return success: true", async () => {
-      const user = { id: "123", email: "test@example.com" };
-      (createClient as jest.Mock).mockReturnValue({
-        auth: {
-          getUser: jest.fn().mockResolvedValue({ data: { user } }),
-        },
-        from: () => ({
-          insert: () => Promise.resolve({ error: null }),
-        }),
-      });
-
-      const result = await toggleVisitedCafe(1, false);
-
-      expect(result).toEqual({ success: true });
-      expect(revalidatePath).toHaveBeenCalledWith("/cafe/1");
-      expect(revalidatePath).toHaveBeenCalledWith("/profile");
-      expect(revalidatePath).toHaveBeenCalledWith("/discover");
-    });
-
-    it("should delete a visited cafe and return success: true", async () => {
-      const user = { id: "123", email: "test@example.com" };
-      (createClient as jest.Mock).mockReturnValue({
-        auth: {
-          getUser: jest.fn().mockResolvedValue({ data: { user } }),
-        },
-        from: () => ({
-          delete: () => ({
-            eq: () => ({
-              eq: () => Promise.resolve({ error: null }),
-            }),
-          }),
-        }),
-      });
-
-      const result = await toggleVisitedCafe(1, true);
-
-      expect(result).toEqual({ success: true });
-      expect(revalidatePath).toHaveBeenCalledWith("/cafe/1");
-      expect(revalidatePath).toHaveBeenCalledWith("/profile");
-      expect(revalidatePath).toHaveBeenCalledWith("/discover");
-    });
-  });
-
   describe("getVisitedCafes", () => {
     it("should return null if user is not authenticated", async () => {
       (createClient as jest.Mock).mockReturnValue({
@@ -449,8 +392,8 @@ describe("Server Actions", () => {
           select: () => ({
             eq: () => ({
               eq: () => ({
-                limit: () =>
-                  Promise.resolve({ data: [{ id: 1 }], error: null }),
+                single: () =>
+                  Promise.resolve({ data: { has_visited: true }, error: null }),
               }),
             }),
           }),
@@ -472,7 +415,7 @@ describe("Server Actions", () => {
           select: () => ({
             eq: () => ({
               eq: () => ({
-                limit: () => Promise.resolve({ data: [], error: null }),
+                single: () => Promise.resolve({ data: { has_visited: false }, error: null }),
               }),
             }),
           }),
@@ -494,7 +437,7 @@ describe("Server Actions", () => {
           select: () => ({
             eq: () => ({
               eq: () => ({
-                limit: () =>
+                single: () =>
                   Promise.resolve({
                     data: null,
                     error: { message: "Database error" },

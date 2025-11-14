@@ -1,5 +1,6 @@
 import "@testing-library/jest-dom";
 import { TextEncoder, TextDecoder } from "util";
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 if (typeof (global as any).Request === "undefined") {
@@ -10,7 +11,7 @@ if (typeof (global as any).Response === "undefined") {
 }
 
 (global as any).TextEncoder = TextEncoder;
-(global as any).TextDecoder = TextDecoder;
+(global as any).TextDecoder = TextDecoder as typeof global.TextDecoder;
 
 jest.mock("next/navigation", () => ({
   useRouter: () => ({

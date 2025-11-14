@@ -71,6 +71,10 @@ jest.mock("@/lib/supabase/client", () => ({
 // Mock the server action
 jest.mock("@/app/actions", () => ({
   toggleVisit: jest.fn(),
+  rateCafe: jest.fn(),
+  getUserRatingForCafe: jest.fn(),
+  saveCafe: jest.fn(),
+  unsaveCafe: jest.fn(),
 }));
 
 describe("CafeQuickView", () => {

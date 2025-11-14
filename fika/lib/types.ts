@@ -13,6 +13,7 @@ export type SuggestedCafe =
 // New types for user_visits and user_saved_cafes
 export type UserVisit = Database["public"]["Tables"]["user_visits"]["Row"] & {
   coffee_shops: CoffeeShop | null;
+  rating?: number | null;
 };
 export type UserSavedCafe =
   Database["public"]["Tables"]["user_saved_cafes"]["Row"] & {

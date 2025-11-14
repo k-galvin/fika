@@ -90,10 +90,11 @@ jest.mock("@/lib/supabase/client", () => ({
   })),
 }));
 
-// Mock the server action
-jest.mock("@/app/actions", () => ({
-  toggleVisit: jest.fn(),
-}));
+import * as actions from "@/app/actions";
+
+jest.mock("@/app/actions");
+
+const mockedActions = actions as jest.Mocked<typeof actions>;
 
 // Mock Supabase database types
 jest.mock("@/lib/supabase/database.types", () => ({
@@ -116,16 +117,13 @@ import { User } from "@supabase/supabase-js";
 
 
 describe("DiscoverContent", () => {
-
   const mockUser: User = { id: "user-1" } as User;
 
   beforeEach(() => {
+    jest.clearAllMocks();
     (useTheme as jest.Mock).mockReturnValue({ isAfterHours: false });
   });
 
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
   it("renders a list of cafe cards", async () => {
     (useTheme as jest.Mock).mockReturnValue({ isAfterHours: false });
     render(<DiscoverContent initialShops={MOCK_SHOPS} user={null} />);

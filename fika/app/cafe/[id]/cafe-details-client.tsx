@@ -30,6 +30,7 @@ type CafeDetailsClientProps = {
   userRole: "user" | "admin" | null; // New prop
   isInitiallySaved: boolean;
   isInitiallyVisited: boolean;
+  initialRating: number | null;
 };
 
 export default function CafeDetailsClient({
@@ -38,6 +39,7 @@ export default function CafeDetailsClient({
   userRole, // New prop
   isInitiallySaved,
   isInitiallyVisited,
+  initialRating,
 }: CafeDetailsClientProps) {
   const { isAfterHours, setIsAfterHours } = useTheme();
   const router = useRouter();
@@ -59,6 +61,7 @@ export default function CafeDetailsClient({
               <LogVisitButton
                 shopId={shop.id}
                 isInitiallyVisited={isInitiallyVisited}
+                initialRating={initialRating}
                 size="icon-lg"
               />
               {user ? (

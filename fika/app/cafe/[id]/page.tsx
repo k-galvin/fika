@@ -38,6 +38,7 @@ export default async function CafeDetailsPage({ params }: Props) {
 
   let isInitiallySaved = false;
   let isInitiallyVisited = false;
+  let initialRating: number | null = null;
 
   if (user) {
     // Check if cafe is saved by the user
@@ -52,11 +53,12 @@ export default async function CafeDetailsPage({ params }: Props) {
     // Check if cafe has been visited by the user
     const { data: visitedData } = await supabase
       .from("user_visits")
-      .select("id")
+      .select("id, rating, has_visited")
       .eq("profile_id", user.id)
       .eq("coffee_shop_id", shop.id)
-      .limit(1); // We only need to know if at least one visit exists
-    isInitiallyVisited = !!visitedData && visitedData.length > 0;
+      .single();
+    isInitiallyVisited = visitedData?.has_visited || false;
+    initialRating = visitedData?.rating || null;
   }
 
   return (
@@ -66,6 +68,7 @@ export default async function CafeDetailsPage({ params }: Props) {
       userRole={userRole} // New prop
       isInitiallySaved={isInitiallySaved}
       isInitiallyVisited={isInitiallyVisited}
+      initialRating={initialRating}
     />
   );
 }

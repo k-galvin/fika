@@ -167,45 +167,6 @@ export type Database = {
         }
         Relationships: []
       }
-      ratings: {
-        Row: {
-          created_at: string | null
-          drinks_quality: number | null
-          id: number
-          shop_id: number
-          user_id: string
-        }
-        Insert: {
-          created_at?: string | null
-          drinks_quality?: number | null
-          id?: number
-          shop_id: number
-          user_id: string
-        }
-        Update: {
-          created_at?: string | null
-          drinks_quality?: number | null
-          id?: number
-          shop_id?: number
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "ratings_shop_id_fkey"
-            columns: ["shop_id"]
-            isOneToOne: false
-            referencedRelation: "coffee_shops"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "ratings_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       shop_photos: {
         Row: {
           id: number
@@ -350,18 +311,21 @@ export type Database = {
           id: string
           profile_id: string
           visited_at: string
+          rating: number | null
         }
         Insert: {
           coffee_shop_id: number
           id?: string
           profile_id: string
           visited_at?: string
+          rating?: number | null
         }
         Update: {
           coffee_shop_id?: number
           id?: string
           profile_id?: string
           visited_at?: string
+          rating?: number | null
         }
         Relationships: [
           {

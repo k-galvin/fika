@@ -1,120 +1,135 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
 import { LogVisitButton } from "../log-visit-button";
-import { toggleVisitedCafe } from "@/app/actions";
+import * as actions from "@/app/actions";
 
 jest.mock("next/cache", () => ({
   revalidatePath: jest.fn(),
 }));
 
 const mockPush = jest.fn();
-const mockRefresh = jest.fn();
-// Mock the next/navigation module
 jest.mock("next/navigation", () => ({
-  useRouter: () => ({
-    push: mockPush,
-    refresh: mockRefresh,
-  }),
+  useRouter: () => ({ push: mockPush }),
   usePathname: () => "/",
 }));
 
-// Mock the server action
+// Mock the server actions
 jest.mock("@/app/actions", () => ({
-  toggleVisitedCafe: jest.fn().mockResolvedValue({ success: true }),
+  ...jest.requireActual("@/app/actions"),
+  rateCafe: jest.fn(),
+  getUserRatingForCafe: jest.fn(),
 }));
+
+const mockedActions = actions as jest.Mocked<typeof actions>;
 
 describe("LogVisitButton", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockedActions.rateCafe.mockResolvedValue({ success: true });
+    mockedActions.getUserRatingForCafe.mockResolvedValue(null);
   });
 
-  it("renders with the correct initial state (visited)", () => {
-    render(<LogVisitButton shopId={1} isInitiallyVisited={true} />);
-    expect(screen.getByTestId("check-icon")).toBeInTheDocument();
-  });
-
-  it("renders with the correct initial state (not visited)", () => {
-    render(<LogVisitButton shopId={1} isInitiallyVisited={false} />);
-    expect(screen.getByTestId("plus-icon")).toBeInTheDocument();
-  });
-
-  it("calls the toggleVisitedCafe function when clicked (visited -> not visited)", async () => {
-    render(<LogVisitButton shopId={1} isInitiallyVisited={true} />);
-    const button = screen.getByRole("button");
-    fireEvent.click(button);
-
+  it("renders with plus icon if not visited and no rating", async () => {
+    render(<LogVisitButton shopId={1} isInitiallyVisited={false} initialRating={null} />);
     await waitFor(() => {
-      expect(toggleVisitedCafe).toHaveBeenCalledWith(1, true);
+      expect(screen.getByTestId("plus-icon")).toBeInTheDocument();
     });
   });
 
-  it("calls the toggleVisitedCafe function when clicked (not visited -> visited)", async () => {
-    render(<LogVisitButton shopId={1} isInitiallyVisited={false} />);
-    const button = screen.getByRole("button");
-    fireEvent.click(button);
-
+  it("renders with check icon if visited", async () => {
+    render(<LogVisitButton shopId={1} isInitiallyVisited={true} initialRating={null} />);
     await waitFor(() => {
-      expect(toggleVisitedCafe).toHaveBeenCalledWith(1, false);
+      expect(screen.getByTestId("check-icon")).toBeInTheDocument();
     });
   });
 
-  it("calls router.refresh() on successful toggle", async () => {
-    render(<LogVisitButton shopId={1} isInitiallyVisited={false} />);
-    const button = screen.getByRole("button");
-    fireEvent.click(button);
-
+  it("renders with check icon if rated", async () => {
+    mockedActions.getUserRatingForCafe.mockResolvedValue(4);
+    render(<LogVisitButton shopId={1} isInitiallyVisited={false} initialRating={4} />);
     await waitFor(() => {
-      expect(toggleVisitedCafe).toHaveBeenCalledWith(1, false);
-      expect(mockRefresh).toHaveBeenCalledTimes(1);
+      expect(screen.getByTestId("check-icon")).toBeInTheDocument();
     });
   });
 
-  it("redirects to login when not logged in", async () => {
-    (toggleVisitedCafe as jest.Mock).mockResolvedValueOnce({
+  it("opens rating dialog on button click", async () => {
+    render(<LogVisitButton shopId={1} isInitiallyVisited={false} initialRating={null} />);
+    const button = await screen.findByTestId("plus-icon");
+    fireEvent.click(button);
+    await waitFor(() => {
+      expect(screen.getByText("Rate your experience")).toBeInTheDocument();
+      expect(screen.getByText("Save")).toBeInTheDocument();
+      expect(screen.getByText("Cancel")).toBeInTheDocument();
+      expect(screen.getAllByTestId(/star-icon/)).toHaveLength(5);
+    });
+  });
+
+  it("calls rateCafe with correct rating on save", async () => {
+    render(<LogVisitButton shopId={1} isInitiallyVisited={false} initialRating={null} />);
+    const button = await screen.findByTestId("plus-icon");
+    fireEvent.click(button);
+
+    const stars = await screen.findAllByTestId(/star-icon/);
+    fireEvent.click(stars[3]); // Click the 4th star
+
+    const saveButton = screen.getByText("Save");
+    fireEvent.click(saveButton);
+
+    await waitFor(() => {
+      expect(mockedActions.rateCafe).toHaveBeenCalledWith(1, 4);
+    });
+  });
+
+  it("closes rating dialog on cancel", async () => {
+    render(<LogVisitButton shopId={1} isInitiallyVisited={false} initialRating={null} />);
+    const button = await screen.findByTestId("plus-icon");
+    act(() => {
+      fireEvent.click(button);
+    });
+
+    const cancelButton = await screen.findByText("Cancel");
+    act(() => {
+      fireEvent.click(cancelButton);
+    });
+
+
+    await waitFor(() => {
+      expect(screen.queryByText("Rate your experience")).not.toBeInTheDocument();
+      expect(screen.getByTestId("plus-icon")).toBeInTheDocument();
+    });
+  });
+
+  it("redirects to login when rateCafe fails with 'User not found'", async () => {
+    mockedActions.rateCafe.mockResolvedValueOnce({
       success: false,
       message: "User not found",
     });
-
-    render(<LogVisitButton shopId={1} isInitiallyVisited={false} />);
-    const button = screen.getByRole("button");
+    render(<LogVisitButton shopId={1} isInitiallyVisited={false} initialRating={null} />);
+    const button = await screen.findByTestId("plus-icon");
     fireEvent.click(button);
+
+    const stars = await screen.findAllByTestId(/star-icon/);
+    fireEvent.click(stars[0]); // Rate 1 star
+
+    const saveButton = screen.getByText("Save");
+    fireEvent.click(saveButton);
 
     await waitFor(() => {
       expect(mockPush).toHaveBeenCalledWith("/auth/login?redirect=/");
     });
   });
 
-  it("icon changes from Plus to Check on successful click (not visited -> visited)", async () => {
-    render(<LogVisitButton shopId={1} isInitiallyVisited={false} />);
-    const button = screen.getByRole("button");
+  it("shows checkmark after successfully saving a rating", async () => {
+    render(<LogVisitButton shopId={1} isInitiallyVisited={false} initialRating={null} />);
+    const button = await screen.findByTestId("plus-icon");
     fireEvent.click(button);
 
-    await waitFor(() => {
-      expect(screen.queryByTestId("plus-icon")).not.toBeInTheDocument();
-      expect(screen.getByTestId("check-icon")).toBeInTheDocument();
-    });
-  });
+    const stars = await screen.findAllByTestId(/star-icon/);
+    fireEvent.click(stars[4]); // 5 stars
 
-  it("icon changes from Check to Plus on successful click (visited -> not visited)", async () => {
-    render(<LogVisitButton shopId={1} isInitiallyVisited={true} />);
-    const button = screen.getByRole("button");
-    fireEvent.click(button);
+    const saveButton = screen.getByText("Save");
+    fireEvent.click(saveButton);
 
     await waitFor(() => {
-      expect(screen.queryByTestId("check-icon")).not.toBeInTheDocument();
-      expect(screen.getByTestId("plus-icon")).toBeInTheDocument();
-    });
-  });
-
-  it("hasVisited state updates when isInitiallyVisited prop changes", async () => {
-    const { rerender } = render(
-      <LogVisitButton shopId={1} isInitiallyVisited={false} />
-    );
-    expect(screen.getByTestId("plus-icon")).toBeInTheDocument();
-
-    rerender(<LogVisitButton shopId={1} isInitiallyVisited={true} />);
-
-    await waitFor(() => {
-      expect(screen.queryByTestId("plus-icon")).not.toBeInTheDocument();
+      expect(mockedActions.rateCafe).toHaveBeenCalledWith(1, 5);
       expect(screen.getByTestId("check-icon")).toBeInTheDocument();
     });
   });
