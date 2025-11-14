@@ -106,7 +106,7 @@ export function LogVisitButton({
                 onClick={() => setRating(star)}
                 onMouseEnter={() => setHoverRating(star)}
                 onMouseLeave={() => setHoverRating(0)}
-                fill={star <= (hoverRating || rating) ? "yellow" : "none"}
+                fill={star <= (hoverRating || rating) ? "green" : "none"}
                 stroke="currentColor"
                 data-testid={`star-icon-${star}`}
               />
