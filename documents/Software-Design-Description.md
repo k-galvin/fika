@@ -93,7 +93,7 @@ Component Diagram:
 This section details the Computer Software Components and Computer Software Units that comprise the fika application. The system is divided into logical components based on the three-tier architecture (Frontend, Backend, Database).      
 
 The Frontend CSC is composed of React components and Next.js pages which serve as the CSUs. The Backend CSC consists of service modules that interface with Supabase. The Data CSC consists of the database schemas and types.     
-### 6.3.1     
+### 6.3.1 Class Descriptions      
 The following sections provide the details of key classes (React components and Service modules) used in the fika application. These classes are selected to represent the core functionality of the discovery and logging systems.
 
 #### 6.3.1.1 Detailed Class Description: CafeMap 
@@ -121,5 +121,44 @@ The CafeService is a utility class residing in the application layer. It acts as
   * fetchAllCafes(): Returns a list of all cafes stored in the database.      
   * fetchCafeById(id): Accepts a UUID and returns the detailed metadata for a single cafe.     
   * searchCafes(filters): Accepts a FilterObject (containing boolean flags for wifi, parking, etc.) and constructs a dynamic SQL query to return matching records.     
-  * getAggregateRating(cafeId): Queries the Review table to calculate the average score for a specific cafe.    
+  * getAggregateRating(cafeId): Queries the Review table to calculate the average score for a specific cafe.
+ 
+#### 6.3.1.3 Detailed Class Description: SuggestCafeForm        
+The SuggestCafeForm class manages the interface for users to propose new cafes for the platform. It utilizes a modal dialog and integrates with Server Actions to handle data submission.    
+
+* Purpose: To collect structured data about a potential new cafe, including categorical attributes and boolean features, and submit this to the backend.
+* Fields:
+  * isOpen: Boolean (Prop) - Controls the visibility of the modal dialog.
+  * state: Object (Hook) - derived from useActionState, tracks the result message of the form submission.
+  * pending: Boolean (Hook) - derived from useFormStatus, tracks if a submission is currently in progress to disable the submit button.
+* Methods:
+  * SuggestCafeForm Render: Renders a form containing text inputs (Name, Address) and Dropdown Selects populated by Constants.public.Enums (City, Seating, Parking, Vibe, Pricing, Busyness).
+  * formAction: Binds the form submission event to the suggestCafe server action.
+  * SubmitButton: A sub-component that monitors the pending status to provide visual feedback ("Submitting...") during network requests.
+
+
+### 6.3.3 Detailed Data Structure Descriptions        
+This section details specific data structures used for storage and complex processing within the CSUs.       
+
+* GeoJSON Feature Collection: The MapView module utilizes the standard GeoJSON data structure to render cafe locations. This format is required for compatibility with the OpenStreetMaps/Leaflet libraries.
+  * Structure: A JSON object containing a "type": "FeatureCollection" and an array of "features." Each feature contains "geometry" (coordinates) and "properties" (cafe metadata like name and ID).      
+* JSONB Amenities Blob: To allow for flexible filtering without altering the database schema frequently, cafe amenities are stored in a PostgreSQL JSONB data structure within the CafeTable.
+  * Structure: {"wifi": true, "parking_lot": false, "street_parking": true, "seating_capacity": "medium"}.
+  * Purpose: This allows the CafeService to perform efficient key-value queries (e.g., amenities ->> 'wifi' = 'true') directly within the database engine.
+
+### 6.3.4 Detailed Design Diagrams      
+This section provides visual representations of the dynamic behavior and static structure of the fika system. These diagrams bridge the gap between the code specifications and the architectural overview.      
+
+#### 6.3.4.1 Sequence Diagram: Client-Side Geocoding (CafeMap)      
+This diagram details the flow of control when the CafeMap component loads the location based on the provided address.      
+<img width="555" height="594" alt="6 3 4 1" src="https://github.com/user-attachments/assets/b3f8b9ba-716c-46f4-99de-e797bedf9a3e" />
+
+#### 6.3.4.2 Sequence Diagram: Suggest Cafe Submission (Server Actions)     
+This diagram visualizes the communication flow for the SuggestCafeForm, utilizing the Next.js Server Action pattern (suggestCafe).       
+<img width="947" height="699" alt="6 3 4 2" src="https://github.com/user-attachments/assets/069744c2-0f88-4de0-941d-698fd9194495" />
+
+#### 6.3.4.3 Class Diagram: Frontend Component Structure
+This diagram shows the structural relationships (composition) between the key frontend units (CSUs). Member visibility is Public (+).       
+<img width="676" height="569" alt="6 3 4 3" src="https://github.com/user-attachments/assets/a4890bd8-f404-4f77-a363-96e878670e0f" />
+
 
