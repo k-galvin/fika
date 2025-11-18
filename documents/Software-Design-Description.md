@@ -87,3 +87,39 @@ Deployment Diagram:
 
 Component Diagram:      
 <img width="662" height="545" alt="3graph" src="https://github.com/user-attachments/assets/69ac0461-aba0-41e7-a8e0-be54226ae9cd" />
+
+
+## 6.3 Detailed CSC and CSU Descriptions Section        
+This section details the Computer Software Components and Computer Software Units that comprise the fika application. The system is divided into logical components based on the three-tier architecture (Frontend, Backend, Database).      
+
+The Frontend CSC is composed of React components and Next.js pages which serve as the CSUs. The Backend CSC consists of service modules that interface with Supabase. The Data CSC consists of the database schemas and types.     
+### 6.3.1     
+The following sections provide the details of key classes (React components and Service modules) used in the fika application. These classes are selected to represent the core functionality of the discovery and logging systems.
+
+#### 6.3.1.1 Detailed Class Description: CafeMap 
+The CafeMap class is responsible for rendering a static location map for a specific cafe within the Cafe Details Page. Due to the Next.js server-side rendering environment, this component utilizes dynamic imports to load the Leaflet library only on the client side.      
+
+* Purpose: To convert a text-based address into geographical coordinates using the Nominatim API and display a pinned marker on an interactive map.      
+* Fields (Props & State):     
+  * address: String (Prop) - The physical address of the cafe to be geocoded.    
+  * cafeName: String (Prop) - The name of the cafe used for the marker popup.
+  * coordinates: Object { lat, lon } (State) - The geocoded latitude and longitude derived from the address.
+  * loading: Boolean (State) - Tracks the status of the asynchronous geocoding request.
+  * isClient: Boolean (State) - A flag used to ensure Leaflet components only render after the component has mounted on the client.      
+* Methods:
+  * useEffect(setupMarkerIcon): Fixes Leaflet's default icon path issues by manually overriding the icon URLs for the production environment.
+  * geocodeAddress(): An asynchronous function triggered when the address prop changes. It fetches data from the OpenStreetMap Nominatim API (nominatim.openstreetmap.org) to convert the string address into coordinates.      
+  * MapContainer Render: Dynamically renders the map with a TileLayer and Marker only if coordinates are successfully resolved.
+
+#### 6.3.1.2 Detailed Class Description: CafeService       
+The CafeService is a utility class residing in the application layer. It acts as the abstraction layer between the Frontend UI and the Supabase client, handling data fetching and filtering logic.        
+
+* Purpose: To construct and execute database queries against the Supabase PostgreSQL instance, ensuring that raw database logic is decoupled from the UI components.     
+* Fields:     
+  * supabaseClient: The authenticated instance of the Supabase client used to make requests.     
+* Methods:     
+  * fetchAllCafes(): Returns a list of all cafes stored in the database.      
+  * fetchCafeById(id): Accepts a UUID and returns the detailed metadata for a single cafe.     
+  * searchCafes(filters): Accepts a FilterObject (containing boolean flags for wifi, parking, etc.) and constructs a dynamic SQL query to return matching records.     
+  * getAggregateRating(cafeId): Queries the Review table to calculate the average score for a specific cafe.    
+
