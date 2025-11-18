@@ -162,3 +162,20 @@ This diagram shows the structural relationships (composition) between the key fr
 <img width="676" height="569" alt="6 3 4 3" src="https://github.com/user-attachments/assets/a4890bd8-f404-4f77-a363-96e878670e0f" />
 
 
+## 6.4 Database Design and Description     
+The fika application utilizes a relational database implemented in PostgreSQL, hosted and managed via Supabase. The database is designed to ensure data integrity between Users, Cafes, and Reviews while allowing for flexible querying of cafe amenities.      
+
+### 6.4.1 Database Design ER Diagram      
+The Entity-Relationship diagram below depicts the schema for the fika database. It illustrates the relationships between the core entities: profiles (Users), cafes, reviews, and the join table for saved_cafes (Favorites).      
+### 6.4.2 Database Access      
+Database access is managed through the Supabase Client library, which interacts with the PostgreSQL database via the PostGREST API.      
+* Connection: The application connects using a singleton instance of the SupabaseClient initialized with the Project URL and the Public Anon Key (for public reads) or the Service Role Key (for administrative tasks, used only in secure server-side contexts).
+* Query Method: All queries are constructed using chained methods (e.g., .from('cafes').select('*').eq('wifi', true)). This abstraction prevents SQL injection attacks by sanitizing inputs before they reach the database layer.    
+* Latency Management: To ensure performance requirements (search results < 3 seconds), the cafes table is indexed on geographical coordinates and the JSONB amenities column.
+  
+### 6.4.3 Database Security       
+Security is implemented using PostgreSQL's Row Level Security (RLS) policies, managed through the Supabase dashboard.        
+
+* Public Read Access: The cafes and reviews tables have a "Enable Read Access for All" policy, allowing unauthenticated users to view content.
+* Authenticated Write Access: The reviews and saved_cafes tables have strict policies (e.g., auth.uid() = user_id). This ensures that a user can only create, edit, or delete their own reviews and can never modify data belonging to another user.
+* Environment Variables: All database connection keys are stored in environment variables (.env.local), ensuring that sensitive credentials are never committed to the version control system.     
