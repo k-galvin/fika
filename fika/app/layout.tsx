@@ -66,7 +66,7 @@ export default async function RootLayout({
             defaultTheme="light"
             disableTransitionOnChange
           >
-            <NavBar authButton={<AuthButton key={user?.id || 'logged-out'} />} />
+            <NavBar user={user} authButton={<AuthButton key={user?.id || 'logged-out'} />} />
             {children}
           </NextThemesProvider>
         </BodyWrapper>
