@@ -49,7 +49,7 @@ export function CafePhotoGallery({
   const isAdmin = userRole === "admin"; // Use userRole instead of user?.user_metadata?.role
 
   // Filter photos to only show approved ones
-  const approvedPhotos = photos.filter(photo => photo.is_approved);
+  const approvedPhotos = photos.filter((photo) => photo.is_approved);
 
   // Adjust currentIndex if it's out of bounds after filtering
   useEffect(() => {
@@ -59,7 +59,6 @@ export function CafePhotoGallery({
       setCurrentIndex(0);
     }
   }, [approvedPhotos, currentIndex]);
-
 
   const handleFileUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -82,9 +81,8 @@ export function CafePhotoGallery({
       return;
     }
 
-    const publicUrl = supabase.storage
-      .from("images")
-      .getPublicUrl(filePath).data.publicUrl;
+    const publicUrl = supabase.storage.from("images").getPublicUrl(filePath)
+      .data.publicUrl;
 
     console.log("Generated public URL:", publicUrl); // Add this line
 
@@ -119,53 +117,54 @@ export function CafePhotoGallery({
 
   const handlePrev = () => {
     setCurrentIndex(
-      (prevIndex) => (prevIndex - 1 + approvedPhotos.length) % approvedPhotos.length
+      (prevIndex) =>
+        (prevIndex - 1 + approvedPhotos.length) % approvedPhotos.length
     );
   };
 
   return (
     <div className="w-full flex flex-col gap-4">
-            <div className="flex items-center space-x-4">
-              <h2 className="text-3xl font-bold font-kate">Cafe Photos</h2>
-              {user && (
-                <Dialog open={uploadModalOpen} onOpenChange={setUploadModalOpen}>
-                  <DialogTrigger asChild>
-                    <Button variant="outline">Add Photo</Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Upload Photo</DialogTitle>
-                      <DialogDescription>
-                        Upload a photo of this cafe.
-                      </DialogDescription>
-                    </DialogHeader>
-                    <div className="grid gap-4 py-4">
-                      <Input
-                                          id="picture"
-                                          type="file"
-                                          accept="image/*"
-                                          ref={fileInputRef}
-                                          onChange={handleFileUpload}
-                                          disabled={uploading || isPending}
-                                          data-testid="file-input"
-                      />
-                    </div>
-                    <DialogFooter>
-                      <Button
-                        type="button"
-                        onClick={() => setUploadModalOpen(false)}
-                        disabled={uploading || isPending}
-                      >
-                        Cancel
-                      </Button>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
-              )}
-            </div>
+      <div className="flex items-center space-x-4">
+        <h2 className="text-3xl font-bold font-kate">Cafe Photos</h2>
+        {user && (
+          <Dialog open={uploadModalOpen} onOpenChange={setUploadModalOpen}>
+            <DialogTrigger asChild>
+              <Button variant="outline">Add Photo</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Upload Photo</DialogTitle>
+                <DialogDescription>
+                  Upload a photo of this cafe.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <Input
+                  id="picture"
+                  type="file"
+                  accept="image/*"
+                  ref={fileInputRef}
+                  onChange={handleFileUpload}
+                  disabled={uploading || isPending}
+                  data-testid="file-input"
+                />
+              </div>
+              <DialogFooter>
+                <Button
+                  type="button"
+                  onClick={() => setUploadModalOpen(false)}
+                  disabled={uploading || isPending}
+                >
+                  Cancel
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        )}
+      </div>
       {/* Photo Carousel */}
       {approvedPhotos.length > 0 ? (
-        <div className="relative w-1/3 aspect-square rounded-md overflow-hidden group">
+        <div className="relative w-full aspect-square md:w-[300px] md:h-[300px] rounded-md overflow-hidden group">
           <Image
             src={approvedPhotos[currentIndex].photo_url}
             alt={`Photo of ${shopId}`}
@@ -179,7 +178,9 @@ export function CafePhotoGallery({
             <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
               <Button
                 variant="secondary"
-                onClick={() => handleSetPrimary(approvedPhotos[currentIndex].id)}
+                onClick={() =>
+                  handleSetPrimary(approvedPhotos[currentIndex].id)
+                }
                 disabled={isPending}
               >
                 Set as Primary
@@ -210,7 +211,7 @@ export function CafePhotoGallery({
           )}
         </div>
       ) : (
-        <div className="relative w-1/3 aspect-square flex items-center justify-center bg-background border border-skeleton-brown rounded-md">
+        <div className="relative w-full aspect-square md:w-[300px] md:h-[300px] flex items-center justify-center bg-background border border-skeleton-brown rounded-md">
           <p className="text-center text-gray-500 p-4">
             No photos yet. Be the first to upload one!
           </p>

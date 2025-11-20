@@ -10,8 +10,7 @@ import {
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Button } from "./ui/button";
-import { useActionState, useState } from "react";
-import { useFormStatus } from "react-dom";
+import { useState } from "react";
 import { suggestCafe } from "@/app/actions";
 import { Constants } from "@/lib/supabase/database.types";
 import {
@@ -24,441 +23,314 @@ import {
 import { Checkbox } from "./ui/checkbox";
 
 const initialState = {
-  message: "",
+  name: "",
+  address: "",
+  description: "",
+  city: "",
+  seating: "",
+  parking: "",
+  vibe: "",
+  pricing: "",
+  busyness: "",
+  is_laptop_friendly: false,
+  has_wifi: false,
+  has_outlets: false,
+  wine_bar: false,
 };
 
-function SubmitButton() {
-  const { pending } = useFormStatus();
-
-  return (
-    <Button type="submit" aria-disabled={pending}>
-      {pending ? "Submitting..." : "Submit"}
-    </Button>
-  );
-}
-
 export function SuggestCafeForm({
-
   isOpen,
-
   onOpenChange,
-
   withDialog = true,
-
 }: {
-
   isOpen: boolean;
-
   onOpenChange: (isOpen: boolean) => void;
-
   withDialog?: boolean;
-
 }) {
+  const [formData, setFormData] = useState(initialState);
+  const [pending, setPending] = useState(false);
+  const [message, setMessage] = useState("");
 
-  const [state, formAction] = useActionState(suggestCafe, initialState);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
 
-  const [city, setCity] = useState("");
+  const handleDropdownChange = (name: string, value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
-  const [seating, setSeating] = useState("");
+  const handleCheckboxChange = (name: string, checked: boolean) => {
+    setFormData((prev) => ({
+      ...prev,
+      [name]: checked,
+    }));
+  };
 
-  const [parking, setParking] = useState("");
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setPending(true);
+    setMessage("");
 
-  const [vibe, setVibe] = useState("");
+    const data = new FormData();
+    Object.keys(formData).forEach(key => {
+      const value = formData[key as keyof typeof formData];
+      data.append(key, String(value));
+    });
 
-  const [pricing, setPricing] = useState("");
+    const result = await suggestCafe({ message: "" }, data);
+    setMessage(result.message);
+    setPending(false);
 
-  const [busyness, setBusyness] = useState("");
-
-
+    if (result.message === "Thank you for your suggestion!") {
+      setFormData(initialState);
+    }
+  };
 
   const form = (
-
     <form
-
       data-testid="suggest-form"
-
-      action={formAction}
-
+      onSubmit={handleSubmit}
       className="flex flex-col gap-4"
-
     >
-
       <Label htmlFor="name">Cafe Name</Label>
-
-      <Input id="name" name="name" required />
-
+      <Input
+        id="name"
+        name="name"
+        value={formData.name}
+        onChange={handleChange}
+        required
+      />
       <Label htmlFor="address">Address</Label>
-
-      <Input id="address" name="address" required />
-
+      <Input
+        id="address"
+        name="address"
+        value={formData.address}
+        onChange={handleChange}
+        required
+      />
       <Label htmlFor="description">Description</Label>
-
-      <Input id="description" name="description" />
-
-
+      <Input
+        id="description"
+        name="description"
+        value={formData.description}
+        onChange={handleChange}
+      />
 
       <Label htmlFor="city">City</Label>
-
       <DropdownMenu>
-
         <DropdownMenuTrigger asChild>
-
           <Button variant="outline" className="w-full mt-1 justify-start">
-
-            {city || "Select a city"}
-
+            {formData.city || "Select a city"}
           </Button>
-
         </DropdownMenuTrigger>
-
         <DropdownMenuContent>
-
-          <DropdownMenuRadioGroup value={city} onValueChange={setCity}>
-
+          <DropdownMenuRadioGroup
+            value={formData.city}
+            onValueChange={(value) => handleDropdownChange("city", value)}
+          >
             {Constants.public.Enums.Cities.map((city) => (
-
               <DropdownMenuRadioItem key={city} value={city}>
-
                 {city}
-
               </DropdownMenuRadioItem>
-
             ))}
-
           </DropdownMenuRadioGroup>
-
         </DropdownMenuContent>
-
       </DropdownMenu>
-
-      <Input type="hidden" name="city" value={city} />
-
-
 
       <Label htmlFor="seating">Seating</Label>
-
       <DropdownMenu>
-
         <DropdownMenuTrigger asChild>
-
           <Button variant="outline" className="w-full mt-1 justify-start">
-
-            {seating || "Select seating"}
-
+            {formData.seating || "Select seating"}
           </Button>
-
         </DropdownMenuTrigger>
-
         <DropdownMenuContent>
-
           <DropdownMenuRadioGroup
-
-            value={seating}
-
-            onValueChange={setSeating}
-
+            value={formData.seating}
+            onValueChange={(value) => handleDropdownChange("seating", value)}
           >
-
-            {Constants.public.Enums["Seating Availability"].map(
-
-              (seating) => (
-
-                <DropdownMenuRadioItem key={seating} value={seating}>
-
-                  {seating}
-
-                </DropdownMenuRadioItem>
-
-              )
-
-            )}
-
+            {Constants.public.Enums["Seating Availability"].map((seating) => (
+              <DropdownMenuRadioItem key={seating} value={seating}>
+                {seating}
+              </DropdownMenuRadioItem>
+            ))}
           </DropdownMenuRadioGroup>
-
         </DropdownMenuContent>
-
       </DropdownMenu>
-
-      <Input type="hidden" name="seating" value={seating} />
-
-
 
       <Label htmlFor="parking">Parking</Label>
-
       <DropdownMenu>
-
         <DropdownMenuTrigger asChild>
-
           <Button variant="outline" className="w-full mt-1 justify-start">
-
-            {parking || "Select parking"}
-
+            {formData.parking || "Select parking"}
           </Button>
-
         </DropdownMenuTrigger>
-
         <DropdownMenuContent>
-
           <DropdownMenuRadioGroup
-
-            value={parking}
-
-            onValueChange={setParking}
-
+            value={formData.parking}
+            onValueChange={(value) => handleDropdownChange("parking", value)}
           >
-
             {Constants.public.Enums["Parking Difficulty"].map((parking) => (
-
               <DropdownMenuRadioItem key={parking} value={parking}>
-
                 {parking}
-
               </DropdownMenuRadioItem>
-
             ))}
-
           </DropdownMenuRadioGroup>
-
         </DropdownMenuContent>
-
       </DropdownMenu>
-
-      <Input type="hidden" name="parking" value={parking} />
-
-
 
       <Label htmlFor="vibe">Vibe</Label>
-
       <DropdownMenu>
-
         <DropdownMenuTrigger asChild>
-
           <Button variant="outline" className="w-full mt-1 justify-start">
-
-            {vibe || "Select vibe"}
-
+            {formData.vibe || "Select vibe"}
           </Button>
-
         </DropdownMenuTrigger>
-
         <DropdownMenuContent>
-
-          <DropdownMenuRadioGroup value={vibe} onValueChange={setVibe}>
-
+          <DropdownMenuRadioGroup
+            value={formData.vibe}
+            onValueChange={(value) => handleDropdownChange("vibe", value)}
+          >
             {Constants.public.Enums.Vibe.map((vibe) => (
-
               <DropdownMenuRadioItem key={vibe} value={vibe}>
-
                 {vibe}
-
               </DropdownMenuRadioItem>
-
             ))}
-
           </DropdownMenuRadioGroup>
-
         </DropdownMenuContent>
-
       </DropdownMenu>
-
-      <Input type="hidden" name="vibe" value={vibe} />
-
-
 
       <Label htmlFor="pricing">Pricing</Label>
-
       <DropdownMenu>
-
         <DropdownMenuTrigger asChild>
-
           <Button variant="outline" className="w-full mt-1 justify-start">
-
-            {pricing || "Select pricing"}
-
+            {formData.pricing || "Select pricing"}
           </Button>
-
         </DropdownMenuTrigger>
-
         <DropdownMenuContent>
-
           <DropdownMenuRadioGroup
-
-            value={pricing}
-
-            onValueChange={setPricing}
-
+            value={formData.pricing}
+            onValueChange={(value) => handleDropdownChange("pricing", value)}
           >
-
             {Constants.public.Enums.Pricing.map((pricing) => (
-
               <DropdownMenuRadioItem key={pricing} value={pricing}>
-
                 {pricing}
-
               </DropdownMenuRadioItem>
-
             ))}
-
           </DropdownMenuRadioGroup>
-
         </DropdownMenuContent>
-
       </DropdownMenu>
-
-      <Input type="hidden" name="pricing" value={pricing} />
-
-
 
       <Label htmlFor="busyness">Busyness</Label>
-
       <DropdownMenu>
-
         <DropdownMenuTrigger asChild>
-
           <Button variant="outline" className="w-full mt-1 justify-start">
-
-            {busyness || "Select busyness"}
-
+            {formData.busyness || "Select busyness"}
           </Button>
-
         </DropdownMenuTrigger>
-
         <DropdownMenuContent>
-
           <DropdownMenuRadioGroup
-
-            value={busyness}
-
-            onValueChange={setBusyness}
-
+            value={formData.busyness}
+            onValueChange={(value) => handleDropdownChange("busyness", value)}
           >
-
             {Constants.public.Enums.Busyness.map((busyness) => (
-
               <DropdownMenuRadioItem key={busyness} value={busyness}>
-
                 {busyness}
-
               </DropdownMenuRadioItem>
-
             ))}
-
           </DropdownMenuRadioGroup>
-
         </DropdownMenuContent>
-
       </DropdownMenu>
 
-      <Input type="hidden" name="busyness" value={busyness} />
-
-
-
       <div className="grid grid-cols-2 items-center gap-x-4 gap-y-2">
-
         <div className="flex items-center space-x-2">
-
-          <Checkbox id="is_laptop_friendly" name="is_laptop_friendly" />
-
+          <Checkbox
+            id="is_laptop_friendly"
+            name="is_laptop_friendly"
+            checked={formData.is_laptop_friendly}
+            onCheckedChange={(checked) =>
+              handleCheckboxChange("is_laptop_friendly", checked as boolean)
+            }
+          />
           <Label htmlFor="is_laptop_friendly" className="ml-2">
-
             Laptop Friendly?
-
           </Label>
-
         </div>
-
         <div className="flex items-center space-x-2">
-
-          <Checkbox id="has_wifi" name="has_wifi" />
-
+          <Checkbox
+            id="has_wifi"
+            name="has_wifi"
+            checked={formData.has_wifi}
+            onCheckedChange={(checked) =>
+              handleCheckboxChange("has_wifi", checked as boolean)
+            }
+          />
           <Label htmlFor="has_wifi" className="ml-2">
-
             Wifi?
-
           </Label>
-
         </div>
-
         <div className="flex items-center space-x-2">
-
-          <Checkbox id="has_outlets" name="has_outlets" />
-
+          <Checkbox
+            id="has_outlets"
+            name="has_outlets"
+            checked={formData.has_outlets}
+            onCheckedChange={(checked) =>
+              handleCheckboxChange("has_outlets", checked as boolean)
+            }
+          />
           <Label htmlFor="has_outlets" className="ml-2">
-
             Outlets?
-
           </Label>
-
         </div>
-
         <div className="flex items-center space-x-2">
-
-          <Checkbox id="wine_bar" name="wine_bar" />
-
+          <Checkbox
+            id="wine_bar"
+            name="wine_bar"
+            checked={formData.wine_bar}
+            onCheckedChange={(checked) =>
+              handleCheckboxChange("wine_bar", checked as boolean)
+            }
+          />
           <Label htmlFor="wine_bar" className="ml-2">
-
             Wine Bar?
-
           </Label>
-
         </div>
-
       </div>
 
-
-
-      <SubmitButton />
-
+      <Button type="submit" aria-disabled={pending}>
+        {pending ? "Submitting..." : "Submit"}
+      </Button>
     </form>
-
   );
-
-
 
   if (withDialog) {
-
     return (
-
       <Dialog open={isOpen} onOpenChange={onOpenChange}>
-
         <DialogContent className="max-h-[90vh] overflow-y-auto">
-
           <DialogHeader>
-
             <DialogTitle>Suggest a Cafe</DialogTitle>
-
             <DialogDescription>
-
               Fill out the form below to suggest a new cafe for our list.
-
             </DialogDescription>
-
           </DialogHeader>
-
           {form}
-
-          {state?.message && <p>{state.message}</p>}
-
+          {message && <p>{message}</p>}
         </DialogContent>
-
       </Dialog>
-
     );
-
   }
 
-
-
   return (
-
     <>
-
       {form}
-
-      {state?.message && <p>{state.message}</p>}
-
+      {message && <p>{message}</p>}
     </>
-
   );
-
 }

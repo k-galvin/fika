@@ -120,26 +120,26 @@ export function CafeMap({ address, cafeName }: CafeMapProps) {
     };
   }, [address]);
 
+  if (!isClient) {
+    return (
+      <div className="w-full h-[400px] rounded-xl border bg-card text-card-foreground shadow flex items-center justify-center">
+        <p className="text-card-foreground">Loading map...</p>
+      </div>
+    );
+  }
+
   if (loading) {
     return (
-      <div className="w-full h-[400px] rounded-lg bg-muted flex items-center justify-center">
-        <p className="text-muted-foreground">Loading map...</p>
+      <div className="w-full h-[400px] rounded-xl border bg-card text-card-foreground shadow flex items-center justify-center">
+        <p className="text-card-foreground">Loading map...</p>
       </div>
     );
   }
 
   if (error || !coordinates) {
     return (
-      <div className="w-full h-[400px] rounded-lg bg-muted flex items-center justify-center">
-        <p className="text-muted-foreground">{error || 'Unable to load map'}</p>
-      </div>
-    );
-  }
-
-  if (!isClient) {
-    return (
-      <div className="w-full h-[400px] rounded-lg bg-muted flex items-center justify-center">
-        <p className="text-muted-foreground">Loading map...</p>
+      <div className="w-full h-[400px] rounded-xl border bg-card text-card-foreground shadow flex items-center justify-center">
+        <p className="text-card-foreground">{error || 'Unable to load map'}</p>
       </div>
     );
   }

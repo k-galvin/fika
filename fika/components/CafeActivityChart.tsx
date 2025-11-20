@@ -85,7 +85,7 @@ const CafeActivityChart: React.FC<CafeActivityChartProps> = ({ cafeId }) => {
   // 4. Render the visualization component
   return (
     <div className="cafe-activity-container w-full">
-      <h4>Cafe Activity (Last 30 Days)</h4>
+      <h2 className="text-2xl font-bold mb-4 font-kate">Cafe Activity</h2>
       <TwoLineActivityChart data={activityData} />
     </div>
   );

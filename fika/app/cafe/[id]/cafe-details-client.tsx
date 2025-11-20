@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Footer } from "@/components/footer";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -44,6 +45,11 @@ export default function CafeDetailsClient({
   const { isAfterHours, setIsAfterHours } = useTheme();
   const router = useRouter();
   const pathname = usePathname();
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   return (
     <main
@@ -51,8 +57,8 @@ export default function CafeDetailsClient({
         "min-h-screen flex flex-col items-center relative overflow-hidden"
       )}
     >
-      <div className="flex-1 w-full flex flex-col gap-8 md:gap-12 items-center p-8 max-w-4xl mx-auto">
-        <div className="flex flex-col gap-4 text-center items-center">
+      <div className="w-full flex-1 p-8">
+        <div className="flex flex-col gap-4 text-center items-center mb-8">
           <div className="flex items-center gap-8">
             <h1 className="text-5xl md:text-6xl font-bold font-kate">
               {shop.name}
@@ -85,155 +91,189 @@ export default function CafeDetailsClient({
           </div>
         </div>
 
-        <Card className="w-full">
-          <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-x-20 gap-y-8 text-lg p-6">
-            {shop.vibe && (
-              <div className="flex items-center justify-between">
-                <span className="flex items-center gap-3 font-medium md:min-w-[180px]">
-                  <Image
-                    src={isAfterHours ? "/heartDark.png" : "/heart.png"}
-                    alt="Vibe"
-                    width={60}
-                    height={60}
-                  />{" "}
-                  Vibe
-                </span>
-                <Badge className="text-lg px-3 py-1">{shop.vibe}</Badge>
+        {/* Row 1: Categories and Map */}
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-12 max-w-7xl mx-auto items-stretch">
+          <div className="flex flex-col">
+            <h2 className="text-2xl font-bold mb-4 font-kate">Categories</h2>
+            <Card className="w-full">
+              <CardContent className="grid grid-cols-1 xl:grid-cols-2 gap-x-12 gap-y-14 text-lg p-8">
+                {shop.vibe && (
+                  <div className="flex items-center justify-between">
+                    <span className="flex items-center gap-3 font-medium">
+                      <Image
+                        src={isAfterHours ? "/heartDark.png" : "/heart.png"}
+                        alt="Vibe"
+                        width={40}
+                        height={40}
+                      />
+                      Vibe
+                    </span>
+                    <Badge className="text-base px-3 py-1">{shop.vibe}</Badge>
+                  </div>
+                )}
+                {shop.pricing && (
+                  <div className="flex items-center justify-between">
+                    <span className="flex items-center gap-3 font-medium">
+                      <Image
+                        src={isAfterHours ? "/moneyDark.png" : "/money.png"}
+                        alt="Pricing"
+                        width={40}
+                        height={40}
+                      />
+                      Pricing
+                    </span>
+                    <Badge className="text-base px-3 py-1">
+                      {shop.pricing}
+                    </Badge>
+                  </div>
+                )}
+                {shop.busyness && (
+                  <div className="flex items-center justify-between">
+                    <span className="flex items-center gap-3 font-medium">
+                      <Image
+                        src={isAfterHours ? "/personDark.png" : "/person.png"}
+                        alt="Busyness"
+                        width={40}
+                        height={40}
+                      />
+                      Busyness
+                    </span>
+                    <Badge className="text-base px-3 py-1">
+                      {shop.busyness}
+                    </Badge>
+                  </div>
+                )}
+                {shop.seating && (
+                  <div className="flex items-center justify-between">
+                    <span className="flex items-center gap-3 font-medium">
+                      <Image
+                        src={isAfterHours ? "/chairDark.png" : "/chair.png"}
+                        alt="Seating"
+                        width={40}
+                        height={40}
+                      />
+                      Seating
+                    </span>
+                    <Badge className="text-base px-3 py-1">
+                      {shop.seating}
+                    </Badge>
+                  </div>
+                )}
+                {shop.parking && (
+                  <div className="flex items-center justify-between">
+                    <span className="flex items-center gap-3 font-medium">
+                      <Image
+                        src={isAfterHours ? "/carDark.png" : "/car.png"}
+                        alt="Parking"
+                        width={40}
+                        height={40}
+                      />
+                      Parking
+                    </span>
+                    <Badge className="text-base px-3 py-1">
+                      {shop.parking}
+                    </Badge>
+                  </div>
+                )}
+                <div className="flex items-center justify-between">
+                  <span className="flex items-center gap-3 font-medium">
+                    <Image
+                      src={isAfterHours ? "/wifiDark.png" : "/wifi.png"}
+                      alt="WiFi"
+                      width={40}
+                      height={40}
+                    />
+                    WiFi
+                  </span>
+                  <Badge className="text-base px-3 py-1">
+                    {shop.has_wifi ? "Yes" : "No"}
+                  </Badge>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="flex items-center gap-3 font-medium">
+                    <Image
+                      src={isAfterHours ? "/outletDark.png" : "/outlet.png"}
+                      alt="Outlets"
+                      width={40}
+                      height={40}
+                    />
+                    Outlets
+                  </span>
+                  <Badge className="text-base px-3 py-1">
+                    {shop.has_outlets ? "Yes" : "No"}
+                  </Badge>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="flex items-center gap-3 font-medium">
+                    <Image
+                      src={isAfterHours ? "/laptopDark.png" : "/laptop.png"}
+                      alt="Laptop Friendly"
+                      width={40}
+                      height={40}
+                    />
+                    Laptop Friendly
+                  </span>
+                  <Badge className="text-base px-3 py-1">
+                    {shop.is_laptop_friendly ? "Yes" : "No"}
+                  </Badge>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+          <div className="w-full flex flex-col">
+            <h2 className="text-2xl font-bold mb-4 font-kate">Location</h2>
+            {isClient && shop.address ? (
+              <>
+                <CafeMap
+                  address={shop.address}
+                  cafeName={shop.name || "Cafe"}
+                />
+                <p className="text-muted-foreground text-center">
+                  {shop.address}
+                </p>
+              </>
+            ) : (
+              <div className="w-full h-[350px] rounded-lg bg-muted flex items-center justify-center">
+                <p className="text-muted-foreground">
+                  {isClient
+                    ? "No address available for this cafe"
+                    : "Loading map..."}
+                </p>
               </div>
             )}
-            {shop.pricing && (
-              <div className="flex items-center justify-between">
-                <span className="flex items-center gap-3 font-medium md:min-w-[180px]">
-                  <Image
-                    src={isAfterHours ? "/moneyDark.png" : "/money.png"}
-                    alt="Pricing"
-                    width={60}
-                    height={60}
-                  />{" "}
-                  Pricing
-                </span>
-                <Badge className="text-lg px-3 py-1">{shop.pricing}</Badge>
-              </div>
-            )}
-            {shop.busyness && (
-              <div className="flex items-center justify-between">
-                <span className="flex items-center gap-3 font-medium md:min-w-[180px]">
-                  <Image
-                    src={isAfterHours ? "/personDark.png" : "/person.png"}
-                    alt="Busyness"
-                    width={60}
-                    height={60}
-                  />{" "}
-                  Busyness
-                </span>
-                <Badge className="text-lg px-3 py-1">{shop.busyness}</Badge>
-              </div>
-            )}
-            {shop.seating && (
-              <div className="flex items-center justify-between">
-                <span className="flex items-center gap-3 font-medium md:min-w-[180px]">
-                  <Image
-                    src={isAfterHours ? "/chairDark.png" : "/chair.png"}
-                    alt="Seating"
-                    width={60}
-                    height={60}
-                  />{" "}
-                  Seating
-                </span>
-                <Badge className="text-lg px-3 py-1">{shop.seating}</Badge>
-              </div>
-            )}
-            {shop.parking && (
-              <div className="flex items-center justify-between">
-                <span className="flex items-center gap-3 font-medium md:min-w-[180px]">
-                  <Image
-                    src={isAfterHours ? "/carDark.png" : "/car.png"}
-                    alt="Parking"
-                    width={60}
-                    height={60}
-                  />{" "}
-                  Parking
-                </span>
-                <Badge className="text-lg px-3 py-1">{shop.parking}</Badge>
-              </div>
-            )}
-
-            <div className="flex items-center justify-between">
-              <span className="flex items-center gap-3 font-medium md:min-w-[180px]">
-                <Image
-                  src={isAfterHours ? "/wifiDark.png" : "/wifi.png"}
-                  alt="WiFi"
-                  width={60}
-                  height={60}
-                />{" "}
-                WiFi
-              </span>
-              <Badge className="text-lg px-3 py-1">
-                {shop.has_wifi ? "Yes" : "No"}
-              </Badge>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="flex items-center gap-3 font-medium md:min-w-[180px]">
-                <Image
-                  src={isAfterHours ? "/outletDark.png" : "/outlet.png"}
-                  alt="Outlets"
-                  width={60}
-                  height={60}
-                />{" "}
-                Outlets
-              </span>
-              <Badge className="text-lg px-3 py-1">
-                {shop.has_outlets ? "Yes" : "No"}
-              </Badge>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="flex items-center gap-3 font-medium md:min-w-[180px]">
-                <Image
-                  src={isAfterHours ? "/laptopDark.png" : "/laptop.png"}
-                  alt="Laptop Friendly"
-                  width={60}
-                  height={60}
-                />{" "}
-                Laptop Friendly
-              </span>
-              <Badge className="text-lg px-3 py-1">
-                {shop.is_laptop_friendly ? "Yes" : "No"}
-              </Badge>
-            </div>
-          </CardContent>
-        </Card>
-
-        <div className="w-full">
-          <h2 className="text-2xl font-bold mb-4 font-kate">Location</h2>
-          {shop.address ? (
-            <>
-              <CafeMap address={shop.address} cafeName={shop.name || "Cafe"} />
-              <p className="text-muted-foreground mt-2 text-center">
-                {shop.address}
-              </p>
-            </>
-          ) : (
-            <div className="w-full h-[400px] rounded-lg bg-muted flex items-center justify-center">
-              <p className="text-muted-foreground">
-                No address available for this cafe
-              </p>
-            </div>
-          )}
+          </div>
         </div>
 
-        <UpdateForm shopId={shop.id} />
-        <CafeActivityChart cafeId={shop.id} />
+        {/* Row 2: Gallery and Graph */}
+        <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] gap-12 max-w-7xl mx-auto items-stretch mt-12">
+          <div className="flex flex-col md:h-[300px]">
+            <CafePhotoGallery
+              shopId={shop.id}
+              photos={shop.shop_photos}
+              user={user}
+              userRole={userRole}
+            />
+          </div>
+          <div className="flex flex-col gap-8">
+            <div className="h-[300px]">
+              <CafeActivityChart cafeId={shop.id} />
+            </div>
+          </div>
+        </div>
 
-        {/* New Photo Gallery Component */}
-        <CafePhotoGallery shopId={shop.id} photos={shop.shop_photos} user={user} userRole={userRole} />
-
-        <div className="w-full relative h-64 md:h-80">
+        {/* Row 3: Cafe Exterior Photo */}
+        <div className="w-full relative h-64 md:h-80 max-w-7xl mx-auto mt-24">
           <Image
             src={isAfterHours ? "/wineBarExterior.png" : "/cafeExterior.png"}
             alt="Cafe exterior"
             fill
             className="object-contain"
           />
+        </div>
+
+        {/* Row 4: Update Form */}
+        <div className="grid grid-cols-1 max-w-7xl mx-auto mt-2">
+          <UpdateForm shopId={shop.id} />
         </div>
       </div>
       <Footer

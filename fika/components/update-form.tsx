@@ -74,7 +74,7 @@ export function UpdateForm({ shopId }: { shopId: number }) {
   return (
     <>
       {/* button to open up the form */}
-      <Button variant="outline" onClick={() => setIsOpen(true)}>
+      <Button variant="outline" onClick={() => setIsOpen(true)} className="mx-auto w-fit">
         Update Cafe Info
       </Button>
 
