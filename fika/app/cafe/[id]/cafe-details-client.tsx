@@ -273,7 +273,7 @@ export default function CafeDetailsClient({
 
         {/* Row 4: Update Form */}
         <div className="grid grid-cols-1 max-w-7xl mx-auto mt-2">
-          <UpdateForm shopId={shop.id} />
+          <UpdateForm shopId={shop.id} user={user} />
         </div>
       </div>
       <Footer

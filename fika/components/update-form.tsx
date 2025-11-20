@@ -17,13 +17,32 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-
-export function UpdateForm({ shopId }: { shopId: number }) {
+import { User } from "@supabase/supabase-js";
+import { useRouter, usePathname } from "next/navigation";
+export function UpdateForm({
+  shopId,
+  user,
+}: {
+  shopId: number;
+  user: User | null;
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const [updates, setUpdates] = useState([
     { field_name: "", suggested_value: "" },
   ]);
   const [showPopup, setShowPopup] = useState(false);
+
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const handleOpenDialog = () => {
+    if (!user) {
+      router.push(`/auth/login?redirect=${pathname}`);
+      setIsOpen(false);
+    } else {
+      setIsOpen(true);
+    }
+  };
 
   const handleChange = (index: number, name: string, value: string) => {
     setUpdates((prev) =>
@@ -74,7 +93,11 @@ export function UpdateForm({ shopId }: { shopId: number }) {
   return (
     <>
       {/* button to open up the form */}
-      <Button variant="outline" onClick={() => setIsOpen(true)} className="mx-auto w-fit">
+      <Button
+        variant="outline"
+        onClick={handleOpenDialog}
+        className="mx-auto w-fit"
+      >
         Update Cafe Info
       </Button>
 

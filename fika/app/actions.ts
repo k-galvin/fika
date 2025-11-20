@@ -84,7 +84,7 @@ export async function suggestCafe(
   const missingFields = [];
   for (const [key, value] of Object.entries(requiredFields)) {
     if (!value || String(value).trim() === "") {
-      missingFields.push(key.replace(/_/g, ' '));
+      missingFields.push(key.replace(/_/g, " "));
     }
   }
 
@@ -383,7 +383,8 @@ export async function hasUserVisitedCafe(cafeId: number): Promise<boolean> {
     .eq("coffee_shop_id", cafeId)
     .single();
 
-  if (error && error.code !== "PGRST116") { // PGRST116 means no rows found
+  if (error && error.code !== "PGRST116") {
+    // PGRST116 means no rows found
     return false;
   }
 
@@ -425,7 +426,6 @@ export async function logout() {
   revalidatePath("/discover");
 }
 
-
 export async function logVisit(
   cafeId: number
 ): Promise<{ success: boolean; message?: string }> {
@@ -443,10 +443,9 @@ export async function logVisit(
     coffee_shop_id: cafeId,
   };
 
-  const { error } = await supabase.from("user_visits").upsert(
-    upsertData,
-    { onConflict: "profile_id,coffee_shop_id" }
-  );
+  const { error } = await supabase
+    .from("user_visits")
+    .upsert(upsertData, { onConflict: "profile_id,coffee_shop_id" });
 
   if (error) {
     console.error("logVisit: Supabase operation error:", error); // Verbose log
@@ -484,10 +483,9 @@ export async function rateCafe(
     rating: rating,
   };
 
-  const { error } = await supabase.from("user_visits").upsert(
-    upsertData,
-    { onConflict: "profile_id,coffee_shop_id" }
-  );
+  const { error } = await supabase
+    .from("user_visits")
+    .upsert(upsertData, { onConflict: "profile_id,coffee_shop_id" });
 
   if (error) {
     console.error("rateCafe: Supabase operation error:", error); // Verbose log
@@ -525,7 +523,6 @@ export async function unlogVisit(
   revalidatePath("/profile");
   return { success: true };
 }
-
 
 // --- Updating Cafes Info ---
 
@@ -906,6 +903,19 @@ export async function getCafeUpdates() {
   });
 }
 
+// Helper to parse suggested_value to the correct type
+function parseSuggestedValue(fieldName: string, suggestedValue: string) {
+  switch (fieldName) {
+    case "WiFi":
+    case "Outlets":
+    case "Laptop Friendly":
+    case "Wine Bar":
+      return suggestedValue === "Yes";
+    default:
+      return suggestedValue;
+  }
+}
+
 export async function approveUpdateAndDenyOthers(
   updateId: number,
   otherUpdateIds: number[]
@@ -926,11 +936,39 @@ export async function approveUpdateAndDenyOthers(
     console.error("Error fetching update for approval:", fetchError?.message);
     return { success: false, message: "Update not found." };
   }
+  // Map user-friendly field names to actual database column names
+  const dbColumnMap: { [key: string]: string } = {
+    Vibe: "vibe",
+    Pricing: "pricing",
+    Busyness: "busyness",
+    Seating: "seating",
+    Parking: "parking",
+    WiFi: "has_wifi",
+    Outlets: "has_outlets",
+    "Laptop Friendly": "is_laptop_friendly",
+    "Wine Bar": "wine_bar",
+  };
+
+  const dbColumnName =
+    dbColumnMap[update.field_name] ||
+    update.field_name.toLowerCase().replace(/\s/g, "_"); // Fallback for other fields if not explicitly mapped.
+
+  // Parse the suggested value to its correct type
+  const parsedValue = parseSuggestedValue(
+    update.field_name,
+    update.suggested_value
+  );
+  console.log("Parsed value for update:", {
+    originalFieldName: update.field_name,
+    dbColumnName,
+    suggestedValue: update.suggested_value,
+    parsedValue,
+  });
 
   // 2. Apply the update to the coffee_shops table
   const { error: updateError } = await supabase
     .from("coffee_shops")
-    .update({ [update.field_name]: update.suggested_value })
+    .update({ [dbColumnName]: parsedValue })
     .eq("id", update.cafe_id);
 
   if (updateError) {
@@ -980,7 +1018,10 @@ export async function denyUpdates(updateIds: number[]) {
   return { success: true };
 }
 
-export async function checkUserLoggedIn(): Promise<{ success: boolean; message?: string }> {
+export async function checkUserLoggedIn(): Promise<{
+  success: boolean;
+  message?: string;
+}> {
   const supabase = await createClient();
   const {
     data: { user },
