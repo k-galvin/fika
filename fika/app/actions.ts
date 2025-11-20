@@ -782,6 +782,97 @@ export async function denyPhoto(
   return { success: true };
 }
 
+export async function sendFriendRequest(friendId: string) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { success: false, message: "You must be logged in to send a friend request." };
+  }
+
+  if (user.id === friendId) {
+    return { success: false, message: "You cannot send a friend request to yourself." };
+  }
+
+  // Check if a request already exists to prevent duplicates or conflicting states
+  const { data: existingFriendship, error: existingError } = await supabase
+    .from("friendships")
+    .select("status")
+    .or(
+      `and(user_id.eq.${user.id},friend_id.eq.${friendId}),and(user_id.eq.${friendId},friend_id.eq.${user.id})`
+    )
+    .maybeSingle();
+
+  if (existingError && existingError.code !== "PGRST116") { // PGRST116 is 'no rows found'
+    console.error("Error checking existing friendship:", existingError.message);
+    return { success: false, message: "Error checking existing friendship." };
+  }
+
+  if (existingFriendship) {
+    if (existingFriendship.status === "pending") {
+      return { success: false, message: "Friend request already pending." };
+    }
+    if (existingFriendship.status === "friends") {
+      return { success: false, message: "You are already friends with this user." };
+    }
+    if (existingFriendship.status === "denied") {
+        // If a previous request was denied, allow a new one to be sent.
+        // First delete the old denied request to allow a new one to be inserted.
+        const { error: deleteError } = await supabase
+            .from("friendships")
+            .delete()
+            .or(
+                `and(user_id.eq.${user.id},friend_id.eq.${friendId}),and(user_id.eq.${friendId},friend_id.eq.${user.id})`
+            );
+
+        if (deleteError) {
+            console.error("Error deleting old denied request:", deleteError.message);
+            return { success: false, message: "Error resending request." };
+        }
+    }
+  }
+
+  const { error } = await supabase
+    .from("friendships")
+    .insert([{ user_id: user.id, friend_id: friendId, status: "pending" }]);
+
+  if (error) {
+    console.error("Error sending friend request:", error.message);
+    return { success: false, message: error.message };
+  }
+
+  revalidatePath("/discover");
+  revalidatePath("/friends");
+  return { success: true, message: "Friend request sent." };
+}
+
+export async function unsendFriendRequest(friendId: string) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { success: false, message: "You must be logged in to unsend a friend request." };
+  }
+
+  const { error } = await supabase
+    .from("friendships")
+    .delete()
+    .match({ user_id: user.id, friend_id: friendId, status: "pending" });
+
+  if (error) {
+    console.error("Error unsending friend request:", error.message);
+    return { success: false, message: error.message };
+  }
+
+  revalidatePath("/discover");
+  revalidatePath("/friends");
+  return { success: true, message: "Friend request unsent." };
+}
+
 // --- Friend Request Actions ---
 
 export async function acceptFriendRequest(requestId: string) {

@@ -10,6 +10,8 @@ import {
   acceptFriendRequest,
   denyFriendRequest,
   unfriendUser,
+  sendFriendRequest,
+  unsendFriendRequest,
 } from "@/app/actions";
 
 interface Profile {
@@ -77,74 +79,90 @@ export function FindFriends() {
 
   const [friendships, setFriendships] = useState<Record<string, string>>({});
 
-  const addFriend = async (friendId: string) => {
+  const addFriend = async (friendId: string, friendUsername: string) => {
     const {
       data: { user },
     } = await supabase.auth.getUser();
     if (!user) {
+      console.error("User not logged in.");
       return;
     }
 
-    const { data: existing } = await supabase
-      .from("friendships")
-      .select("*")
-      .or(
-        `and(user_id.eq.${user.id},friend_id.eq.${friendId}),and(user_id.eq.${friendId},friend_id.eq.${user.id})`
-      )
-      .maybeSingle();
+    // Call the server action
+    const result = await sendFriendRequest(friendId);
 
-    if (existing && existing.status === "denied") {
-      return;
-    }
-
-    const { error } = await supabase
-      .from("friendships")
-      .insert([{ user_id: user.id, friend_id: friendId, status: "pending" }]);
-
-    if (error) {
-      console.error("Error adding friend:", error);
-    } else {
+    if (result.success) {
       setFriendships((prev) => ({ ...prev, [friendId]: "pending" }));
+      fetchPendingRequests(); // Call to re-fetch all pending requests
+    } else {
+      console.error("Error adding friend:", result.message);
     }
   };
 
   const [incomingRequests, setIncomingRequests] = useState<FriendRequest[]>([]);
+  const [outgoingRequests, setOutgoingRequests] = useState<FriendRequest[]>([]);
 
-  useEffect(() => {
-    const fetchIncomingRequests = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (!user) return;
+  const fetchPendingRequests = async () => {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return;
 
-      const { data, error } = await supabase
-        .from("friendships")
-        .select(
-          `
+    // Fetch Incoming Requests
+    const { data: incomingData, error: incomingError } = await supabase
+      .from("friendships")
+      .select(
+        `
         user_id,
         status,
         profiles:user_id (id, username),
         friend:friend_id (id, username)
       `
-        )
-        .or(`user_id.eq.${user.id},friend_id.eq.${user.id}`)
-        .eq("status", "pending");
+      )
+      .eq("friend_id", user.id)
+      .eq("status", "pending");
 
-      if (error) {
-        console.error("Error fetching incoming requests:", error);
-      } else {
-        const flattened =
-          data?.map((d) => ({
-            ...d,
-            profiles: Array.isArray(d.profiles) ? d.profiles[0] : d.profiles,
-            friend: Array.isArray(d.friend) ? d.friend[0] : d.friend,
-          })) ?? [];
+    if (incomingError) {
+      console.error("Error fetching incoming requests:", incomingError);
+    } else {
+      const flattened =
+        incomingData?.map((d) => ({
+          ...d,
+          profiles: Array.isArray(d.profiles) ? d.profiles[0] : d.profiles,
+          friend: Array.isArray(d.friend) ? d.friend[0] : d.friend,
+        })) ?? [];
+      setIncomingRequests(flattened);
+    }
 
-        setIncomingRequests(flattened);
-      }
-    };
+    // Fetch Outgoing Requests
+    const { data: outgoingData, error: outgoingError } = await supabase
+      .from("friendships")
+      .select(
+        `
+        user_id,
+        status,
+        profiles:user_id (id, username),
+        friend:friend_id (id, username)
+      `
+      )
+      .eq("user_id", user.id) // Only outgoing
+      .eq("status", "pending");
 
-    fetchIncomingRequests();
+    if (outgoingError) {
+      console.error("Error fetching outgoing requests:", outgoingError);
+    } else {
+      const flattened =
+        outgoingData?.map((d) => ({
+          ...d,
+          profiles: Array.isArray(d.profiles) ? d.profiles[0] : d.profiles,
+          friend: Array.isArray(d.friend) ? d.friend[0] : d.friend,
+        })) ?? [];
+      setOutgoingRequests(flattened);
+    }
+  };
+
+  useEffect(() => {
+    fetchPendingRequests();
   }, [supabase]);
 
   useEffect(() => {
@@ -233,6 +251,45 @@ export function FindFriends() {
       <CardContent>
         <SearchBar placeholder="Search for friends..." />
 
+        {loading && <p className="mt-3 text-sm text-gray-500">Searching...</p>}
+
+        {!loading && results.length > 0 && (
+          <ul className="mt-4 space-y-2">
+            {results.map((user) => (
+              <li
+                key={user.id}
+                className="flex items-center justify-between gap-3 border rounded-lg p-2 hover:bg-gray-50 transition"
+              >
+                <div className="flex items-center gap-3">
+                  <div>
+                    <p className="font-medium">{user.username}</p>
+                    {user.username && (
+                      <p className="text-sm text-gray-500">@{user.username}</p>
+                    )}
+                  </div>
+                </div>
+                <Button
+                  onClick={() => addFriend(user.id, user.username)}
+                  disabled={
+                    friendships[user.id] === "pending" ||
+                    friendships[user.id] === "friends"
+                  }
+                >
+                  {friendships[user.id] === "pending"
+                    ? "Request Sent"
+                    : friendships[user.id] === "friends"
+                    ? "Friends"
+                    : "Add Friend"}
+                </Button>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {!loading && results.length === 0 && searchQuery.length >= 2 && (
+          <p className="mt-3 text-sm text-gray-500">No users found.</p>
+        )}
+
         {/* Friend Requests */}
         {incomingRequests.length > 0 && (
           <div className="mt-4 border-t border-gray-200 pt-4">
@@ -300,43 +357,56 @@ export function FindFriends() {
           </div>
         )}
 
-        {loading && <p className="mt-3 text-sm text-gray-500">Searching...</p>}
-
-        {!loading && results.length > 0 && (
-          <ul className="mt-4 space-y-2">
-            {results.map((user) => (
-              <li
-                key={user.id}
-                className="flex items-center justify-between gap-3 border rounded-lg p-2 hover:bg-gray-50 transition"
-              >
-                <div className="flex items-center gap-3">
-                  <div>
-                    <p className="font-medium">{user.username}</p>
-                    {user.username && (
-                      <p className="text-sm text-gray-500">@{user.username}</p>
-                    )}
-                  </div>
-                </div>
-                <Button
-                  onClick={() => addFriend(user.id)}
-                  disabled={
-                    friendships[user.id] === "pending" ||
-                    friendships[user.id] === "friends"
-                  }
+        {/* Requests Sent */}
+        {outgoingRequests.length > 0 && (
+          <div className="mt-4 border-t border-gray-200 pt-4">
+            <h3 className="text-sm font-semibold text-gray-700 mb-2">
+              Requests Sent
+            </h3>
+            <ul className="space-y-2">
+              {outgoingRequests.map((req) => (
+                <li
+                  key={req.friend?.id || req.user_id}
+                  className="flex items-center justify-between border rounded-lg p-2 hover:bg-gray-50 transition"
                 >
-                  {friendships[user.id] === "pending"
-                    ? "Request Sent"
-                    : friendships[user.id] === "friends"
-                    ? "Friends"
-                    : "Add Friend"}
-                </Button>
-              </li>
-            ))}
-          </ul>
-        )}
+                  <p className="text-sm">
+                    @{req.friend?.username || "Unknown"}
+                  </p>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={async () => {
+                      // We need the actual friendId, which is req.friend.id
+                      const friendToUnsendId = req.friend?.id;
+                      if (!friendToUnsendId) {
+                        console.error("Could not find friend ID to unsend.");
+                        return;
+                      }
 
-        {!loading && results.length === 0 && searchQuery.length >= 2 && (
-          <p className="mt-3 text-sm text-gray-500">No users found.</p>
+                      const result = await unsendFriendRequest(
+                        friendToUnsendId
+                      );
+
+                      if (result.success) {
+                        setOutgoingRequests((prev) =>
+                          prev.filter((r) => r.friend?.id !== friendToUnsendId)
+                        );
+                        setFriendships((prev) => {
+                          const copy = { ...prev };
+                          delete copy[friendToUnsendId];
+                          return copy;
+                        });
+                      } else {
+                        console.error(result.message);
+                      }
+                    }}
+                  >
+                    Unsend
+                  </Button>
+                </li>
+              ))}
+            </ul>
+          </div>
         )}
 
         {/* Friends List */}

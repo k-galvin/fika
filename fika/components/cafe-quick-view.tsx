@@ -30,7 +30,7 @@ export function CafeQuickView({
     : "/hotLatte.png";
 
   return (
-    <Link href={`/cafe/${shop.id}`} className="block w-full h-full">
+    <Link href={`/cafe/${shop.id}`} className="block w-full h-full max-w-[320px]">
       <Card className="w-full h-full flex flex-col relative group hover:shadow-lg transition-shadow duration-200 ease-in-out">
         <div className="flex justify-between items-center p-4 pl-6 pr-[1.1rem]">
           <h2 className="font-kate font-semibold leading-none tracking-tight text-lg">
