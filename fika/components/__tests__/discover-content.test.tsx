@@ -11,7 +11,14 @@ jest.mock("@/app/theme-context", () => ({
 const createMockCoffeeShop = (id: number): CoffeeShop => ({
   id,
   name: `Cafe ${id}`,
-  shop_photos: [{ photo_url: `https://example.com/cafe${id}.jpg` }],
+  shop_photos: [
+    {
+      photo_url: `https://example.com/cafe${id}.jpg`,
+      id: 0,
+      is_primary: null,
+      is_approved: null,
+    },
+  ],
   busyness: "Medium",
   city: "Los Angeles",
   has_outlets: true,
@@ -90,11 +97,7 @@ jest.mock("@/lib/supabase/client", () => ({
   })),
 }));
 
-import * as actions from "@/app/actions";
-
 jest.mock("@/app/actions");
-
-const mockedActions = actions as jest.Mocked<typeof actions>;
 
 // Mock Supabase database types
 jest.mock("@/lib/supabase/database.types", () => ({
@@ -113,8 +116,6 @@ jest.mock("@/lib/supabase/database.types", () => ({
 }));
 
 import { User } from "@supabase/supabase-js";
-
-
 
 describe("DiscoverContent", () => {
   const mockUser: User = { id: "user-1" } as User;

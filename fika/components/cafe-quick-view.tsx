@@ -22,9 +22,7 @@ export function CafeQuickView({
   const primaryPhoto = shop.shop_photos?.find(
     (photo) => photo.is_primary && photo.is_approved
   );
-  const approvedPhotos = shop.shop_photos?.filter(
-    (photo) => photo.is_approved
-  );
+  const approvedPhotos = shop.shop_photos?.filter((photo) => photo.is_approved);
 
   const imageUrl = primaryPhoto
     ? primaryPhoto.photo_url
@@ -42,6 +40,7 @@ export function CafeQuickView({
           <LogVisitButton
             shopId={shop.id}
             isInitiallyVisited={isInitiallyVisited}
+            initialRating={null}
           />
           <SaveButton shopId={shop.id} isInitiallySaved={isInitiallySaved} />
         </div>

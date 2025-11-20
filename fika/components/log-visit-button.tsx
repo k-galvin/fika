@@ -65,7 +65,7 @@ export function LogVisitButton({
           setIsRating(false); // Close on other errors
         }
       }
-    } catch (error) {
+    } catch {
       setIsRating(false); // Close on unexpected errors
     } finally {
       setIsLogging(false);
