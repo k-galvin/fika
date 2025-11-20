@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { CafeQuickView } from "../cafe-quick-view";
 import { CoffeeShop } from "@/lib/types";
 import { useTheme } from "@/app/theme-context";
@@ -45,14 +46,38 @@ jest.mock("@/app/theme-context", () => ({
   useTheme: jest.fn(),
 }));
 
-// Mock the next/navigation module
+const mockPush = jest.fn();
+const mockRefresh = jest.fn();
+
+// Mock the useRouter hook directly
 jest.mock("next/navigation", () => ({
+  ...jest.requireActual("next/navigation"), // Use actual module for other exports like usePathname
   useRouter: () => ({
-    push: jest.fn(),
-    refresh: jest.fn(),
+    push: mockPush,
+    refresh: mockRefresh,
   }),
-  usePathname: () => "/",
+  usePathname: () => "/", // Keep usePathname mock if needed
 }));
+
+// Mock next/link to ensure clicks on Link components trigger mockPush
+jest.mock("next/link", () => {
+  // Directly return a named functional component
+  const Link = ({ children, href }) => {
+    return (
+      <a
+        href={href}
+        onClick={(e) => {
+          e.preventDefault(); // Prevent default link behavior
+          mockPush(href); // Call our mocked router push
+        }}
+      >
+        {children}
+      </a>
+    );
+  };
+  Link.displayName = 'Link'; // Set display name
+  return Link; // Return the named component
+});
 
 // Mock the Supabase client
 jest.mock("@/lib/supabase/client", () => ({
@@ -78,6 +103,11 @@ jest.mock("@/app/actions", () => ({
 }));
 
 describe("CafeQuickView", () => {
+  beforeEach(() => {
+    mockPush.mockClear();
+    mockRefresh.mockClear();
+    // Clear other mocks if they are also jest.fn() defined outside and used across tests
+  });
   it("renders cafe name and photo", () => {
     (useTheme as jest.Mock).mockReturnValue({ isAfterHours: false });
     render(
@@ -94,7 +124,7 @@ describe("CafeQuickView", () => {
     expect(image).toHaveAttribute("src");
   });
 
-  it("navigates to the correct cafe page on button click", () => {
+  it("navigates to the correct cafe page on card click", async () => {
     (useTheme as jest.Mock).mockReturnValue({ isAfterHours: false });
     render(
       <CafeQuickView
@@ -105,8 +135,15 @@ describe("CafeQuickView", () => {
       />
     );
 
-    const viewDetailsButton = screen.getByText("View Details");
-    expect(viewDetailsButton.closest("a")).toHaveAttribute("href", "/cafe/1");
+    // Find the Link wrapping the entire card
+    const cardLink = screen.getByRole("link", { name: /fika cafe/i });
+    expect(cardLink).toHaveAttribute("href", "/cafe/1");
+
+    // Simulate a click on the link
+    await userEvent.click(cardLink);
+
+    // Assert that mockPush was called
+    expect(mockPush).toHaveBeenCalledWith("/cafe/1");
   });
 
   it("renders log visit and save buttons when a user is provided", () => {

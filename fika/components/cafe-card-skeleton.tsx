@@ -19,7 +19,6 @@ const cardSkeletonVariants = cva("w-full flex flex-col relative", {
 // They do not need to change between 'small' and 'large' variants.
 const titleSkeletonClass = "h-5 w-3/4";
 const iconSkeletonClass = "h-6 w-6 rounded-full";
-const buttonSkeletonClass = "h-9 w-full";
 
 // The only difference between sizes is the min-width on the image
 // to work around the Suspense rendering issue.
@@ -39,9 +38,17 @@ export interface CafeCardSkeletonProps
   extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof cardSkeletonVariants> {}
 
-export function CafeCardSkeleton({ className, size, ...props }: CafeCardSkeletonProps) {
+export function CafeCardSkeleton({
+  className,
+  size,
+  ...props
+}: CafeCardSkeletonProps) {
   return (
-    <Card role="figure" className={cn(cardSkeletonVariants({ size, className }))} {...props}>
+    <Card
+      role="figure"
+      className={cn(cardSkeletonVariants({ size, className }))}
+      {...props}
+    >
       <div className="flex justify-between items-center p-4 pl-6 pr-[1.1rem]">
         <Skeleton className={titleSkeletonClass} />
         <div className="flex items-center gap-2">
@@ -49,9 +56,9 @@ export function CafeCardSkeleton({ className, size, ...props }: CafeCardSkeleton
           <Skeleton className={iconSkeletonClass} />
         </div>
       </div>
-      <CardContent className="flex-grow flex flex-col justify-between gap-4">
+      <div className="flex-grow"></div> {/* Flexible spacer added */}
+      <CardContent className="px-4 pb-4">
         <Skeleton className={cn(imageSkeletonVariants({ size }))} />
-        <Skeleton className={buttonSkeletonClass} />
       </CardContent>
     </Card>
   );

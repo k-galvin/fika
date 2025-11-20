@@ -31,7 +31,9 @@ export function SaveButton({
     setIsSaved(isInitiallySaved);
   }, [isInitiallySaved]);
 
-  const handleClick = async () => {
+  const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    e.preventDefault();
     if (isLoading) return;
     setIsLoading(true);
 

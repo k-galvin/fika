@@ -1,6 +1,5 @@
 import { CoffeeShop } from "@/lib/types";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "./ui/button";
 import Link from "next/link";
 import Image from "next/image";
 import { LogVisitButton } from "./log-visit-button";
@@ -31,33 +30,33 @@ export function CafeQuickView({
     : "/hotLatte.png";
 
   return (
-    <Card className="w-full flex flex-col relative">
-      <div className="flex justify-between items-center p-4 pl-6 pr-[1.1rem]">
-        <h2 className="font-kate font-semibold leading-none tracking-tight text-lg">
-          {shop.name}
-        </h2>
-        <div className="flex items-center gap-2">
-          <LogVisitButton
-            shopId={shop.id}
-            isInitiallyVisited={isInitiallyVisited}
-            initialRating={null}
-          />
-          <SaveButton shopId={shop.id} isInitiallySaved={isInitiallySaved} />
+    <Link href={`/cafe/${shop.id}`} className="block w-full h-full">
+      <Card className="w-full h-full flex flex-col relative group hover:shadow-lg transition-shadow duration-200 ease-in-out">
+        <div className="flex justify-between items-center p-4 pl-6 pr-[1.1rem]">
+          <h2 className="font-kate font-semibold leading-none tracking-tight text-lg">
+            {shop.name}
+          </h2>
+          <div className="flex items-center gap-2">
+            <LogVisitButton
+              shopId={shop.id}
+              isInitiallyVisited={isInitiallyVisited}
+              initialRating={null}
+            />
+            <SaveButton shopId={shop.id} isInitiallySaved={isInitiallySaved} />
+          </div>
         </div>
-      </div>
-      <CardContent className="flex-grow flex flex-col justify-between gap-4">
-        <Image
-          src={imageUrl}
-          alt={shop.name || "No name found"}
-          width={300}
-          height={300}
-          priority
-          className="w-full aspect-square object-cover rounded-md"
-        />
-        <Button asChild className="w-full uppercase">
-          <Link href={`/cafe/${shop.id}`}>View Details</Link>
-        </Button>
-      </CardContent>
-    </Card>
+        <div className="flex-grow"></div>
+        <CardContent className="px-4 pb-4">
+          <Image
+            src={imageUrl}
+            alt={shop.name || "No name found"}
+            width={300}
+            height={300}
+            priority
+            className="w-full aspect-square object-cover rounded-md"
+          />
+        </CardContent>
+      </Card>
+    </Link>
   );
 }

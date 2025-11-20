@@ -70,7 +70,7 @@ export function ProfileCafes({
         {activeTab === "visited" ? (
           <div>
             {visitedCafes && visitedCafes.length > 0 ? (
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {visitedCafes.map((visitedCafe: UserVisit) => {
                   const cafeName =
                     visitedCafe.coffee_shops?.name || "Unknown Cafe";
@@ -129,7 +129,7 @@ export function ProfileCafes({
         ) : (
           <div>
             {savedCafes && savedCafes.length > 0 ? (
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {savedCafes.map((savedCafe: UserSavedCafe) => {
                   const cafeName =
                     savedCafe.coffee_shops?.name || "Unknown Cafe";

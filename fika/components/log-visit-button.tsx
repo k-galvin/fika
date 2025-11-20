@@ -45,7 +45,9 @@ export function LogVisitButton({
     setRating(initialRating || 0);
   }, [isInitiallyVisited, initialRating]);
 
-  const handleButtonClick = async () => {
+  const handleButtonClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    e.preventDefault();
     if (hasVisited) {
       // If already visited, unlog the visit
       setIsLogging(true);
@@ -162,7 +164,11 @@ export function LogVisitButton({
               <Star
                 key={star}
                 className="h-8 w-8 cursor-pointer"
-                onClick={() => setRating(star)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  setRating(star);
+                }}
                 onMouseEnter={() => setHoverRating(star)}
                 onMouseLeave={() => setHoverRating(0)}
                 fill={star <= (hoverRating || rating) ? "green" : "none"}
@@ -172,10 +178,24 @@ export function LogVisitButton({
             ))}
           </div>
           <DialogFooter>
-            <Button variant="ghost" onClick={handleCancelRating}>
+            <Button
+              variant="ghost"
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                handleCancelRating();
+              }}
+            >
               Cancel
             </Button>
-            <Button onClick={handleSaveRating} disabled={isLogging}>
+            <Button
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                handleSaveRating();
+              }}
+              disabled={isLogging}
+            >
               Save
             </Button>
           </DialogFooter>
