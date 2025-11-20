@@ -41,7 +41,7 @@ export function SignUpForm({
     }
 
     try {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -53,14 +53,27 @@ export function SignUpForm({
       });
 
       if (error) {
-        throw error;
+        throw error; // Still throw if there's a direct error from Supabase
       }
 
-      router.push("/auth/sign-up-success");
+      // Check if user and session are present for actual successful signup
+      if (data && data.user && data.session) {
+        router.push("/auth/sign-up-success");
+      } else {
+        // If no new user/session is created (and no explicit error),
+        // it's highly probable the email already exists or is pending confirmation.
+        setError(
+          "An account with that email already exists. Please log in instead."
+        );
+      }
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : "An error occurred";
-      if (errorMessage.includes("User already registered")) {
+      // This part might still catch other generic errors from Supabase, or network issues
+      if (
+        errorMessage.includes("User already registered") ||
+        errorMessage.includes("duplicate key value violates unique constraint")
+      ) {
         setError(
           "An account with this email already exists. Please log in instead."
         );

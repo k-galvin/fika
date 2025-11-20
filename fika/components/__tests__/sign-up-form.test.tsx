@@ -47,7 +47,13 @@ describe('SignUpForm', () => {
   });
 
   it('calls the signup function and redirects on successful signup', async () => {
-    const mockSignUp = jest.fn().mockResolvedValue({ error: null });
+    const mockSignUp = jest.fn().mockResolvedValue({
+      data: {
+        user: { id: 'test-user-id', email: 'test@example.com' },
+        session: { access_token: 'test-token', expires_at: 12345 }
+      },
+      error: null
+    });
     const mockPush = jest.fn();
 
     (useRouter as jest.Mock).mockReturnValue({ push: mockPush });

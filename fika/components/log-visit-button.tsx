@@ -11,7 +11,12 @@ import {
   DialogFooter,
 } from "./ui/dialog";
 import { Plus, Check, Star } from "lucide-react";
-import { rateCafe, logVisit, unlogVisit } from "@/app/actions";
+import {
+  rateCafe,
+  logVisit,
+  unlogVisit,
+  checkUserLoggedIn,
+} from "@/app/actions";
 import { useRouter, usePathname } from "next/navigation";
 
 type LogVisitButtonProps = {
@@ -59,8 +64,17 @@ export function LogVisitButton({
         setIsLogging(false);
       }
     } else {
-      // If not visited, open rating dialog
-      setIsRating(true);
+      // If not visited, check authentication status first
+      setIsLogging(true);
+      const authCheckResult = await checkUserLoggedIn();
+      setIsLogging(false);
+
+      if (!authCheckResult.success) {
+        router.push(`/auth/login?redirect=${pathname}`);
+      } else {
+        // User is logged in, open rating dialog
+        setIsRating(true);
+      }
     }
   };
 
@@ -68,27 +82,45 @@ export function LogVisitButton({
     setIsLogging(true);
     try {
       let result;
-      // Always call rateCafe if rating is set, otherwise logVisit
+      // It's possible the user logged in, came back, and now wants to log/rate.
+      // If they haven't visited yet, log the visit first.
+      if (!hasVisited) {
+        const logResult = await logVisit(shopId);
+        if (!logResult.success) {
+          // Handle error if logging visit fails
+          console.error(
+            "Failed to log visit before rating:",
+            logResult.message
+          );
+          setIsRating(false);
+          setIsLogging(false);
+          return;
+        }
+        setHasVisited(true); // Update state to reflect visit logged
+      }
+
+      // Now, rate the cafe if a rating is provided
       if (rating > 0) {
         result = await rateCafe(shopId, rating);
       } else {
-        // This case should ideally not be reached if save button is disabled when rating is 0
-        result = await logVisit(shopId);
+        // If no rating and they just logged visit (which is handled above),
+        // we can just close the dialog.
+        result = { success: true };
       }
 
       if (result.success) {
-        setHasVisited(true);
         router.refresh(); // Re-fetch data and re-render
         setIsRating(false); // Close on success
       } else {
         if (result.message === "User not found") {
+          // This should ideally not be reached due to early auth check in handleButtonClick
           router.push(`/auth/login?redirect=${pathname}`);
-          // Don't close dialog, let the page redirect
         } else {
           setIsRating(false); // Close on other errors
         }
       }
-    } catch {
+    } catch (error) {
+      console.error("Error saving rating:", error);
       setIsRating(false); // Close on unexpected errors
     } finally {
       setIsLogging(false);

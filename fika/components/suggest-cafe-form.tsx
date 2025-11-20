@@ -50,6 +50,7 @@ export function SuggestCafeForm({
   const [formData, setFormData] = useState(initialState);
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState("");
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false); // New state for success dialog
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -90,6 +91,8 @@ export function SuggestCafeForm({
 
     if (result.message === "Thank you for your suggestion!") {
       setFormData(initialState);
+      onOpenChange(false); // Close the main form dialog
+      setShowSuccessDialog(true); // Open the success dialog
     }
   };
 
@@ -312,25 +315,46 @@ export function SuggestCafeForm({
 
   if (withDialog) {
     return (
-      <Dialog open={isOpen} onOpenChange={onOpenChange}>
-        <DialogContent className="max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>Suggest a Cafe</DialogTitle>
-            <DialogDescription>
-              Fill out the form below to suggest a new cafe for our list.
-            </DialogDescription>
-          </DialogHeader>
-          {form}
-          {message && <p>{message}</p>}
-        </DialogContent>
-      </Dialog>
+      <>
+        <Dialog open={isOpen} onOpenChange={onOpenChange}>
+          <DialogContent className="max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Suggest a Cafe</DialogTitle>
+              <DialogDescription>
+                Fill out the form below to suggest a new cafe for our list.
+              </DialogDescription>
+            </DialogHeader>
+            {form}
+            {message && message !== "Thank you for your suggestion!" && (
+              <p className="mt-4 text-sm text-red-500">{message}</p>
+            )}
+          </DialogContent>
+        </Dialog>
+
+        {/* New Success Dialog */}
+        <Dialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle className="text-green-600">Success!</DialogTitle>
+              <DialogDescription>
+                Thank you for your suggestion! It has been submitted for review.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex justify-end">
+              <Button onClick={() => setShowSuccessDialog(false)}>OK</Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      </>
     );
   }
 
   return (
     <>
       {form}
-      {message && <p>{message}</p>}
+      {message && message !== "Thank you for your suggestion!" && (
+        <p className="mt-4 text-sm text-red-500">{message}</p>
+      )}
     </>
   );
 }

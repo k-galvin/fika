@@ -474,9 +474,26 @@ describe("Server Actions", () => {
 
   describe("suggestCafe", () => {
     const user = { id: "user-123" };
-    const formData = new FormData();
-    formData.append("name", "New Cafe");
-    formData.append("address", "456 Suggestion Ave");
+    
+    // Complete formData with all required fields for successful submission
+    const completeFormData = new FormData();
+    completeFormData.append("name", "New Cafe");
+    completeFormData.append("address", "456 Suggestion Ave");
+    completeFormData.append("city", "Los Angeles");
+    completeFormData.append("seating", "Limited");
+    completeFormData.append("parking", "Street");
+    completeFormData.append("vibe", "Cozy");
+    completeFormData.append("pricing", "$$");
+    completeFormData.append("busyness", "Moderate");
+    completeFormData.append("is_laptop_friendly", "on"); // Checkbox fields
+    completeFormData.append("has_wifi", "on");
+    completeFormData.append("has_outlets", "off");
+    completeFormData.append("wine_bar", "off");
+
+    // Partial formData for missing input test
+    const partialFormData = new FormData();
+    partialFormData.append("name", "New Cafe");
+    partialFormData.append("address", "456 Suggestion Ave");
 
     it("should return an error if user is not authenticated", async () => {
       (createClient as jest.Mock).mockReturnValue({
@@ -484,7 +501,7 @@ describe("Server Actions", () => {
           getUser: jest.fn().mockResolvedValue({ data: { user: null } }),
         },
       });
-      const result = await suggestCafe({ message: "" }, formData);
+      const result = await suggestCafe({ message: "" }, completeFormData);
       expect(result.message).toContain("You must be logged in");
     });
 
@@ -495,24 +512,43 @@ describe("Server Actions", () => {
         from: jest.fn(() => ({ insert })),
       });
 
-      const result = await suggestCafe({ message: "" }, formData);
+      const result = await suggestCafe({ message: "" }, completeFormData);
 
-      expect(insert).toHaveBeenCalled();
+      expect(insert).toHaveBeenCalledWith([
+        expect.objectContaining({
+          name: "New Cafe",
+          address: "456 Suggestion Ave",
+          city: "Los Angeles",
+          submitted_by: user.id,
+        }),
+      ]);
       expect(result.message).toContain("Thank you");
       expect(revalidatePath).toHaveBeenCalledWith("/discover");
     });
 
-    it("should return an error message on insertion failure", async () => {
-      const insert = jest
-        .fn()
-        .mockResolvedValue({ error: { message: "Insert failed" } });
+    it("should return an error message for missing input", async () => {
+      const insert = jest.fn().mockResolvedValue({ error: null }); // Should not be called
       (createClient as jest.Mock).mockReturnValue({
         auth: { getUser: jest.fn().mockResolvedValue({ data: { user } }) },
         from: jest.fn(() => ({ insert })),
       });
 
-      const result = await suggestCafe({ message: "" }, formData);
-      expect(result.message).toContain("Insert failed");
+      const result = await suggestCafe({ message: "" }, partialFormData);
+      expect(insert).not.toHaveBeenCalled(); // Ensure insert is not called
+      expect(result.message).toContain("Missing input: city, seating, parking, vibe, pricing, busyness");
+    });
+
+    it("should return an error message on insertion failure", async () => {
+      const insert = jest
+        .fn()
+        .mockResolvedValue({ error: { message: "Database insert failed" } });
+      (createClient as jest.Mock).mockReturnValue({
+        auth: { getUser: jest.fn().mockResolvedValue({ data: { user } }) },
+        from: jest.fn(() => ({ insert })),
+      });
+
+      const result = await suggestCafe({ message: "" }, completeFormData);
+      expect(result.message).toContain("Failed to submit suggestion: Database insert failed");
     });
   });
 

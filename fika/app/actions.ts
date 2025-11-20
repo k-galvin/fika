@@ -54,26 +54,65 @@ export async function suggestCafe(
     return { message: "You must be logged in to suggest a cafe." };
   }
 
+  // Extract form values
+  const name = formData.get("name") as string;
+  const address = formData.get("address") as string;
+  const description = getFormValue(formData.get("description"));
+  const city = formData.get("city") as string;
+  const seating = formData.get("seating") as string;
+  const parking = formData.get("parking") as string;
+  const vibe = formData.get("vibe") as string;
+  const pricing = formData.get("pricing") as string;
+  const busyness = formData.get("busyness") as string;
+  const is_laptop_friendly = formData.get("is_laptop_friendly") === "on";
+  const has_wifi = formData.get("has_wifi") === "on";
+  const has_outlets = formData.get("has_outlets") === "on";
+  const wine_bar = formData.get("wine_bar") === "on";
+
+  // Server-side validation for required fields
+  const requiredFields = {
+    name,
+    address,
+    city,
+    seating,
+    parking,
+    vibe,
+    pricing,
+    busyness,
+  };
+
+  const missingFields = [];
+  for (const [key, value] of Object.entries(requiredFields)) {
+    if (!value || String(value).trim() === "") {
+      missingFields.push(key.replace(/_/g, ' '));
+    }
+  }
+
+  if (missingFields.length > 0) {
+    return { message: `Missing input: ${missingFields.join(", ")}` };
+  }
+
   const { error } = await supabase.from("suggested_cafes").insert([
     {
-      name: formData.get("name") as string,
-      address: formData.get("address") as string,
-      description: getFormValue(formData.get("description")),
-      city: formData.get("city") as string,
-      seating: getFormValue(formData.get("seating")),
-      parking: getFormValue(formData.get("parking")),
-      vibe: getFormValue(formData.get("vibe")),
-      pricing: getFormValue(formData.get("pricing")),
-      busyness: getFormValue(formData.get("busyness")),
-      is_laptop_friendly: formData.get("is_laptop_friendly") === "on",
-      has_wifi: formData.get("has_wifi") === "on",
-      has_outlets: formData.get("has_outlets") === "on",
-      wine_bar: formData.get("wine_bar") === "on",
+      name,
+      address,
+      description,
+      city,
+      seating,
+      parking,
+      vibe,
+      pricing,
+      busyness,
+      is_laptop_friendly,
+      has_wifi,
+      has_outlets,
+      wine_bar,
       submitted_by: user.id,
     },
   ]);
 
   if (error) {
+    console.error("Supabase insert error:", error); // Log the detailed error
     return { message: `Failed to submit suggestion: ${error.message}` };
   }
 
@@ -938,5 +977,17 @@ export async function denyUpdates(updateIds: number[]) {
   }
 
   revalidatePath("/admin/updates");
+  return { success: true };
+}
+
+export async function checkUserLoggedIn(): Promise<{ success: boolean; message?: string }> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { success: false, message: "User not found" };
+  }
   return { success: true };
 }
