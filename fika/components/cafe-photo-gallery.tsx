@@ -169,7 +169,7 @@ export function CafePhotoGallery({
           <Image
             src={approvedPhotos[currentIndex].photo_url}
             alt={`Photo of ${shopId}`}
-            fill
+            layout="fill"
             className="object-cover"
           />
           {approvedPhotos[currentIndex].is_primary && (
@@ -210,8 +210,8 @@ export function CafePhotoGallery({
           )}
         </div>
       ) : (
-        <div className="w-full h-96 flex items-center justify-center bg-gray-100 rounded-md">
-          <p className="text-center text-gray-500">
+        <div className="relative w-1/3 aspect-square flex items-center justify-center bg-background border border-skeleton-brown rounded-md">
+          <p className="text-center text-gray-500 p-4">
             No photos yet. Be the first to upload one!
           </p>
         </div>

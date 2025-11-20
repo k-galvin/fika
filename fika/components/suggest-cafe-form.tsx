@@ -10,10 +10,18 @@ import {
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Button } from "./ui/button";
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { suggestCafe } from "@/app/actions";
 import { Constants } from "@/lib/supabase/database.types";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
+import { Checkbox } from "./ui/checkbox";
 
 const initialState = {
   message: "",
@@ -30,107 +38,427 @@ function SubmitButton() {
 }
 
 export function SuggestCafeForm({
+
   isOpen,
+
   onOpenChange,
+
+  withDialog = true,
+
 }: {
+
   isOpen: boolean;
+
   onOpenChange: (isOpen: boolean) => void;
+
+  withDialog?: boolean;
+
 }) {
+
   const [state, formAction] = useActionState(suggestCafe, initialState);
 
-  return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Suggest a Cafe</DialogTitle>
-          <DialogDescription>
-            Fill out the form below to suggest a new cafe for our list.
-          </DialogDescription>
-        </DialogHeader>
-        <form data-testid="suggest-form" action={formAction} className="flex flex-col gap-4">
-          <Label htmlFor="name">Cafe Name</Label>
-          <Input id="name" name="name" required />
-          <Label htmlFor="address">Address</Label>
-          <Input id="address" name="address" required />
-          <Label htmlFor="description">Description</Label>
-          <Input id="description" name="description" />
+  const [city, setCity] = useState("");
 
-          <Label htmlFor="city">City</Label>
-          <select id="city" name="city" required className="border p-2 rounded-md">
+  const [seating, setSeating] = useState("");
+
+  const [parking, setParking] = useState("");
+
+  const [vibe, setVibe] = useState("");
+
+  const [pricing, setPricing] = useState("");
+
+  const [busyness, setBusyness] = useState("");
+
+
+
+  const form = (
+
+    <form
+
+      data-testid="suggest-form"
+
+      action={formAction}
+
+      className="flex flex-col gap-4"
+
+    >
+
+      <Label htmlFor="name">Cafe Name</Label>
+
+      <Input id="name" name="name" required />
+
+      <Label htmlFor="address">Address</Label>
+
+      <Input id="address" name="address" required />
+
+      <Label htmlFor="description">Description</Label>
+
+      <Input id="description" name="description" />
+
+
+
+      <Label htmlFor="city">City</Label>
+
+      <DropdownMenu>
+
+        <DropdownMenuTrigger asChild>
+
+          <Button variant="outline" className="w-full mt-1 justify-start">
+
+            {city || "Select a city"}
+
+          </Button>
+
+        </DropdownMenuTrigger>
+
+        <DropdownMenuContent>
+
+          <DropdownMenuRadioGroup value={city} onValueChange={setCity}>
+
             {Constants.public.Enums.Cities.map((city) => (
-              <option key={city} value={city}>
+
+              <DropdownMenuRadioItem key={city} value={city}>
+
                 {city}
-              </option>
-            ))}
-          </select>
 
-          <Label htmlFor="seating">Seating</Label>
-          <select id="seating" name="seating" className="border p-2 rounded-md">
-            {Constants.public.Enums["Seating Availability"].map((seating) => (
-              <option key={seating} value={seating}>
-                {seating}
-              </option>
-            ))}
-          </select>
+              </DropdownMenuRadioItem>
 
-          <Label htmlFor="parking">Parking</Label>
-          <select id="parking" name="parking" className="border p-2 rounded-md">
+            ))}
+
+          </DropdownMenuRadioGroup>
+
+        </DropdownMenuContent>
+
+      </DropdownMenu>
+
+      <Input type="hidden" name="city" value={city} />
+
+
+
+      <Label htmlFor="seating">Seating</Label>
+
+      <DropdownMenu>
+
+        <DropdownMenuTrigger asChild>
+
+          <Button variant="outline" className="w-full mt-1 justify-start">
+
+            {seating || "Select seating"}
+
+          </Button>
+
+        </DropdownMenuTrigger>
+
+        <DropdownMenuContent>
+
+          <DropdownMenuRadioGroup
+
+            value={seating}
+
+            onValueChange={setSeating}
+
+          >
+
+            {Constants.public.Enums["Seating Availability"].map(
+
+              (seating) => (
+
+                <DropdownMenuRadioItem key={seating} value={seating}>
+
+                  {seating}
+
+                </DropdownMenuRadioItem>
+
+              )
+
+            )}
+
+          </DropdownMenuRadioGroup>
+
+        </DropdownMenuContent>
+
+      </DropdownMenu>
+
+      <Input type="hidden" name="seating" value={seating} />
+
+
+
+      <Label htmlFor="parking">Parking</Label>
+
+      <DropdownMenu>
+
+        <DropdownMenuTrigger asChild>
+
+          <Button variant="outline" className="w-full mt-1 justify-start">
+
+            {parking || "Select parking"}
+
+          </Button>
+
+        </DropdownMenuTrigger>
+
+        <DropdownMenuContent>
+
+          <DropdownMenuRadioGroup
+
+            value={parking}
+
+            onValueChange={setParking}
+
+          >
+
             {Constants.public.Enums["Parking Difficulty"].map((parking) => (
-              <option key={parking} value={parking}>
+
+              <DropdownMenuRadioItem key={parking} value={parking}>
+
                 {parking}
-              </option>
-            ))}
-          </select>
 
-          <Label htmlFor="vibe">Vibe</Label>
-          <select id="vibe" name="vibe" className="border p-2 rounded-md">
+              </DropdownMenuRadioItem>
+
+            ))}
+
+          </DropdownMenuRadioGroup>
+
+        </DropdownMenuContent>
+
+      </DropdownMenu>
+
+      <Input type="hidden" name="parking" value={parking} />
+
+
+
+      <Label htmlFor="vibe">Vibe</Label>
+
+      <DropdownMenu>
+
+        <DropdownMenuTrigger asChild>
+
+          <Button variant="outline" className="w-full mt-1 justify-start">
+
+            {vibe || "Select vibe"}
+
+          </Button>
+
+        </DropdownMenuTrigger>
+
+        <DropdownMenuContent>
+
+          <DropdownMenuRadioGroup value={vibe} onValueChange={setVibe}>
+
             {Constants.public.Enums.Vibe.map((vibe) => (
-              <option key={vibe} value={vibe}>
+
+              <DropdownMenuRadioItem key={vibe} value={vibe}>
+
                 {vibe}
-              </option>
-            ))}
-          </select>
 
-          <Label htmlFor="pricing">Pricing</Label>
-          <select id="pricing" name="pricing" className="border p-2 rounded-md">
+              </DropdownMenuRadioItem>
+
+            ))}
+
+          </DropdownMenuRadioGroup>
+
+        </DropdownMenuContent>
+
+      </DropdownMenu>
+
+      <Input type="hidden" name="vibe" value={vibe} />
+
+
+
+      <Label htmlFor="pricing">Pricing</Label>
+
+      <DropdownMenu>
+
+        <DropdownMenuTrigger asChild>
+
+          <Button variant="outline" className="w-full mt-1 justify-start">
+
+            {pricing || "Select pricing"}
+
+          </Button>
+
+        </DropdownMenuTrigger>
+
+        <DropdownMenuContent>
+
+          <DropdownMenuRadioGroup
+
+            value={pricing}
+
+            onValueChange={setPricing}
+
+          >
+
             {Constants.public.Enums.Pricing.map((pricing) => (
-              <option key={pricing} value={pricing}>
+
+              <DropdownMenuRadioItem key={pricing} value={pricing}>
+
                 {pricing}
-              </option>
-            ))}
-          </select>
 
-          <Label htmlFor="busyness">Busyness</Label>
-          <select id="busyness" name="busyness" className="border p-2 rounded-md">
+              </DropdownMenuRadioItem>
+
+            ))}
+
+          </DropdownMenuRadioGroup>
+
+        </DropdownMenuContent>
+
+      </DropdownMenu>
+
+      <Input type="hidden" name="pricing" value={pricing} />
+
+
+
+      <Label htmlFor="busyness">Busyness</Label>
+
+      <DropdownMenu>
+
+        <DropdownMenuTrigger asChild>
+
+          <Button variant="outline" className="w-full mt-1 justify-start">
+
+            {busyness || "Select busyness"}
+
+          </Button>
+
+        </DropdownMenuTrigger>
+
+        <DropdownMenuContent>
+
+          <DropdownMenuRadioGroup
+
+            value={busyness}
+
+            onValueChange={setBusyness}
+
+          >
+
             {Constants.public.Enums.Busyness.map((busyness) => (
-              <option key={busyness} value={busyness}>
+
+              <DropdownMenuRadioItem key={busyness} value={busyness}>
+
                 {busyness}
-              </option>
+
+              </DropdownMenuRadioItem>
+
             ))}
-          </select>
 
-          <div className="grid grid-cols-[auto_1fr_auto_1fr] items-center gap-x-4 gap-y-2">
-            <Input
-              type="checkbox"
-              id="is_laptop_friendly"
-              name="is_laptop_friendly"
-            />
-            <Label htmlFor="is_laptop_friendly">Laptop Friendly?</Label>
+          </DropdownMenuRadioGroup>
 
-            <Input type="checkbox" id="has_wifi" name="has_wifi" />
-            <Label htmlFor="has_wifi">Wifi?</Label>
+        </DropdownMenuContent>
 
-            <Input type="checkbox" id="has_outlets" name="has_outlets" />
-            <Label htmlFor="has_outlets">Outlets?</Label>
+      </DropdownMenu>
 
-            <Input type="checkbox" id="wine_bar" name="wine_bar" />
-            <Label htmlFor="wine_bar">Wine Bar?</Label>
-          </div>
+      <Input type="hidden" name="busyness" value={busyness} />
 
-          <SubmitButton />
-        </form>
-        {state?.message && <p>{state.message}</p>}
-      </DialogContent>
-    </Dialog>
+
+
+      <div className="grid grid-cols-2 items-center gap-x-4 gap-y-2">
+
+        <div className="flex items-center space-x-2">
+
+          <Checkbox id="is_laptop_friendly" name="is_laptop_friendly" />
+
+          <Label htmlFor="is_laptop_friendly" className="ml-2">
+
+            Laptop Friendly?
+
+          </Label>
+
+        </div>
+
+        <div className="flex items-center space-x-2">
+
+          <Checkbox id="has_wifi" name="has_wifi" />
+
+          <Label htmlFor="has_wifi" className="ml-2">
+
+            Wifi?
+
+          </Label>
+
+        </div>
+
+        <div className="flex items-center space-x-2">
+
+          <Checkbox id="has_outlets" name="has_outlets" />
+
+          <Label htmlFor="has_outlets" className="ml-2">
+
+            Outlets?
+
+          </Label>
+
+        </div>
+
+        <div className="flex items-center space-x-2">
+
+          <Checkbox id="wine_bar" name="wine_bar" />
+
+          <Label htmlFor="wine_bar" className="ml-2">
+
+            Wine Bar?
+
+          </Label>
+
+        </div>
+
+      </div>
+
+
+
+      <SubmitButton />
+
+    </form>
+
   );
+
+
+
+  if (withDialog) {
+
+    return (
+
+      <Dialog open={isOpen} onOpenChange={onOpenChange}>
+
+        <DialogContent className="max-h-[90vh] overflow-y-auto">
+
+          <DialogHeader>
+
+            <DialogTitle>Suggest a Cafe</DialogTitle>
+
+            <DialogDescription>
+
+              Fill out the form below to suggest a new cafe for our list.
+
+            </DialogDescription>
+
+          </DialogHeader>
+
+          {form}
+
+          {state?.message && <p>{state.message}</p>}
+
+        </DialogContent>
+
+      </Dialog>
+
+    );
+
+  }
+
+
+
+  return (
+
+    <>
+
+      {form}
+
+      {state?.message && <p>{state.message}</p>}
+
+    </>
+
+  );
+
 }
