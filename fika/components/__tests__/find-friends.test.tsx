@@ -1,10 +1,17 @@
 import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
 import { FindFriends } from "@/components/find-friends";
 import { useSearchParams } from "next/navigation";
+import { sendFriendRequest } from "@/app/actions";
 
-const from = jest.fn();
-const insert = jest.fn();
-const ilike = jest.fn();
+jest.mock("@/app/actions", () => ({
+  acceptFriendRequest: jest.fn(),
+  denyFriendRequest: jest.fn(),
+  unfriendUser: jest.fn(),
+  sendFriendRequest: jest.fn(() => Promise.resolve({ success: true, message: "Request sent" })),
+  unsendFriendRequest: jest.fn(() => Promise.resolve({ success: true, message: "Request unsent" })),
+}));
+
+
 
 jest.mock("@/lib/supabase/client", () => ({
   createClient: jest.fn(() => ({
@@ -13,7 +20,26 @@ jest.mock("@/lib/supabase/client", () => ({
         data: { user: { id: "user-123" } },
       }),
     },
-    from: from,
+    from: jest.fn((tableName) => {
+      const mockQuery = {
+        select: jest.fn().mockReturnThis(),
+        insert: jest.fn().mockResolvedValue({ data: [], error: null }),
+        or: jest.fn().mockReturnThis(),
+        eq: jest.fn().mockReturnThis(),
+        maybeSingle: jest.fn().mockResolvedValue({ data: null, error: null }),
+        then: jest.fn((cb) => cb({ data: [], error: null })), // Default empty data
+      };
+
+      if (tableName === "profiles") {
+        mockQuery.ilike = jest.fn().mockResolvedValue({
+          data: [
+            { id: "user-456", username: "testuser", full_name: "Test User", avatar_url: null },
+          ],
+          error: null,
+        });
+      }
+      return mockQuery;
+    }),
   })),
 }));
 
@@ -29,49 +55,7 @@ jest.mock("next/navigation", () => ({
 }));
 
 describe("FindFriends", () => {
-  beforeEach(() => {
-    from.mockImplementation((tableName) => {
-      if (tableName === "profiles") {
-        return {
-          select: jest.fn().mockReturnThis(),
-          ilike,
-        };
-      }
 
-      if (tableName === "friendships") {
-        return {
-          select: jest.fn().mockReturnThis(),
-          insert,
-          or: jest.fn().mockReturnThis(),
-          eq: jest.fn().mockResolvedValue({ data: [], error: null }),
-          maybeSingle: jest.fn().mockResolvedValue({ data: null, error: null }),
-        };
-      }
-
-      return {
-        select: jest.fn().mockReturnThis(),
-        insert: jest.fn().mockReturnThis(),
-        ilike: jest.fn().mockReturnThis(),
-        or: jest.fn().mockReturnThis(),
-        eq: jest.fn().mockReturnThis(),
-        maybeSingle: jest.fn().mockReturnThis(),
-      };
-    });
-
-    ilike.mockResolvedValue({
-      data: [
-        {
-          id: "user-456",
-          username: "testuser",
-          full_name: "Test User",
-          avatar_url: null,
-        },
-      ],
-      error: null,
-    });
-
-    insert.mockResolvedValue({ data: [], error: null });
-  });
 
   afterEach(() => {
     jest.clearAllMocks();
@@ -115,10 +99,7 @@ describe("FindFriends", () => {
     fireEvent.click(addButton);
 
     await waitFor(() => {
-      expect(from).toHaveBeenCalledWith("friendships");
-      expect(insert).toHaveBeenCalledWith([
-        { user_id: "user-123", friend_id: "user-456", status: "pending" },
-      ]);
+      expect(sendFriendRequest).toHaveBeenCalledWith("user-456");
     });
 
     expect(await screen.findByText("Request Sent")).toBeInTheDocument();

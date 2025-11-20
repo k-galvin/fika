@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { SearchBar } from "@/components/ui/search-bar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -79,7 +79,7 @@ export function FindFriends() {
 
   const [friendships, setFriendships] = useState<Record<string, string>>({});
 
-  const addFriend = async (friendId: string, friendUsername: string) => {
+  const addFriend = async (friendId: string) => {
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -102,7 +102,7 @@ export function FindFriends() {
   const [incomingRequests, setIncomingRequests] = useState<FriendRequest[]>([]);
   const [outgoingRequests, setOutgoingRequests] = useState<FriendRequest[]>([]);
 
-  const fetchPendingRequests = async () => {
+  const fetchPendingRequests = useCallback(async () => {
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -159,11 +159,11 @@ export function FindFriends() {
         })) ?? [];
       setOutgoingRequests(flattened);
     }
-  };
+  }, [supabase, setIncomingRequests, setOutgoingRequests]);
 
   useEffect(() => {
     fetchPendingRequests();
-  }, [supabase]);
+  }, [supabase, fetchPendingRequests]);
 
   useEffect(() => {
     const loadFriendships = async () => {
@@ -269,7 +269,7 @@ export function FindFriends() {
                   </div>
                 </div>
                 <Button
-                  onClick={() => addFriend(user.id, user.username)}
+                  onClick={() => addFriend(user.id)}
                   disabled={
                     friendships[user.id] === "pending" ||
                     friendships[user.id] === "friends"
