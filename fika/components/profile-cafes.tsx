@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Bookmark, History } from "lucide-react";
 import { UserSavedCafe, UserVisit } from "@/lib/types";
+import { LogVisitButton } from "@/components/log-visit-button";
 import { SaveButton } from "@/components/save-button";
 
 type ProfileCafesProps = {
@@ -93,12 +94,21 @@ export function ProfileCafes({
                           ).toLocaleDateString()}
                         </span>
                       </div>
-                      {visitedCafe.rating && (
-                        <div className="flex items-center gap-1">
-                          <span className="text-yellow-500">★</span>
-                          <span>{visitedCafe.rating}</span>
-                        </div>
-                      )}
+                      <div className="flex items-center gap-2">
+                        {visitedCafe.rating && (
+                          <div className="flex items-center gap-1">
+                            <span className="text-yellow-500">★</span>
+                            <span>{visitedCafe.rating}</span>
+                          </div>
+                        )}
+                        {!friendView && (
+                          <LogVisitButton
+                            shopId={visitedCafe.coffee_shop_id}
+                            isInitiallyVisited={true}
+                            initialRating={visitedCafe.rating}
+                          />
+                        )}
+                      </div>
                     </div>
                   );
                 })}
@@ -171,3 +181,4 @@ export function ProfileCafes({
     </Card>
   );
 }
+

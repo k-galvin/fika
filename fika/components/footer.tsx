@@ -35,12 +35,25 @@ export function Footer({
   return (
     <>
       <footer className="w-full flex flex-col items-center justify-center border-t mx-auto text-center text-xs gap-8 pb-4">
-        <div className="relative">
+        <div className="relative w-[300px] h-[470px]">
           <Image
-            src={isAfterHours ? "/tablescapeDark.png" : "/tablescape.png"}
-            alt="Table logo"
+            src="/tablescape.png"
+            alt="Table logo (light theme)"
             width={300}
             height={300}
+            className={`absolute top-0 left-0 transition-opacity duration-500 ${
+              isAfterHours ? "opacity-0" : "opacity-100"
+            }`}
+            priority // Keep priority for the default image
+          />
+          <Image
+            src="/tablescapeDark.png"
+            alt="Table logo (dark theme)"
+            width={300}
+            height={300}
+            className={`absolute top-0 left-0 transition-opacity duration-500 ${
+              isAfterHours ? "opacity-100" : "opacity-0"
+            }`}
           />
           {isWineBar && setIsAfterHours && (
             <div

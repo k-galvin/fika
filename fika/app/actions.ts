@@ -339,16 +339,16 @@ export async function hasUserVisitedCafe(cafeId: number): Promise<boolean> {
 
   const { data, error } = await supabase
     .from("user_visits")
-    .select("has_visited")
+    .select("id")
     .eq("profile_id", user.id)
     .eq("coffee_shop_id", cafeId)
     .single();
 
-  if (error) {
+  if (error && error.code !== "PGRST116") { // PGRST116 means no rows found
     return false;
   }
 
-  return data?.has_visited || false;
+  return !!data;
 }
 
 export async function getUserRatingForCafe(
@@ -399,16 +399,18 @@ export async function logVisit(
     return { success: false, message: "User not found" };
   }
 
+  const upsertData = {
+    profile_id: user.id,
+    coffee_shop_id: cafeId,
+  };
+
   const { error } = await supabase.from("user_visits").upsert(
-    {
-      profile_id: user.id,
-      coffee_shop_id: cafeId,
-      has_visited: true,
-    },
+    upsertData,
     { onConflict: "profile_id,coffee_shop_id" }
   );
 
   if (error) {
+    console.error("logVisit: Supabase operation error:", error); // Verbose log
     return { success: false, message: error.message };
   }
 
@@ -437,15 +439,44 @@ export async function rateCafe(
   }
 
   // Upsert the rating
+  const upsertData = {
+    profile_id: user.id,
+    coffee_shop_id: cafeId,
+    rating: rating,
+  };
+
   const { error } = await supabase.from("user_visits").upsert(
-    {
-      profile_id: user.id,
-      coffee_shop_id: cafeId,
-      rating: rating,
-      has_visited: true,
-    },
+    upsertData,
     { onConflict: "profile_id,coffee_shop_id" }
   );
+
+  if (error) {
+    console.error("rateCafe: Supabase operation error:", error); // Verbose log
+    return { success: false, message: error.message };
+  }
+
+  revalidatePath(`/cafe/${cafeId}`);
+  revalidatePath("/profile");
+  return { success: true };
+}
+
+export async function unlogVisit(
+  cafeId: number
+): Promise<{ success: boolean; message?: string }> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { success: false, message: "User not found" };
+  }
+
+  const { error } = await supabase
+    .from("user_visits")
+    .delete()
+    .eq("profile_id", user.id)
+    .eq("coffee_shop_id", cafeId);
 
   if (error) {
     return { success: false, message: error.message };

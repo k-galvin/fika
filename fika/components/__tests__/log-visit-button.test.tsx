@@ -42,11 +42,10 @@ describe("LogVisitButton", () => {
     });
   });
 
-  it("renders with check icon if rated", async () => {
-    mockedActions.getUserRatingForCafe.mockResolvedValue(4);
+  it("renders with plus icon if rated but not visited", async () => {
     render(<LogVisitButton shopId={1} isInitiallyVisited={false} initialRating={4} />);
     await waitFor(() => {
-      expect(screen.getByTestId("check-icon")).toBeInTheDocument();
+      expect(screen.getByTestId("plus-icon")).toBeInTheDocument();
     });
   });
 

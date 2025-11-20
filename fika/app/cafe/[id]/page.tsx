@@ -53,11 +53,11 @@ export default async function CafeDetailsPage({ params }: Props) {
     // Check if cafe has been visited by the user
     const { data: visitedData } = await supabase
       .from("user_visits")
-      .select("id, rating, has_visited")
+      .select("id, rating")
       .eq("profile_id", user.id)
       .eq("coffee_shop_id", shop.id)
       .single();
-    isInitiallyVisited = visitedData?.has_visited || false;
+    isInitiallyVisited = !!visitedData;
     initialRating = visitedData?.rating || null;
   }
 

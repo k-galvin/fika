@@ -55,6 +55,9 @@ export default async function RootLayout({
 
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="preload" href="/tablescapeDark.png" as="image" />
+      </head>
       <CustomThemeProvider>
         <BodyWrapper karlaClassName={karla.className} kateVariable={kate.variable}>
           <DiscoBallAndStars />

@@ -11,7 +11,7 @@ import {
   DialogFooter,
 } from "./ui/dialog";
 import { Plus, Check, Star } from "lucide-react";
-import { rateCafe, logVisit } from "@/app/actions";
+import { rateCafe, logVisit, unlogVisit } from "@/app/actions";
 import { useRouter, usePathname } from "next/navigation";
 
 type LogVisitButtonProps = {
@@ -40,22 +40,45 @@ export function LogVisitButton({
     setRating(initialRating || 0);
   }, [isInitiallyVisited, initialRating]);
 
-  const handleInitiateRating = () => {
-    setIsRating(true);
+  const handleButtonClick = async () => {
+    if (hasVisited) {
+      // If already visited, unlog the visit
+      setIsLogging(true);
+      try {
+        const result = await unlogVisit(shopId);
+        if (result.success) {
+          setHasVisited(false);
+          setRating(0); // Reset rating when unlogging
+          router.refresh();
+        } else {
+          console.error("Failed to unlog visit:", result.message);
+        }
+      } catch (error) {
+        console.error("Error unlogging visit:", error);
+      } finally {
+        setIsLogging(false);
+      }
+    } else {
+      // If not visited, open rating dialog
+      setIsRating(true);
+    }
   };
 
   const handleSaveRating = async () => {
     setIsLogging(true);
     try {
       let result;
+      // Always call rateCafe if rating is set, otherwise logVisit
       if (rating > 0) {
         result = await rateCafe(shopId, rating);
       } else {
+        // This case should ideally not be reached if save button is disabled when rating is 0
         result = await logVisit(shopId);
       }
 
       if (result.success) {
         setHasVisited(true);
+        router.refresh(); // Re-fetch data and re-render
         setIsRating(false); // Close on success
       } else {
         if (result.message === "User not found") {
@@ -85,10 +108,10 @@ export function LogVisitButton({
         variant="outline"
         size={size}
         className="rounded-full"
-        onClick={handleInitiateRating}
+        onClick={handleButtonClick}
         disabled={isLogging}
       >
-        {hasVisited || initialRating ? (
+        {hasVisited ? (
           <Check className={iconSize} data-testid="check-icon" />
         ) : (
           <Plus className={iconSize} data-testid="plus-icon" />

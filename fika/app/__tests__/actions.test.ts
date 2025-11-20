@@ -415,7 +415,8 @@ describe("Server Actions", () => {
           select: () => ({
             eq: () => ({
               eq: () => ({
-                single: () => Promise.resolve({ data: { has_visited: false }, error: null }),
+                single: () =>
+                  Promise.resolve({ data: null, error: { code: "PGRST116" } }),
               }),
             }),
           }),
