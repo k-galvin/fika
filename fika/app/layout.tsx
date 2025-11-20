@@ -63,8 +63,7 @@ export default async function RootLayout({
           <DiscoBallAndStars />
           <NextThemesProvider
             attribute="class"
-            defaultTheme="system"
-            enableSystem
+            defaultTheme="light"
             disableTransitionOnChange
           >
             <NavBar authButton={<AuthButton key={user?.id || 'logged-out'} />} />
