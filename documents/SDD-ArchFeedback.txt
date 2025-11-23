@@ -1,0 +1,99 @@
+
+Documentation Feedback ~ Deliverable #4
+Software Design Document ~ Architecture
+CMSI 4071 Fall 2025
+=======================================
+
+INTRODUCTION SECTION:
+Overall Impression
+   The document provides a clear architectural overview for the Fika web
+      application, including major components, interactions, and diagrams
+      It follows a structured approach aligned with both waterfall and
+      agile principles (modular components, CI/CD hosting)
+      However, some areas need more detail for full compliance with
+      architectural design standards
+
+   System objectives section
+      Included in above
+
+   Hardware, software, and human interfaces section
+      Included in above
+
+
+ARCHITECTURAL DESIGN SECTION:
+   Major softwre components section
+      Strengths:
+         Clearly identifies top-level CSCIs: Frontend, Backend,
+            Authentication, and Hosting & Infrastructure
+         Breaks down CSCs into CSUs (e.g., Discover Page, Cafe Page,
+            User Logging for Frontend; Database CSU for Backend)
+         Provides technology stack details (Nextjs, Supabase, PostgreSQL,
+            Vercel) and rationale for choices
+      Suggestions:
+         Add responsibilities and dependencies explicitly: While
+            components are named, their responsibilities could be
+            summarized in a table for clarity
+         Include scalability considerations per component: For example,
+            how the Backend CSC handles concurrent requests or caching
+         Traceability to requirements: Explicitly link each component to
+            functional or performance requirements
+
+   Major software interactions section
+      Strengths:
+         Describes communication flows: Frontend -> Backend via REST/GraphQL,
+            Authentication via Supabase tokens, and external API calls
+            (OpenStreetMaps)
+         Mentions security aspects
+            (token verification for restricted actions)
+         Includes integration with visualization libraries (Vega/Vega-Lite)
+      Suggestions:
+         Interaction diagrams missing here: While diagrams appear later,
+            this section should reference them or include simplified
+            sequence diagrams
+         Add error handling and fallback strategies: For example, what
+            happens if Supabase authentication fails or OpenStreetMaps
+            API is unavailable
+         Performance considerations: Include latency expectations for API
+            calls and caching mechanisms
+
+   Architectural design diagrams section
+      Strengths:
+         Provides multiple diagrams: Use Case, Deployment, Component Diagram
+         Component diagram aligns with the three-tier architecture and shows
+            logical grouping
+         Mentions UML notation for class diagrams later
+      Suggestions:
+         Diagram clarity: Ensure diagrams are high-resolution and labeled
+            with figure numbers (some appear as links or placeholders)
+         Add data flow or sequence diagrams at this level: These would
+            complement the component diagram by showing runtime interactions
+         Consistency with text: Cross-reference diagrams in the narrative for
+            easier navigation
+
+
+OVERALL ASSESSMENT:
+   Category                          Points
+   INTRODUCTION                         1
+   System objectives                    1
+   H/W, S/W, Human I/F                  1
+
+   ARCHITECTURAL DESIGN SECTION:
+   Major softwre components             1
+   Major software interactions          1
+   Architectural design diagrams        5
+
+                                     ======
+   Subtotal                            10
+   ------------------------------------------------------
+   Total Percentage:  10/10 = 100% which is an A-plus
+
+
+Additional Observations
+   Waterfall vs Agile: The architecture supports agile principles (modular
+         components, CI/CD hosting), but the document reads like a
+         waterfall-style SDD with heavy upfront design Explicit mention
+         of iterative refinement would clarify methodology alignment
+   Security and scalability: Good coverage in later sections, but could be
+      summarized at the architectural level for completeness
+
+This is a good start.  Let's see what the detailed design brings out!
