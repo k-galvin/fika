@@ -1,3 +1,85 @@
+## Week 14 (11/28/2025)
+
+### Kate Galvin
+
+**Project:** Fika
+**Period Covered:** 11/14/2025 - 11/14/2025
+
+**Accomplishments since last report:**
+
+- Cleaned up UI by removing open cafe details button
+- Improved responsiveness for mobile view by editing the grid layout and having the nav bar use a hamburger button on a narrow screen
+- Fixed bug where devices using dark mode saw a different color theme than intended
+- Fixed bug where cafe info update admin page wasn't approving changes
+- Improved layout of cafe details page to make use of full screen width
+- Fixed bug in adding friends feature
+
+**Scheduled tasks to be done by next report:**
+
+- Practice for next week's final presentation
+- Work on final edits of user manual
+
+**Noteworthy risks, concerns, or problems:**
+
+- None
+
+---
+
+### Jillian Hunter
+
+**Project:** Fika
+**Period Covered:** 11/14/2025 - 11/14/2025
+
+**Accomplishments since last report:**
+
+- 
+  
+**Scheduled tasks to be done by next report:**
+
+- 
+  
+**Noteworthy risks, concerns, or problems:**
+  
+- 
+
+### Giselle Eliasi
+
+**Project:** Fika
+**Period Covered:** 11/14/2025 - 11/14/2025
+
+**Accomplishments since last report:**
+
+- 
+
+**Scheduled tasks to be done by next report:**
+
+- 
+
+**Noteworthy risks, concerns, or problems:**
+
+- None
+
+### Ahtziri Gutierrez
+
+**Project:** Fika
+**Period Covered:** 11/14/2025 - 11/14/2025
+
+**Accomplishments since last report:**
+
+- 
+
+**Scheduled tasks to be done by next report:**
+
+- 
+
+**Noteworthy risks, concerns, or problems:**
+
+- None
+
+## Week 12 (11/14/2025)
+
+Covered in ABCDR presentations
+
 ## Week 10 (10/31/2025)
 
 ### Kate Galvin
