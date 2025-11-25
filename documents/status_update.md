@@ -3,7 +3,7 @@
 ### Kate Galvin
 
 **Project:** Fika
-**Period Covered:** 11/14/2025 - 11/14/2025
+**Period Covered:** 11/14/2025 - 11/28/2025
 
 **Accomplishments since last report:**
 
@@ -28,7 +28,7 @@
 ### Jillian Hunter
 
 **Project:** Fika
-**Period Covered:** 11/14/2025 - 11/14/2025
+**Period Covered:** 11/14/2025 - 11/28/2025
 
 **Accomplishments since last report:**
 
@@ -45,7 +45,7 @@
 ### Giselle Eliasi
 
 **Project:** Fika
-**Period Covered:** 11/14/2025 - 11/14/2025
+**Period Covered:** 11/14/2025 - 11/28/2025
 
 **Accomplishments since last report:**
 
@@ -62,7 +62,7 @@
 ### Ahtziri Gutierrez
 
 **Project:** Fika
-**Period Covered:** 11/14/2025 - 11/14/2025
+**Period Covered:** 11/14/2025 - 11/28/2025
 
 **Accomplishments since last report:**
 
