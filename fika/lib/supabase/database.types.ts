@@ -437,6 +437,7 @@ export type Database = {
         | "San Diego"
         | "Lisbon"
         | "Kyoto"
+        | "Tokyo"
       "Parking Difficulty": "Easy" | "Medium" | "Hard"
       Pricing: "$" | "$$" | "$$$"
       "Seating Availability": "None" | "Some" | "Plenty"
@@ -580,6 +581,7 @@ export const Constants = {
         "San Diego",
         "Lisbon",
         "Kyoto",
+        "Tokyo",
       ],
       "Parking Difficulty": ["Easy", "Medium", "Hard"],
       Pricing: ["$", "$$", "$$$"],
