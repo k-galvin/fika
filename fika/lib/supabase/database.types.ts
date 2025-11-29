@@ -14,6 +14,30 @@ export type Database = {
   }
   public: {
     Tables: {
+      badges: {
+        Row: {
+          description: string
+          id: number
+          image_url: string | null
+          name: string
+          threshold_visits: number
+        }
+        Insert: {
+          description: string
+          id?: number
+          image_url?: string | null
+          name: string
+          threshold_visits: number
+        }
+        Update: {
+          description?: string
+          id?: number
+          image_url?: string | null
+          name?: string
+          threshold_visits?: number
+        }
+        Relationships: []
+      }
       cafe_updates: {
         Row: {
           approved: boolean | null
@@ -269,6 +293,42 @@ export type Database = {
         }
         Relationships: []
       }
+      user_badges: {
+        Row: {
+          badge_id: number
+          earned_at: string | null
+          id: number
+          profile_id: string
+        }
+        Insert: {
+          badge_id: number
+          earned_at?: string | null
+          id?: number
+          profile_id: string
+        }
+        Update: {
+          badge_id?: number
+          earned_at?: string | null
+          id?: number
+          profile_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_badges_badge_id_fkey"
+            columns: ["badge_id"]
+            isOneToOne: false
+            referencedRelation: "badges"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_badges_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_saved_cafes: {
         Row: {
           coffee_shop_id: number
@@ -310,22 +370,22 @@ export type Database = {
           coffee_shop_id: number
           id: string
           profile_id: string
-          visited_at: string
           rating: number | null
+          visited_at: string
         }
         Insert: {
           coffee_shop_id: number
           id?: string
           profile_id: string
-          visited_at?: string
           rating?: number | null
+          visited_at?: string
         }
         Update: {
           coffee_shop_id?: number
           id?: string
           profile_id?: string
-          visited_at?: string
           rating?: number | null
+          visited_at?: string
         }
         Relationships: [
           {
@@ -375,6 +435,7 @@ export type Database = {
         | "San Francisco"
         | "Copenhagen"
         | "San Diego"
+        | "Lisbon"
       "Parking Difficulty": "Easy" | "Medium" | "Hard"
       Pricing: "$" | "$$" | "$$$"
       "Seating Availability": "None" | "Some" | "Plenty"
@@ -516,6 +577,7 @@ export const Constants = {
         "San Francisco",
         "Copenhagen",
         "San Diego",
+        "Lisbon",
       ],
       "Parking Difficulty": ["Easy", "Medium", "Hard"],
       Pricing: ["$", "$$", "$$$"],
