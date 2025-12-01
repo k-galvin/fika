@@ -103,6 +103,8 @@ export function DiscoverContent({
         `%${(searchParams.get("search") as string).replace(/%/g, "\\%")}%`
       );
 
+    query = query.order("name", { ascending: true });
+
     const from = page * PAGE_SIZE;
     const to = from + PAGE_SIZE - 1;
     query = query.range(from, to);

@@ -64,6 +64,8 @@ export default async function DiscoverPage({ searchParams: searchParamsPromise }
   if (searchParams.search)
     query = query.ilike("name", `%${(searchParams.search as string).replace(/%/g, "\\%")}%`);
 
+  query = query.order("name", { ascending: true });
+
   const from = 0;
   const to = from + PAGE_SIZE - 1;
   query = query.range(from, to);

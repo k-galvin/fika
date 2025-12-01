@@ -67,6 +67,17 @@ jest.mock("@/lib/supabase/client", () => ({
       select: jest.fn(() => ({
         eq: jest.fn(() => ({
           ilike: jest.fn(() => ({
+            order: jest.fn(() => ({
+              range: jest.fn((from, to) => {
+                const data = Array.from({ length: to - from + 1 }, (_, i) => ({
+                  id: i + from,
+                  name: `Cafe ${i + from}`,
+                }));
+                return Promise.resolve({ data });
+              }),
+            })),
+          })),
+          order: jest.fn(() => ({
             range: jest.fn((from, to) => {
               const data = Array.from({ length: to - from + 1 }, (_, i) => ({
                 id: i + from,
@@ -77,6 +88,17 @@ jest.mock("@/lib/supabase/client", () => ({
           })),
         })),
         ilike: jest.fn(() => ({
+          order: jest.fn(() => ({
+            range: jest.fn((from, to) => {
+              const data = Array.from({ length: to - from + 1 }, (_, i) => ({
+                id: i + from,
+                name: `Cafe ${i + from}`,
+              }));
+              return Promise.resolve({ data });
+            }),
+          })),
+        })),
+        order: jest.fn(() => ({
           range: jest.fn((from, to) => {
             const data = Array.from({ length: to - from + 1 }, (_, i) => ({
               id: i + from,

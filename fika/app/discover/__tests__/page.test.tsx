@@ -49,6 +49,9 @@ describe("DiscoverPage", () => {
         eq: jest.fn(() => ({
           range: jest.fn(() => ({ data: initialShops })),
         })),
+        order: jest.fn(() => ({
+          range: jest.fn(() => ({ data: initialShops })),
+        })),
         range: jest.fn(() => ({ data: initialShops })),
       })),
     }));
@@ -85,6 +88,11 @@ describe("DiscoverPage", () => {
           range: jest.fn(() => ({ data: initialShops })),
         })),
         ilike: jest.fn(() => ({
+          order: jest.fn(() => ({
+            range: jest.fn(() => ({ data: initialShops })),
+          })),
+        })),
+        order: jest.fn(() => ({
           range: jest.fn(() => ({ data: initialShops })),
         })),
         range: jest.fn(() => ({ data: initialShops })),
