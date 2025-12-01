@@ -32,10 +32,10 @@ const initialState = {
   vibe: "",
   pricing: "",
   busyness: "",
-  is_laptop_friendly: false,
-  has_wifi: false,
-  has_outlets: false,
-  wine_bar: false,
+  is_laptop_friendly: "no",
+  has_wifi: "no",
+  has_outlets: "no",
+  wine_bar: "no",
 };
 
 export function SuggestCafeForm({
@@ -70,7 +70,7 @@ export function SuggestCafeForm({
   const handleCheckboxChange = (name: string, checked: boolean) => {
     setFormData((prev) => ({
       ...prev,
-      [name]: checked,
+      [name]: checked ? "yes" : "no",
     }));
   };
 
@@ -257,7 +257,7 @@ export function SuggestCafeForm({
           <Checkbox
             id="is_laptop_friendly"
             name="is_laptop_friendly"
-            checked={formData.is_laptop_friendly}
+            checked={formData.is_laptop_friendly === "yes"}
             onCheckedChange={(checked) =>
               handleCheckboxChange("is_laptop_friendly", checked as boolean)
             }
@@ -270,7 +270,7 @@ export function SuggestCafeForm({
           <Checkbox
             id="has_wifi"
             name="has_wifi"
-            checked={formData.has_wifi}
+            checked={formData.has_wifi === "yes"}
             onCheckedChange={(checked) =>
               handleCheckboxChange("has_wifi", checked as boolean)
             }
@@ -283,7 +283,7 @@ export function SuggestCafeForm({
           <Checkbox
             id="has_outlets"
             name="has_outlets"
-            checked={formData.has_outlets}
+            checked={formData.has_outlets === "yes"}
             onCheckedChange={(checked) =>
               handleCheckboxChange("has_outlets", checked as boolean)
             }
@@ -296,7 +296,7 @@ export function SuggestCafeForm({
           <Checkbox
             id="wine_bar"
             name="wine_bar"
-            checked={formData.wine_bar}
+            checked={formData.wine_bar === "yes"}
             onCheckedChange={(checked) =>
               handleCheckboxChange("wine_bar", checked as boolean)
             }

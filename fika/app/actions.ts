@@ -64,10 +64,10 @@ export async function suggestCafe(
   const vibe = formData.get("vibe") as string;
   const pricing = formData.get("pricing") as string;
   const busyness = formData.get("busyness") as string;
-  const is_laptop_friendly = formData.get("is_laptop_friendly") === "on";
-  const has_wifi = formData.get("has_wifi") === "on";
-  const has_outlets = formData.get("has_outlets") === "on";
-  const wine_bar = formData.get("wine_bar") === "on";
+  const is_laptop_friendly = formData.get("is_laptop_friendly") === "yes";
+  const has_wifi = formData.get("has_wifi") === "yes";
+  const has_outlets = formData.get("has_outlets") === "yes";
+  const wine_bar = formData.get("wine_bar") === "yes";
 
   // Server-side validation for required fields
   const requiredFields = {
