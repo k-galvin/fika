@@ -61,12 +61,29 @@ The major software components are derived from the CSCI breakdown:
 * **Hosting & Infrastructure CSC:**
   * **Hosting CSU:** Manages the CI/CD pipelines and deployment of the application components. This includes VercelDeploy (frontend) and SupabaseDeploy (backend services).
 
+### Component Summary Table     
+
+| CSCI | Responsibilities | Dependencies | Related Requirements |   
+|------|------------------|--------------|----------------------|
+| **Frontend CSC** | Renders UI, handles user interactions, performs search and filter operations, displays cafe details and charts | Next.js, Supabase Auth, Backend API, OpenStreetMaps | Functional: search, filtering, reviews; Performance: ≤3s search time |   
+| **Backend CSC** | Implements business logic, validates requests, aggregates data, exposes API endpoints | Supabase/PostgreSQL, Supabase Auth | Performance: handle 5,000+ concurrent users; Security: token validation |  
+| **Authentication CSC** | Manages user identity, secure login/signup, token/session management | Supabase Auth | Authentication requirements; Access control for review submission |   
+| **Hosting & Infrastructure CSC** | Manages deployments, CI/CD, environment configuration, uptime | Vercel, Supabase | Availability: 99% uptime; Reliable deployment requirements |   
+
+
 ### 6.2.2 Major Software Interactions
 Communication in the fika architecture is primarily through a client-server model over HTTPS/TLS.     
 
-* **Frontend-Backend/API Interaction:**     
-  * The Frontend CSC (Next.js) communicates with the Backend CSC's API CSU via REST/GraphQL endpoints.     
-  * The Backend API calls abstract the direct connection to the PostgreSQL database (Database CSU), ensuring business logic is enforced before data retrieval or persistence.   
+ ### #Frontend CSC (Presentation Layer) – *Next.js*
+**CSUs:**
+* **Discover Page CSU:** Handles searching, filtering, and map visualization with OpenStreetMaps.
+* **Cafe Page CSU:** Displays cafe details, aggregated ratings, and Vega/Vega-Lite visualizations.
+* **User Logging CSU:** Lets users save favorites and submit reviews.
+
+**Scalability considerations:**
+* Static rendering for frequently accessed pages.
+* Client-side caching to reduce repeated API calls.
+
 
 * **Authentication Interaction:**
   * The Frontend CSC interfaces with the Supabase Authentication CSC for user sign-up and login.
