@@ -101,12 +101,13 @@ Communication in the fika architecture is primarily through a client-server mode
 ### 6.2.3  Architectural Design Diagrams Section
 
 UML Use Case Diagram:      
-<img width="813" height="266" alt="1graph" src="https://github.com/user-attachments/assets/daaaa23f-5db9-41fa-b41e-d675e23acc65" />
+![UML Diagram](./Graphs/newuml.png)
 
 Deployment Diagram:      
 ![Deployment Diagram](./Graphs/2graph.png)
 
-Component Diagram:      
+Component Diagram: 
+![Component Diagram](./Graphs/3graph.png)
 <img width="662" height="545" alt="3graph" src="https://github.com/user-attachments/assets/69ac0461-aba0-41e7-a8e0-be54226ae9cd" />
 
 
