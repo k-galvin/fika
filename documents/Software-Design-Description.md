@@ -74,25 +74,33 @@ The major software components are derived from the CSCI breakdown:
 ### 6.2.2 Major Software Interactions
 Communication in the fika architecture is primarily through a client-server model over HTTPS/TLS.     
 
- ### #Frontend CSC (Presentation Layer) – *Next.js*
-**CSUs:**
-* **Discover Page CSU:** Handles searching, filtering, and map visualization with OpenStreetMaps.
-* **Cafe Page CSU:** Displays cafe details, aggregated ratings, and Vega/Vega-Lite visualizations.
-* **User Logging CSU:** Lets users save favorites and submit reviews.
+Frontend CSC (Presentation Layer) – *Next.js*      
+* **CSUs:**    
+ * **Discover Page CSU:** Handles searching, filtering, and map visualization with OpenStreetMaps.    
+ * **Cafe Page CSU:** Displays cafe details, aggregated ratings, and Vega/Vega-Lite visualizations.    
+ * **User Logging CSU:** Lets users save favorites and submit reviews.    
 
-**Scalability considerations:**
-* Static rendering for frequently accessed pages.
-* Client-side caching to reduce repeated API calls.
+* **Scalability considerations:**
+ * Static rendering for frequently accessed pages.
+ * Client-side caching to reduce repeated API calls.
 
+Backend CSC (Application/Data Layer) – *Supabase / PostgreSQL*
+* **CSUs:**
+ * **Database CSU:** Manages CafeTable, ReviewTable, UserTable using indexing and JSONB attributes.
 
-* **Authentication Interaction:**
-  * The Frontend CSC interfaces with the Supabase Authentication CSC for user sign-up and login.
-  * The Supabase system provides a secure authentication token upon successful login, which the Frontend uses in subsequent API calls to the Backend.
-  * The Backend uses the authentication token to verify the user's identity and restrict access to features like submitting reviews or accessing saved cafes.
+* **Scalability considerations:**
+ * Indexed search queries.
+ * Connection pooling for high concurrency.
+ * Caching options for repeated metadata and map queries.
 
-* **External API Interaction:**
-  * The Frontend's MapView module uses the OpenStreetMaps API to render geographical data and cafe locations.
-  * The Frontend's Cafe Page CSU uses the Vega/Vega-Lite library to render visualizations after retrieving the necessary aggregated data from the Backend API
+Authentication CSC – *Supabase Auth*
+* **CSUs:**
+ * **Auth CSU:** Issues and verifies secure tokens.
+ * **Auth UI Module:** Supports login and signup interfaces.
+
+Hosting & Infrastructure CSC
+* **CSUs:**
+ * **Hosting CSU (VercelDeploy / SupabaseDeploy):** CI/CD pipelines, deployment automation, and configuration management.
 
 ### 6.2.3  Architectural Design Diagrams Section
 
