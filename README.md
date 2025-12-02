@@ -7,4 +7,4 @@ This repository contains two main directories:
 - `fika/`: Contains the source code for the Fika application, a Next.js project.
 
 ## User Manual
-For a detailed user manual and information on how to set up and run the Fika application, please refer to the `README.md` file located in the `fika/` directory.
+For a detailed user manual and information on how to navigate to and use the Fika application, please refer to the `README.md` file located in the `fika/` directory.
