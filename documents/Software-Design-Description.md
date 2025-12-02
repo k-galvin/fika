@@ -86,7 +86,7 @@ Frontend CSC (Presentation Layer) – *Next.js*
 
 Backend CSC (Application/Data Layer) – *Supabase / PostgreSQL*
 * **CSUs:**
- * **Database CSU:** Manages CafeTable, ReviewTable, UserTable using indexing and JSONB attributes.
+  *  **Database CSU:** Manages CafeTable, ReviewTable, UserTable using indexing and JSONB attributes.
 
 * **Scalability considerations:**
  * Indexed search queries.
