@@ -113,50 +113,85 @@ Component Diagram:
 ## 6.3 Detailed CSC and CSU Descriptions Section        
 This section details the Computer Software Components and Computer Software Units that comprise the fika application. The system is divided into logical components based on the three-tier architecture (Frontend, Backend, Database).      
 
-The Frontend CSC is composed of React components and Next.js pages which serve as the CSUs. The Backend CSC consists of service modules that interface with Supabase. The Data CSC consists of the database schemas and types.     
+* **Frontend CSC**: React components and Next.js pages.
+*  **Backend CSC**: Service modules that interact with Supabase.
+*  **Data CSC**: Database schemas and structured data models.
+
 ### 6.3.1 Class Descriptions      
 The following sections provide the details of key classes (React components and Service modules) used in the fika application. These classes are selected to represent the core functionality of the discovery and logging systems.
 
 #### 6.3.1.1 Detailed Class Description: CafeMap 
-The CafeMap class is responsible for rendering a static location map for a specific cafe within the Cafe Details Page. Due to the Next.js server-side rendering environment, this component utilizes dynamic imports to load the Leaflet library only on the client side.      
+The CafeMap class is responsible for rendering a static location map for a specific cafe within the Cafe Details Page. Due to the Next.js server-side rendering environment, this component utilizes dynamic imports to load the Leaflet library only on the client side.    
 
-* Purpose: To convert a text-based address into geographical coordinates using the Nominatim API and display a pinned marker on an interactive map.      
-* Fields (Props & State):     
-  * address: String (Prop) - The physical address of the cafe to be geocoded.    
-  * cafeName: String (Prop) - The name of the cafe used for the marker popup.
-  * coordinates: Object { lat, lon } (State) - The geocoded latitude and longitude derived from the address.
-  * loading: Boolean (State) - Tracks the status of the asynchronous geocoding request.
-  * isClient: Boolean (State) - A flag used to ensure Leaflet components only render after the component has mounted on the client.      
-* Methods:
-  * useEffect(setupMarkerIcon): Fixes Leaflet's default icon path issues by manually overriding the icon URLs for the production environment.
-  * geocodeAddress(): An asynchronous function triggered when the address prop changes. It fetches data from the OpenStreetMap Nominatim API (nominatim.openstreetmap.org) to convert the string address into coordinates.      
-  * MapContainer Render: Dynamically renders the map with a TileLayer and Marker only if coordinates are successfully resolved.
+**Purpose**: Convert a text-based address into geographic coordinates using the Nominatim API and render a Leaflet map showing a pinned marker.      
+
+**Fields (Props & State)**
+
+| Field | Type | Visibility | Description |
+|-------|--------|-------------|-------------|
+| `address` | string | public | Physical address of the cafe |
+| `cafeName` | string | public | Cafe name for marker popup |
+| `coordinates` | `{ lat: number, lon: number }` | private | Derived geocoded coordinates |
+| `loading` | boolean | private | True while geocoding request is active |
+| `isClient` | boolean | private | Ensures Leaflet loads only on client-side |
+
+**Methods**
+
+| Method | Return Type | Visibility | Description |
+|--------|--------------|-------------|-------------|
+| `useEffect(setupMarkerIcon)` | void | private | Fixes Leaflet icon URL overrides for production |
+| `geocodeAddress()` | `Promise<void>` | private | Calls Nominatim to convert address → coordinates |
+| *MapContainer render* | JSX | public | Renders the map, TileLayer, and Marker |
+
+**Error Handling**  
+If geocoding fails, the component logs the error and returns a fallback “Location unavailable” state.
 
 #### 6.3.1.2 Detailed Class Description: CafeService       
 The CafeService is a utility class residing in the application layer. It acts as the abstraction layer between the Frontend UI and the Supabase client, handling data fetching and filtering logic.        
 
 * Purpose: To construct and execute database queries against the Supabase PostgreSQL instance, ensuring that raw database logic is decoupled from the UI components.     
-* Fields:     
-  * supabaseClient: The authenticated instance of the Supabase client used to make requests.     
-* Methods:     
-  * fetchAllCafes(): Returns a list of all cafes stored in the database.      
-  * fetchCafeById(id): Accepts a UUID and returns the detailed metadata for a single cafe.     
-  * searchCafes(filters): Accepts a FilterObject (containing boolean flags for wifi, parking, etc.) and constructs a dynamic SQL query to return matching records.     
-  * getAggregateRating(cafeId): Queries the Review table to calculate the average score for a specific cafe.
+
+**Fields**
+
+| Field | Type | Visibility | Description |
+|-------|--------|-------------|-------------|
+| `supabaseClient` | SupabaseClient | private | Authenticated client used for all queries |
+
+**Methods**
+
+| Method | Parameters | Return Type | Visibility | Description |
+|--------|-------------|--------------|-------------|-------------|
+| `fetchAllCafes()` | none | `Promise<Cafe[]>` | public | Retrieves all cafes |
+| `fetchCafeById(id)` | `id: string` | `Promise<Cafe>` | public | Fetches a single cafe by UUID |
+| `searchCafes(filters)` | `filters: FilterObject` | `Promise<Cafe[]>` | public | Dynamic SQL query using JSONB filters |
+| `getAggregateRating(cafeId)` | `cafeId: string` | `Promise<number>` | public | Computes average rating |
+
+**Error Handling**  
+Returns structured error objects from Supabase and surfaces user-friendly error states.
  
 #### 6.3.1.3 Detailed Class Description: SuggestCafeForm        
 The SuggestCafeForm class manages the interface for users to propose new cafes for the platform. It utilizes a modal dialog and integrates with Server Actions to handle data submission.    
 
 * Purpose: To collect structured data about a potential new cafe, including categorical attributes and boolean features, and submit this to the backend.
-* Fields:
-  * isOpen: Boolean (Prop) - Controls the visibility of the modal dialog.
-  * state: Object (Hook) - derived from useActionState, tracks the result message of the form submission.
-  * pending: Boolean (Hook) - derived from useFormStatus, tracks if a submission is currently in progress to disable the submit button.
-* Methods:
-  * SuggestCafeForm Render: Renders a form containing text inputs (Name, Address) and Dropdown Selects populated by Constants.public.Enums (City, Seating, Parking, Vibe, Pricing, Busyness).
-  * formAction: Binds the form submission event to the suggestCafe server action.
-  * SubmitButton: A sub-component that monitors the pending status to provide visual feedback ("Submitting...") during network requests.
 
+**Fields**
+
+| Field | Type | Visibility | Description |
+|-------|--------|-------------|-------------|
+| `isOpen` | boolean | public | Controls modal visibility |
+| `state` | object | private | Current server action result message |
+| `pending` | boolean | private | True while submission is in progress |
+
+**Methods**
+
+| Method | Return Type | Visibility | Description |
+|--------|--------------|-------------|-------------|
+| *SuggestCafeForm render* | JSX | public | Renders input fields and dropdowns |
+| `formAction` | bound server action | public | Submits form data to backend |
+| `SubmitButton` | JSX | public | Shows active “Submitting…” state |
+
+**Error Handling**  
+Displays server-returned validation errors (ex: missing fields, invalid types).
 
 ### 6.3.3 Detailed Data Structure Descriptions        
 This section details specific data structures used for storage and complex processing within the CSUs.       
