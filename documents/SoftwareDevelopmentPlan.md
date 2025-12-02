@@ -3,6 +3,18 @@ This Software Development Plan provides the details of the planned development f
 
 The Fika application addresses the current fragmentation of coffee shop information by condensing data from various platforms (e.g., Google Reviews, TikTok) into a single, specialized tool. Its core value lies in providing specific details relevant to coffee shop goers, such as Wi-Fi, outlets, and seating capacity, which are often absent from general restaurant review sites. The application will be developed using a Next.js frontend, a PostgreSQL database managed by Supabase, and integrated with OpenStreetMaps for geographical data visualization. Development activities include architectural design, implementation of the frontend (Discover, Cafe, and User Logging pages) and backend APIs, integration of third-party services (Firebase for authentication, Vega for visualization), and continuous testing.      
 
+The project will adhere to a Waterfall development methodology. This approach emphasizes sequential phases, where all planning and design are completed and documented before implementation begins. 
+
+# The major phases are: Requirements, Design, Implementation, Testing, and Deployment:
+* Requirements Phase (Weeks 01-05): Focuses on gathering, analyzing, and documenting all functional and non-functional requirements, culminating in the Software Requirements Specification (SRS).
+
+* Design Phase (Weeks 06-12): Focuses on converting the requirements into a system architecture and detailed design, including component breakdown, database schema, and interface definitions. This phase produces the Software Design Document (SDD).
+
+* Implementation Phase (Weeks 10-16): Developers write and integrate the code for the Next.js frontend, backend APIs, and third-party services, based on the finalized design.
+
+* Testing Phase (Weeks 13-16): Includes unit testing, integration testing, and system testing, leading to the Alpha/Beta Demonstration and refinement of the final product.
+
+Deployment/Maintenance Phase (Week 16): Involves final delivery, code freeze, and hand-off of the fully documented, production-ready application.
 The project's major milestones are scheduled as follows:    
 * Requirements Specification Finalization: Week 05    
 * Software Development Plan (SDP) Completion: Week 07     
@@ -60,31 +72,35 @@ Following are the software requirements for development of fika:
 | Category          | Requirement                                   |  
 |-------------------|-----------------------------------------------|  
 | Operating System  | macOS 12+, Windows 10+, or Ubuntu 22.04       |  
-| Framework         | Next.js (latest LTS)                          |  
+| Framework         | Next.js (v.14+)                          |  
 | Database          | PostgreSQL 15+                                |  
 | Hosting Tools     | Vercel CLI, Supabase CLI                      |  
 | Authentication    | Supabase                                  |  
 | API Integration   | OpenStreetMaps API, optional Google Places API |  
-| Visualization     | Vega/Vega-Lite                                |  
+| Visualization     | Vega/Vega-Lite (v.5+)                                |  
 | Programming Tools | Node.js 18+, npm or yarn, Git, VS Code        |  
 
 **Notes:**  
 - Node.js 18+ is required for compatibility with Next.js.  
 - PostgreSQL 15+ provides advanced indexing and JSONB support, necessary for cafe metadata.  
 - Supabase is chosen for ease of integration with PostgreSQL and real-time APIs.
+- Licensing/ cost is free.
   
 ## 4.3 Project Organization    
 This section outlines the organizational structure of the Fika development team by assigning primary responsibilities for key functional areas and tasks to each team member. This approach ensures clear ownership and accountability across the project's lifecycle.   
 
 | **Team Member** | **Assigned Tasks & Responsibilities** |
 |------------------|---------------------------------------|
-| Giselle | Cafe Page UI/UX,Detailed Cafe Page |
-| Jillian | Cafe Page UI/UX, Map Functionality (OpenStreetMaps API) |
-| Kate | Home Page UI/UX, Data Visualization (Vega Charts), Discover Page Filtering Logic |
-| Ahtziri | Cafe Page UI/UX, User Logging Subsystem |
+| Backend/ API Lead: Giselle | Cafe Page UI/UX,Detailed Cafe Page |
+| Frontend/Mapping Lead: Jillian | Cafe Page UI/UX, Map Functionality (OpenStreetMaps API) |
+| UI/UX/ Datat visulization Specialist: Kate | Home Page UI/UX, Data Visualization (Vega Charts), Discover Page Filtering Logic |
+| Database/ Authentication Specialist: Ahtziri | Cafe Page UI/UX, User Logging Subsystem |
 | All Members | Initial Environment Setup, UX Design, Unit/Integration Testing, Manual Testing, Data Entry, API Research |
 
-
+# Communication Plan
+* Daily Stand-ups: Brief text and in-person updates to report on what was done yesterday, what will be done today, and any roadblocks.
+* Weekly in person meetings/ code sessions: in-depth progress reviews, goals for the week, major design issues/changes.
+* Code reviews: Any major code changes were reviewed before being merged and committed.
 ## 4.4 Schedule
 This section provides schedule information for the **fika** project.
 
