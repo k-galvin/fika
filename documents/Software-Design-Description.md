@@ -108,7 +108,6 @@ Deployment Diagram:
 
 Component Diagram: 
 ![Component Diagram](./Graphs/3graph.png)
-<img width="662" height="545" alt="3graph" src="https://github.com/user-attachments/assets/69ac0461-aba0-41e7-a8e0-be54226ae9cd" />
 
 
 ## 6.3 Detailed CSC and CSU Descriptions Section        
@@ -174,14 +173,17 @@ This section provides visual representations of the dynamic behavior and static 
 #### 6.3.4.1 Sequence Diagram: Client-Side Geocoding (CafeMap)      
 This diagram details the flow of control when the CafeMap component loads the location based on the provided address.      
 <img width="555" height="594" alt="6 3 4 1" src="https://github.com/user-attachments/assets/b3f8b9ba-716c-46f4-99de-e797bedf9a3e" />
+![Sequence Diagram](./Graphs/6.3.4.1.png)
 
 #### 6.3.4.2 Sequence Diagram: Suggest Cafe Submission (Server Actions)     
 This diagram visualizes the communication flow for the SuggestCafeForm, utilizing the Next.js Server Action pattern (suggestCafe).       
 <img width="947" height="699" alt="6 3 4 2" src="https://github.com/user-attachments/assets/069744c2-0f88-4de0-941d-698fd9194495" />
+![Sequence Diagram](./Graphs/6.3.4.2.png)
 
 #### 6.3.4.3 Class Diagram: Frontend Component Structure
 This diagram shows the structural relationships (composition) between the key frontend units (CSUs). Member visibility is Public (+).       
 <img width="676" height="569" alt="6 3 4 3" src="https://github.com/user-attachments/assets/a4890bd8-f404-4f77-a363-96e878670e0f" />
+![class Diagram](./Graphs/6.3.4.3.png)
 
 
 ## 6.4 Database Design and Description     
