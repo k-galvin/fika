@@ -5,7 +5,7 @@ The Fika application addresses the current fragmentation of coffee shop informat
 
 The project will adhere to a Waterfall development methodology. This approach emphasizes sequential phases, where all planning and design are completed and documented before implementation begins. 
 
-# The major phases are: Requirements, Design, Implementation, Testing, and Deployment:
+## The major phases are: Requirements, Design, Implementation, Testing, and Deployment:
 * Requirements Phase (Weeks 01-05): Focuses on gathering, analyzing, and documenting all functional and non-functional requirements, culminating in the Software Requirements Specification (SRS).
 
 * Design Phase (Weeks 06-12): Focuses on converting the requirements into a system architecture and detailed design, including component breakdown, database schema, and interface definitions. This phase produces the Software Design Document (SDD).
@@ -109,7 +109,7 @@ This section provides schedule information for the **fika** project.
 ### 4.4.1 PERT Chart or GANTT Chart
 **GANTT Chart**
 
-![GANNT Chart](../documents/gannt.png)
+![GANTT Diagram](./Graphs/gannt.png)
 ****
 
 ---
