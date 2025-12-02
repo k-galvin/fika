@@ -1,87 +1,62 @@
-# Fika: Cafe Discovery & Social App
+# Fika User Manual
 
-Fika is a web application designed for coffee enthusiasts to discover, track, and share their favorite cafes. Inspired by the Swedish tradition of "fika" — a cozy coffee and cake break — this app helps users find the perfect spot for their next coffee adventure and share their experiences with friends.
-
-## Features
-
-- **Cafe Discovery:** Explore nearby cafes using an interactive map and a searchable list.
-- **Advanced Filtering:** Filter cafes by amenities like Wi-Fi, power outlets, and seating availability.
-- **Detailed Cafe Profiles:** View comprehensive details for each cafe, including photos, user ratings, and visitor activity.
-- **User Authentication:** Secure sign-up, login, and password management for personalized experiences.
-- **Personal Profiles:** Track your visited cafes, view activity charts, and manage your profile.
-- **Social Connections:** Find and connect with friends to share cafe discoveries.
-- **Suggest a Cafe:** Contribute to the community by suggesting new cafes to be added.
-- **Admin Dashboard:** Administrative tools for managing cafe suggestions and other site content.
-
-## Tech Stack
-
-- **Framework:** [Next.js](https://nextjs.org/)
-- **Language:** [TypeScript](https://www.typescriptlang.org/)
-- **Backend & Database:** [Supabase](https://supabase.io/)
-- **Styling:** [Tailwind CSS](https://tailwindcss.com/) with [shadcn/ui](https://ui.shadcn.com/) components
-- **Mapping:** [Leaflet](https://leafletjs.com/) & [React-Leaflet](https://react-leaflet.js.org/)
-- **Data Visualization:** [Recharts](https://recharts.org/)
-- **Testing:** [Jest](https://jestjs.io/) & [React Testing Library](https://testing-library.com/)
-- **Linting:** [ESLint](https://eslint.org/)
+Welcome to Fika! This guide will walk you through how to use the Fika web app, deployed at [https://findyourfika.vercel.app](https://findyourfika.vercel.app). Fika is a place for coffee lovers to discover, share, and enjoy the best cafes around.
 
 ## Getting Started
 
-To get a local copy up and running, follow these simple steps.
+### Creating an Account
 
-### Prerequisites
+To get the most out of Fika, you'll want to create an account. This will allow you to save your favorite cafes, log your visits, and connect with friends.
 
-- Node.js (v20 or later)
-- npm
+1.  Click the "Sign Up" button on the top right of the homepage.
+2.  Fill in your details and create a password.
+3.  You'll receive a confirmation email. Click the link in the email to verify your account.
 
-### Installation
+### Logging In
 
-1. Clone the repo:
-   ```sh
-   git clone https://github.com/your-username/your-repository.git
-   ```
-2. Navigate to the project directory:
-   ```sh
-   cd fika
-   ```
-3. Install NPM packages:
-   ```sh
-   npm install
-   ```
-4. Set up your local environment variables by creating a `.env.local` file. You will need to add your Supabase project URL and anon key:
-   ```env
-   NEXT_PUBLIC_SUPABASE_URL=YOUR_SUPABASE_URL
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=YOUR_SUPABASE_ANON_KEY
-   ```
+Once you have an account, you can log in by clicking the "Login" button.
 
-### Running the Development Server
+## Discovering Cafes
 
-Execute the following command to start the development server with Turbopack:
+The "Discover" page is your gateway to finding new cafes. You can browse a list of cafes and see them on an interactive map.
 
-```bash
-npm run dev
-```
+### Filtering
 
-Open [http://localhost:3000](http://localhost:3000) in your browser to see the result.
+Use the filters to narrow down your search. You can filter by:
+*   **Amenities:** Find cafes with WiFi, outlets, and more.
+*   **Price:** Look for cafes that fit your budget.
+*   **Seating:** Find a spot with the right kind of seating, whether it's a cozy chair or a spot to work on your laptop.
 
-## Running Tests
+## Cafe Pages
 
-To run the full suite of tests and linters, use the `check` script:
+When you click on a cafe, you'll be taken to its dedicated page. Here you'll find:
+*   **Details:** Address, hours, and contact information.
+*   **Photos:** See what the cafe looks like.
+*   **Reviews:** Read what other Fika users have to say.
+*   **Activity:** See how popular the cafe is.
 
-```bash
-npm run check
-```
+### Saving and Logging Visits
 
-You can also run tests individually:
+*   **Save:** Click the "Save" button to add a cafe to your list of favorites.
+*   **Log a Visit:** Let everyone know you've been there by clicking "Log Visit".
 
-- To run the linter:
-  ```bash
-  npm run lint
-  ```
-- To run Jest tests in watch mode:
-  ```bash
-  npm run test
-  ```
-- To run Jest tests for a CI environment:
-  ```bash
-  npm run test:ci
-  ```
+## Your Profile
+
+Your profile page is where you can see all of your Fika activity.
+*   **My Cafes:** View your saved cafes and your visited cafes.
+*   **Charts:** See visualizations of your cafe visiting habits.
+
+## Friends
+
+Connect with other Fika users to see what cafes they're visiting.
+*   **Find Friends:** Search for your friends by their username.
+*   **Friend Activity:** See a feed of your friends' recent cafe visits.
+
+## Suggest a Cafe
+
+Know of a great cafe that's not on Fika yet? We'd love to hear about it!
+1.  Go to the "Suggest a Cafe" page.
+2.  Fill out the form with as much information as you can.
+3.  Our team will review your suggestion and add it to the app.
+
+We hope you enjoy using Fika! Now go out and find your perfect fika.
