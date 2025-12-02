@@ -123,7 +123,7 @@ The following sections provide the details of key classes (React components and 
 #### 6.3.1.1 Detailed Class Description: CafeMap 
 The CafeMap class is responsible for rendering a static location map for a specific cafe within the Cafe Details Page. Due to the Next.js server-side rendering environment, this component utilizes dynamic imports to load the Leaflet library only on the client side.    
 
-**Purpose**: Convert a text-based address into geographic coordinates using the Nominatim API and render a Leaflet map showing a pinned marker.      
+* Purpose: Convert a text-based address into geographic coordinates using the Nominatim API and render a Leaflet map showing a pinned marker.
 
 **Fields (Props & State)**
 
