@@ -112,7 +112,34 @@ Each subsection below corresponds to a CSC defined in the CSCI breakdown.
     * Requirements:        
       * 5.3.4.1 The system shall host the frontend using Vercel.      
       * 5.3.4.2 The system shall host the database using Supabase.       
-      * 5.3.4.3 The system shall automatically redeploy on updates using CI/CD pipelines.      
+      * 5.3.4.3 The system shall automatically redeploy on updates using CI/CD pipelines.
+     
+
+* **5.3.5 Error Handling CSC**:
+  * Description: Error handling subsystem shall ensure that failures such as invalid inputs, failed API calls, or database errors, are handled gracefully and communicated to the user.            
+    * Requirements:        
+      * 5.3.5.1 The system shall validate user inputs on the frontend and backend, and shall display clear error messages when inputs are invalid.
+      * 5.3.5.2 The system shall display user-friendly error messages when network requests such as OpenStreetMaps or Supabase fail, without exposing internal error details.
+     
+
+* **5.3.6 Security & Privacy CSC**:
+  * Description: The security and privacy subsystem shall ensure the protection of user data beyond basic authentication, including data protection and privacy practices.           
+    * Requirements:        
+      * 5.3.6.1 The system shall ensure that sensitive data such as authentication tokens and user identifers are never stored in insecure client-side storage.
+      * 5.3.6.2 The system shall limit access to user-specifc data such as saved cafes and reviews based on the authenticated user's ID.
+      * 5.3.6.3 The system shall avoid storing unnecessary personal data and shall only store information required for core functionality such as saved cafes and ratings.
+
+     
+* **5.3.7 Accessibility CSC**:
+  * Description: The accessibility subsystem shall ensure that the application is usable by a wide range of users, including those using assistive technologies.           
+    * Requirements:        
+      * 5.3.7.1 The system shall display dark text on a light color background for color contrast.
+
+
+* **5.3.7 Offline Mode CSC**:
+  * Description: The subsystem shall make sure of standard internet practices to display a "No Internet" page.            
+    * Requirements:        
+      * 5.3.7.1 The system shall reroute to a standard "No Internet" page if internet connection is unavailable.
 
 
 ## **5.4 Performance Requirements** 
@@ -152,6 +179,13 @@ The fika system shall provide a smooth and responsive experience for users. This
   * Description: The system shall efficiently handle storage for cafes, reviews, and user data.
   * Requirements:     
     * 5.4.7.1 The system shall store up to 1 million cafe entries and 10 million user reviews without requiring major database restructuring.
+
+* **5.4.8 Mobile Responsiveness Requirement**:
+  * Description: The system shall remain accessible on a mobile screen.
+  * Requirements:     
+    * 5.4.8.1 The system shall collapse the navigation bar into a hamburger icon that brings up a dropdown.
+    * 5.4.8.2 The system shall narrow the cafe display grid to fit a mobile screen.
+
 
 
 ## **5.5 Environment Requirements**: 
@@ -218,4 +252,9 @@ Following are the software requirements for deployment of fika:
 - Supabase provides managed PostgreSQL and authentication integration, reducing setup overhead.  
 - The use of OpenStreetMaps API is justified as a free and open alternative to commercial mapping APIs, ensuring cost-effectiveness for the project.  
 - If APIs such as Google Places or Gemini are adopted, they will be included only if their free tiers meet usage requirements.  
+
+### 5.5.3 Testing Environment Requirements 
+- Using Jest as the testing framework
+- Have corresponding unit test files for each component
+- Have integration tests for each primary page
 
