@@ -252,6 +252,7 @@ The Entity-Relationship diagram for the *fika* database models four core entitie
 * **cafes** — physical cafe locations with metadata and amenity details
 * **reviews** — user-generated feedback associated with cafes  
 * **saved_cafes** — join table representing user favorites
+![ER Diagram](./Graphs/6.4.1.png)
 
 ### 6.4.2 Database Access      
 #### **profiles**
