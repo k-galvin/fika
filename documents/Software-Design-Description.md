@@ -193,14 +193,39 @@ The SuggestCafeForm class manages the interface for users to propose new cafes f
 **Error Handling**  
 Displays server-returned validation errors (ex: missing fields, invalid types).
 
+### 6.3.2 Detailed Interface Descriptions
+This section details the internal and external interfaces used by the system.
+
+#### 6.3.2.1 External API Interfaces
+* OpenStreetMaps (Nominatim):
+  * Endpoint: GET https://nominatim.openstreetmap.org/search
+  * Request Format: ?q={address}&format=json&limit=1
+  * Response Format: JSON array containing lat and lon strings.
+  * Error Handling: The system implements a 3-second timeout. If the API does not respond, the map defaults to a static placeholder image.
+* Supabase Auth API:
+  * Method: OAuth 2.0 / JWT
+  * Flow: The client sends credentials; Supabase returns a sb-access-token (JWT) and a refresh-token.
+  * Session Management: The sb-access-token is attached to the Authorization header (Bearer <token>) for all subsequent RLS-protected database requests.
+
+#### 6.3.2.2 Internal Client-Server Interface
+* Cafe Data Retrieval:
+  * Interface: Supabase JS Client (@supabase/supabase-js)
+  * Protocol: HTTPS/Secure WebSocket (for real-time subscriptions)
+  * Data Format: Strictly typed JSON objects matching the Database Schema (Section 6.4).
+
 ### 6.3.3 Detailed Data Structure Descriptions        
 This section details specific data structures used for storage and complex processing within the CSUs.       
 
-* GeoJSON Feature Collection: The MapView module utilizes the standard GeoJSON data structure to render cafe locations. This format is required for compatibility with the OpenStreetMaps/Leaflet libraries.
-  * Structure: A JSON object containing a "type": "FeatureCollection" and an array of "features." Each feature contains "geometry" (coordinates) and "properties" (cafe metadata like name and ID).      
-* JSONB Amenities Blob: To allow for flexible filtering without altering the database schema frequently, cafe amenities are stored in a PostgreSQL JSONB data structure within the CafeTable.
-  * Structure: {"wifi": true, "parking_lot": false, "street_parking": true, "seating_capacity": "medium"}.
-  * Purpose: This allows the CafeService to perform efficient key-value queries (e.g., amenities ->> 'wifi' = 'true') directly within the database engine.
+* GeoJSON Feature Collection: Used by the MapView module.
+  * Structure:  { "type": "Feature", "geometry": { "type": "Point", "coordinates": [lon, lat] }, "properties": { "name": "Cafe Name" } }
+
+* JSONB Amenities Blob: Stored in PostgreSQL cafes table.
+  * Structure: {"wifi": true, "seating": "large", "outlets": false}
+  * Constraint: Boolean values must not be null.
+
+* Review Object: Passed between Frontend and Backend.
+  * Structure: { "id": UUID, "cafe_id": UUID, "user_id": UUID, "rating": Integer (1-5), "comment": String, "created_at": Timestamp }
+  * Validation: Rating must be an integer between 1 and 5. Comment is sanitized to prevent XSS attacks.
 
 ### 6.3.4 Detailed Design Diagrams      
 This section provides visual representations of the dynamic behavior and static structure of the fika system. These diagrams bridge the gap between the code specifications and the architectural overview.      
