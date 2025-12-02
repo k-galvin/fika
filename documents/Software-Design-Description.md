@@ -74,8 +74,7 @@ The major software components are derived from the CSCI breakdown:
 ### 6.2.2 Major Software Interactions
 Communication in the fika architecture is primarily through a client-server model over HTTPS/TLS.     
 
-Frontend CSC (Presentation Layer) – *Next.js*      
-* **CSUs:**    
+* Frontend CSC (Presentation Layer) – *Next.js*        
  * **Discover Page CSU:** Handles searching, filtering, and map visualization with OpenStreetMaps.    
  * **Cafe Page CSU:** Displays cafe details, aggregated ratings, and Vega/Vega-Lite visualizations.    
  * **User Logging CSU:** Lets users save favorites and submit reviews.    
@@ -85,7 +84,6 @@ Frontend CSC (Presentation Layer) – *Next.js*
  * Client-side caching to reduce repeated API calls.
 
 Backend CSC (Application/Data Layer) – *Supabase / PostgreSQL*
-* **CSUs:**
   *  **Database CSU:** Manages CafeTable, ReviewTable, UserTable using indexing and JSONB attributes.
 
 * **Scalability considerations:**
@@ -94,12 +92,10 @@ Backend CSC (Application/Data Layer) – *Supabase / PostgreSQL*
  * Caching options for repeated metadata and map queries.
 
 Authentication CSC – *Supabase Auth*
-* **CSUs:**
  * **Auth CSU:** Issues and verifies secure tokens.
  * **Auth UI Module:** Supports login and signup interfaces.
 
 Hosting & Infrastructure CSC
-* **CSUs:**
  * **Hosting CSU (VercelDeploy / SupabaseDeploy):** CI/CD pipelines, deployment automation, and configuration management.
 
 ### 6.2.3  Architectural Design Diagrams Section
