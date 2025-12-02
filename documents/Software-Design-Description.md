@@ -64,6 +64,15 @@ The major software components are derived from the CSCI breakdown:
 ### 6.2.2 Major Software Interactions
 Communication in the fika architecture is primarily through a client-server model over HTTPS/TLS.     
 
+### Component Summary Table
+
+| CSCI | Responsibilities | Dependencies | Related Requirements |
+|------|------------------|--------------|----------------------|
+| **Frontend CSC** | Renders UI, handles user interactions, performs search and filter operations, displays cafe details and charts | Next.js, Supabase Auth, Backend API, OpenStreetMaps | Functional: search, filtering, reviews; Performance: ≤3s search time |
+| **Backend CSC** | Implements business logic, validates requests, aggregates data, exposes API endpoints | Supabase/PostgreSQL, Supabase Auth | Performance: handle 5,000+ concurrent users; Security: token validation |
+| **Authentication CSC** | Manages user identity, secure login/signup, token/session management | Supabase Auth | Authentication requirements; Access control for review submission |
+| **Hosting & Infrastructure CSC** | Manages deployments, CI/CD, environment configuration, uptime | Vercel, Supabase | Availability: 99% uptime; Reliable deployment requirements |
+
 * **Frontend-Backend/API Interaction:**     
   * The Frontend CSC (Next.js) communicates with the Backend CSC's API CSU via REST/GraphQL endpoints.     
   * The Backend API calls abstract the direct connection to the PostgreSQL database (Database CSU), ensuring business logic is enforced before data retrieval or persistence.   
