@@ -1,5 +1,7 @@
 # CMSI4071-Group12
-Senior Project Repo
+Fall Semester Senior Project   
+
+Contributors: Kate Galvin, Ahtziri Gutierrez, Giselle Eliasi, Jillian Hunter 
 
 ## Project Structure
 This repository contains two main directories:
@@ -7,4 +9,7 @@ This repository contains two main directories:
 - `fika/`: Contains the source code for the Fika application, a Next.js project.
 
 ## User Manual
-For a detailed user manual and information on how to navigate to and use the Fika application, please refer to the `README.md` file located in the `fika/` directory.
+Fika can be accessed at [https://findyourfika.vercel.app](https://findyourfika.vercel.app)   
+
+For a detailed user manual and information on how to use the Fika application, please refer to the `README.md` file located in the `fika/` directory.
+
