@@ -5,10 +5,7 @@ import {
   Cell,
   Tooltip,
   ResponsiveContainer,
-  Legend,
-  PieLabelRenderProps,
 } from "recharts";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface PieChartData {
   name: string;
@@ -22,16 +19,12 @@ interface VisitedCafesPieChartProps {
 }
 
 const COLORS = [
-  "#0088FE",
-  "#00C49F",
-  "#FFBB28",
-  "#FF8042",
-  "#A28DFF",
-  "#FF69B4",
-  "#8A2BE2",
-  "#00CED1",
-  "#FFD700",
-  "#ADFF2F",
+  "hsl(25 40% 20%)",   /* Coffee */
+  "hsl(140 20% 30%)",  /* Matcha */
+  "hsl(35 30% 60%)",   /* Roasted Bean */
+  "hsl(25 30% 45%)",   /* Espresso */
+  "hsl(160 15% 40%)",  /* Mint Leaf */
+  "hsl(35 40% 80%)",   /* Latte Foam */
 ];
 
 const VisitedCafesPieChart: React.FC<VisitedCafesPieChartProps> = ({
@@ -40,18 +33,16 @@ const VisitedCafesPieChart: React.FC<VisitedCafesPieChartProps> = ({
 }) => {
   if (!data || data.length === 0) {
     return (
-      <div className="text-center text-gray-500">
-        No data available for {title}.
+      <div className="text-center text-primary/40 font-kate italic py-10">
+        No entries recorded for {title}.
       </div>
     );
   }
 
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <CardTitle className="text-center">{title} Breakdown</CardTitle>
-      </CardHeader>
-      <CardContent className="h-80">
+    <div className="w-full flex flex-col items-center">
+      <h3 className="font-kate font-bold text-xl text-primary mb-4">{title}</h3>
+      <div className="h-64 w-full">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
@@ -59,26 +50,34 @@ const VisitedCafesPieChart: React.FC<VisitedCafesPieChartProps> = ({
               cx="50%"
               cy="50%"
               labelLine={false}
-              outerRadius={70}
-              fill="#8884d8"
+              outerRadius={80}
               dataKey="value"
-              label={({ percent }: PieLabelRenderProps) =>
-                `${(((percent || 0) as number) * 100).toFixed(0)}%`
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              label={({ name, percent }: any) =>
+                `${name} (${(((percent || 0) as number) * 100).toFixed(0)}%)`
               }
+              className="font-kate text-[10px]"
             >
               {data.map((entry, index) => (
                 <Cell
                   key={`cell-${index}`}
                   fill={COLORS[index % COLORS.length]}
+                  stroke="transparent"
                 />
               ))}
             </Pie>
-            <Tooltip />
-            <Legend />
+            <Tooltip 
+              contentStyle={{ 
+                fontFamily: 'var(--font-kate)', 
+                borderRadius: '12px',
+                border: '1.5px solid hsl(var(--primary) / 0.1)',
+                backgroundColor: 'hsl(var(--background))'
+              }}
+            />
           </PieChart>
         </ResponsiveContainer>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
 

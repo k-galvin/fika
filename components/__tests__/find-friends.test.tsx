@@ -67,7 +67,7 @@ describe("FindFriends", () => {
       render(<FindFriends />);
     });
     expect(
-      screen.getByPlaceholderText("Search for friends...")
+      screen.getByPlaceholderText("Find other cafe lovers...")
     ).toBeInTheDocument();
   });
 
@@ -96,13 +96,13 @@ describe("FindFriends", () => {
       expect(screen.getByText("testuser")).toBeInTheDocument();
     });
 
-    const addButton = screen.getByText("Add Friend");
+    const addButton = screen.getByText("Add");
     fireEvent.click(addButton);
 
     await waitFor(() => {
       expect(sendFriendRequest).toHaveBeenCalledWith("user-456");
     });
 
-    expect(await screen.findByText("Request Sent")).toBeInTheDocument();
+    expect(await screen.findByText("Pending")).toBeInTheDocument();
   });
 });

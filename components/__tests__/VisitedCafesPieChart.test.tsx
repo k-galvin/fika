@@ -13,12 +13,12 @@ describe('VisitedCafesPieChart', () => {
 
   it('renders the chart title correctly', () => {
     render(<VisitedCafesPieChart data={mockData} title="Test Category" />);
-    expect(screen.getByText('Test Category Breakdown')).toBeInTheDocument();
+    expect(screen.getByText('Test Category')).toBeInTheDocument();
   });
 
   it('renders a message when no data is available', () => {
     render(<VisitedCafesPieChart data={[]} title="Empty Category" />);
-    expect(screen.getByText('No data available for Empty Category.')).toBeInTheDocument();
+    expect(screen.getByText(/No entries recorded for Empty Category/i)).toBeInTheDocument();
   });
 
   it('renders the Pie component with correct data and props', () => {
@@ -28,9 +28,9 @@ describe('VisitedCafesPieChart', () => {
     const pieData = JSON.parse(pieDataElement.textContent || '[]');
     
     expect(pieData).toEqual(mockData);
-    expect(pieElement.dataset.outerRadius).toBe('70');
+    expect(pieElement.dataset.outerRadius).toBe('80');
     expect(pieElement.dataset.dataKey).toBe('value');
-    expect(pieElement.dataset.label).toBe('10%');
+    expect(pieElement.dataset.label).toBe('Category A (10%)');
   });
 
   it('renders the correct number of Cells based on data', () => {

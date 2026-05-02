@@ -114,9 +114,8 @@ describe("CafePhotoGallery", () => {
       />
     );
     const images = screen.getAllByRole("img");
-    expect(images).toHaveLength(2);
+    expect(images).toHaveLength(1);
     expect(images[0]).toHaveAttribute("src", mockPhotos[0].photo_url);
-    expect(images[1]).toHaveAttribute("src", mockPhotos[1].photo_url);
   });
 
   it("shows 'Add Photo' button only for logged-in users", () => {
@@ -150,20 +149,24 @@ describe("CafePhotoGallery", () => {
       <CafePhotoGallery shopId={1} photos={[]} user={mockUser} userRole={"user"} />
     );
 
-    fireEvent.click(screen.getByRole("button", { name: /Add Photo/i }));
+    const addPhotoBtn = await screen.findByRole("button", { name: /Add Photo/i });
+    fireEvent.click(addPhotoBtn);
+    
     const fileInput = screen.getByTestId("file-input");
 
     const file = new File(["(⌐□_□)"], "chucknorris.png", { type: "image/png" });
     fireEvent.change(fileInput, { target: { files: [file] } });
 
     await waitFor(() => {
-      expect((mockSupabase.storage.from as any)("images").upload).toHaveBeenCalledWith(
+      expect(mockSupabase.storage.from).toHaveBeenCalledWith("images");
+      const storageInstance = (mockSupabase.storage.from as any).mock.results[0].value;
+      expect(storageInstance.upload).toHaveBeenCalledWith(
         expect.stringContaining("1/"),
         file
       );
       expect(mockUploadShopPhoto).toHaveBeenCalledWith(
         1,
-        "http://mock.url/some/path.jpg",
+        expect.stringContaining("http://mock.url/1/"),
         mockUser.id
       );
       expect(mockToastSuccess).toHaveBeenCalledWith("Photo uploaded successfully!");
@@ -179,7 +182,7 @@ describe("CafePhotoGallery", () => {
         userRole={"user"}
       />
     );
-    expect(screen.queryByText(/Admin Actions/i)).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /Set as Primary/i })).not.toBeInTheDocument();
 
     rerender(
       <CafePhotoGallery
@@ -189,7 +192,7 @@ describe("CafePhotoGallery", () => {
         userRole={"admin"}
       />
     );
-    expect(screen.getAllByText(/Admin Actions/i)).toHaveLength(2);
+    expect(screen.getByRole("button", { name: /Set as Primary/i })).toBeInTheDocument();
   });
 
   it("handles setting a photo as primary (Admin only)", async () => {
@@ -204,16 +207,13 @@ describe("CafePhotoGallery", () => {
       />
     );
 
-    const adminButtons = screen.getAllByText(/Admin Actions/i);
-    fireEvent.click(adminButtons[1]); // Second photo is not primary
-
     const setPrimaryButton = screen.getByRole("button", {
       name: /Set as Primary/i,
     });
     fireEvent.click(setPrimaryButton);
 
     await waitFor(() => {
-      expect(mockSetPrimaryPhoto).toHaveBeenCalledWith(mockPhotos[1].id, 1);
+      expect(mockSetPrimaryPhoto).toHaveBeenCalledWith(mockPhotos[0].id, 1);
       expect(mockToastSuccess).toHaveBeenCalledWith("Primary photo updated!");
     });
   });

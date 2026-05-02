@@ -103,9 +103,9 @@ describe("ProfilePage", () => {
 
     render(await ProfilePage());
 
-    expect(screen.getByText("testuser's Profile")).toBeInTheDocument();
+    expect(screen.getByText("testuser")).toBeInTheDocument();
     expect(screen.getByText("test@example.com")).toBeInTheDocument();
-    expect(screen.getByText("Account Information")).toBeInTheDocument();
+    expect(screen.getByText("Member Details")).toBeInTheDocument();
   });
 
   it("renders ProfileCharts with visited cafes", async () => {

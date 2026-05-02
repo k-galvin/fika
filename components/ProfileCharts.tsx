@@ -85,24 +85,26 @@ const ProfileCharts: React.FC<ProfileChartsProps> = ({
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          Visited Cafes Breakdown
+    <Card className="handwritten-border !border-primary/10 bg-secondary/10 shadow-none">
+      <CardHeader className="pb-2">
+        <CardTitle className="text-2xl text-primary/80">
+          Preferences Breakdown
         </CardTitle>
-        <CardDescription>
-          {subtitle || "Analyze your visited cafe preferences."}
+        <CardDescription className="italic">
+          {subtitle || "Analyze your visited cafe habits."}
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="w-60">
+      <CardContent className="space-y-8">
+        <div className="flex justify-center">
           <ColumnSelectDropdown
             selectedColumn={selectedColumn}
             onSelectColumn={handleSelectColumn}
             columns={COLUMNS_TO_ANALYZE}
           />
         </div>
-        <VisitedCafesPieChart data={pieChartData} title={formattedTitle} />
+        <div className="bg-background/40 p-6 rounded-xl border border-primary/5">
+          <VisitedCafesPieChart data={pieChartData} title={formattedTitle} />
+        </div>
       </CardContent>
     </Card>
   );

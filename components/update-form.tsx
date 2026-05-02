@@ -96,7 +96,7 @@ export function UpdateForm({
       <Button
         variant="outline"
         onClick={handleOpenDialog}
-        className="mx-auto w-fit"
+        className="mx-auto w-fit font-kate font-bold text-xl px-8 py-6 handwritten-border !border-primary/20 hover:bg-primary/5 transition-all"
       >
         Update Cafe Info
       </Button>

@@ -36,12 +36,12 @@ describe('ProfileCharts', () => {
 
   it('renders the title and description', () => {
     render(<ProfileCharts visitedCafes={mockVisitedCafes} />);
-    expect(screen.getByText('Visited Cafes Breakdown')).toBeInTheDocument();
-    expect(screen.getByText('Analyze your visited cafe preferences.')).toBeInTheDocument();
+    expect(screen.getByText('Preferences Breakdown')).toBeInTheDocument();
+    expect(screen.getByText('Analyze your visited cafe habits.')).toBeInTheDocument();
   });
 
   it('displays an empty message when no visited cafes are provided', () => {
     render(<ProfileCharts visitedCafes={[]} />);
-    expect(screen.getByText("You haven't visited any cafes yet.")).toBeInTheDocument();
+    expect(screen.getByText(/No entries recorded for/i)).toBeInTheDocument();
   });
 });

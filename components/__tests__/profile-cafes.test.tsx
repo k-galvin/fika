@@ -147,7 +147,7 @@ describe("ProfileCafes", () => {
 
   it("renders 'You haven't saved any cafes yet!' when savedCafes is empty and saved tab is active", () => {
     render(<ProfileCafes savedCafes={[]} visitedCafes={[]} />);
-    fireEvent.click(screen.getByRole("button", { name: /Saved Cafes/i }));
+    fireEvent.click(screen.getByRole("button", { name: /Saved/i }));
     expect(
       screen.getByText("You haven't saved any cafes yet!")
     ).toBeInTheDocument();
@@ -161,7 +161,7 @@ describe("ProfileCafes", () => {
 
   it("renders saved cafes when provided and saved tab is active", () => {
     render(<ProfileCafes savedCafes={MOCK_SAVED_CAFES} visitedCafes={[]} />);
-    fireEvent.click(screen.getByRole("button", { name: /Saved Cafes/i }));
+    fireEvent.click(screen.getByRole("button", { name: /Saved/i }));
     expect(screen.getByText("Saved Cafe 1")).toBeInTheDocument();
     expect(screen.getByText("Saved Cafe 2")).toBeInTheDocument();
     expect(screen.getByTestId("save-button-3")).toBeInTheDocument();
@@ -180,13 +180,13 @@ describe("ProfileCafes", () => {
     expect(screen.getByText("Visited Cafe 1")).toBeInTheDocument();
     expect(screen.queryByText("Saved Cafe 1")).not.toBeInTheDocument();
 
-    // Switch to Saved Cafes tab
-    fireEvent.click(screen.getByRole("button", { name: /Saved Cafes/i }));
+    // Switch to Saved tab
+    fireEvent.click(screen.getByRole("button", { name: /Saved/i }));
     expect(screen.queryByText("Visited Cafe 1")).not.toBeInTheDocument();
     expect(screen.getByText("Saved Cafe 1")).toBeInTheDocument();
 
-    // Switch back to Visited Cafes tab
-    fireEvent.click(screen.getByRole("button", { name: /Visited Cafes/i }));
+    // Switch back to Visited tab
+    fireEvent.click(screen.getByRole("button", { name: /Visited/i }));
     expect(screen.getByText("Visited Cafe 1")).toBeInTheDocument();
     expect(screen.queryByText("Saved Cafe 1")).not.toBeInTheDocument();
   });

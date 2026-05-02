@@ -61,6 +61,23 @@
     border: 1.5px solid hsl(var(--primary) / 0.4);
     border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
   }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: hsl(var(--primary) / 0.1);
+    border-radius: 10px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--primary) / 0.2);
+  }
 }
 
 @layer base {

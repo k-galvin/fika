@@ -39,15 +39,21 @@ export async function FeaturedCafes() {
           <h2 className="text-6xl md:text-7xl font-bold font-kate text-primary text-center tracking-tighter">
             Current Favorites
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 w-full">
-            {shopsWithPhotos.map((shop) => (
-              <CafeQuickView
-                key={shop.id}
-                shop={shop}
-                user={user}
-                isInitiallySaved={false}
-                isInitiallyVisited={false}
-              />
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-6 w-full">
+            {shopsWithPhotos.map((shop, index) => (
+              <div 
+                key={shop.id} 
+                className={index === 2 ? "col-span-2 md:col-span-1 flex justify-center md:block" : ""}
+              >
+                <div className={index === 2 ? "w-full max-w-[50%] md:max-w-none" : "w-full"}>
+                  <CafeQuickView
+                    shop={shop}
+                    user={user}
+                    isInitiallySaved={false}
+                    isInitiallyVisited={false}
+                  />
+                </div>
+              </div>
             ))}
           </div>
         </section>

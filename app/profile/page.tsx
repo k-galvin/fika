@@ -2,13 +2,6 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { Footer } from "@/components/footer";
 
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
 import { User } from "lucide-react"; // Added History icon
 import { getSavedCafes, getVisitedCafes } from "@/app/actions"; // Import server actions
 
@@ -46,48 +39,71 @@ export default async function ProfilePage() {
   });
 
   return (
-    <main className="min-h-screen flex flex-col items-center pt-12 relative">
-      <div className="flex-1 w-full flex flex-col gap-10 max-w-4xl p-5">
-        <div className="text-center">
-          <h1 className="text-4xl md:text-5xl font-bold font-kate">
-            {name}&apos;s Profile
+    <main className="min-h-screen flex flex-col items-center pt-10 pb-20 relative">
+      <div className="flex-1 w-full flex flex-col gap-12 max-w-5xl p-6">
+        {/* Editorial Header */}
+        <div className="flex flex-col md:flex-row items-baseline gap-6 border-b border-primary/10 pb-8">
+          <h1 className="text-6xl md:text-8xl font-bold font-kate text-primary tracking-tighter">
+            {name}
           </h1>
-          <p className="mt-2 text-lg text-gray-600">
-            Welcome to your personal fika space.
-          </p>
+          <div className="flex flex-col">
+            <span className="text-primary/40 font-kate text-sm uppercase tracking-[0.3em] ml-1">
+              Personal Journal
+            </span>
+            <p className="mt-1 text-xl font-kate text-primary/60 italic leading-tight">
+              A record of moments, metrics, <br />
+              and favorite cups.
+            </p>
+          </div>
         </div>
 
-        <div className="space-y-8">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <User className="h-5 w-5" />
-                Account Information
-              </CardTitle>
-              <CardDescription>
-                View and manage your account details.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <div className="flex justify-between items-center text-sm">
-                <span className="font-medium">Email:</span>
-                <span className="text-gray-700">{user.email}</span>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+          {/* Left Column: Account & Friends */}
+          <div className="lg:col-span-4 flex flex-col gap-10">
+            <div className="flex flex-col p-6 rounded-2xl bg-secondary/30 handwritten-border !border-primary/10 shadow-sm transition-all hover:shadow-md">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="bg-primary/5 p-2 rounded-full">
+                  <User className="size-5 text-primary/70" />
+                </div>
+                <h3 className="font-kate font-bold text-xl text-primary">Member Details</h3>
               </div>
-              <div className="flex justify-between items-center text-sm">
-                <span className="font-medium">Account Created:</span>
-                <span className="text-gray-700">{joinedFullDate}</span>
+              
+              <div className="space-y-4 font-kate">
+                <div className="flex flex-col border-b border-primary/5 pb-2">
+                  <span className="text-[10px] uppercase tracking-widest text-primary/40">Registered Email</span>
+                  <span className="text-primary/80 font-bold">{user.email}</span>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[10px] uppercase tracking-widest text-primary/40">Fika Member Since</span>
+                  <span className="text-primary/80 font-bold">{joinedFullDate}</span>
+                </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
 
-          <FindFriends />
+            <FindFriends />
+          </div>
 
-          <ProfileCharts visitedCafes={visitedCafes || []} />
+          {/* Right Column: Analytics & Lists */}
+          <div className="lg:col-span-8 flex flex-col gap-12">
+            <section>
+              <h2 className="font-kate font-bold text-3xl text-primary mb-6 flex items-center gap-3">
+                <span className="opacity-20 text-5xl">01</span>
+                Cafe Analytics
+              </h2>
+              <ProfileCharts visitedCafes={visitedCafes || []} />
+            </section>
 
-          <ProfileCafes
-            savedCafes={savedCafes || []}
-            visitedCafes={visitedCafes || []}
-          />
+            <section>
+              <h2 className="font-kate font-bold text-3xl text-primary mb-6 flex items-center gap-3">
+                <span className="opacity-20 text-5xl">02</span>
+                My Collections
+              </h2>
+              <ProfileCafes
+                savedCafes={savedCafes || []}
+                visitedCafes={visitedCafes || []}
+              />
+            </section>
+          </div>
         </div>
       </div>
       <Footer user={user} />

@@ -69,10 +69,18 @@ export default async function Home() {
                 <h2 className="text-6xl md:text-7xl font-bold font-kate text-primary text-center tracking-tighter">
                   Current Favorites
                 </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 w-full">
-                  <CafeCardSkeleton />
-                  <CafeCardSkeleton />
-                  <CafeCardSkeleton />
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-6 w-full">
+                  <div className="w-full">
+                    <CafeCardSkeleton />
+                  </div>
+                  <div className="w-full">
+                    <CafeCardSkeleton />
+                  </div>
+                  <div className="col-span-2 md:col-span-1 flex justify-center md:block">
+                    <div className="w-full max-w-[50%] md:max-w-none">
+                      <CafeCardSkeleton />
+                    </div>
+                  </div>
                 </div>
               </section>
             }
