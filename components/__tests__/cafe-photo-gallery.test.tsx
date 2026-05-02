@@ -100,11 +100,11 @@ describe("CafePhotoGallery", () => {
       <CafePhotoGallery shopId={1} photos={[]} user={null} userRole={null} />
     );
     expect(
-      screen.getByText(/No photos yet. Be the first to upload one!/i)
+      screen.getByText(/No approved photos yet/i)
     ).toBeInTheDocument();
   });
 
-  it("renders photos when provided", () => {
+  it("renders photos in a grid when provided", () => {
     render(
       <CafePhotoGallery
         shopId={1}
@@ -114,8 +114,9 @@ describe("CafePhotoGallery", () => {
       />
     );
     const images = screen.getAllByRole("img");
-    expect(images).toHaveLength(1);
+    expect(images).toHaveLength(2); // Should show both in the grid
     expect(images[0]).toHaveAttribute("src", mockPhotos[0].photo_url);
+    expect(images[1]).toHaveAttribute("src", mockPhotos[1].photo_url);
   });
 
   it("shows 'Add Photo' button only for logged-in users", () => {
@@ -192,7 +193,7 @@ describe("CafePhotoGallery", () => {
         userRole={"admin"}
       />
     );
-    expect(screen.getByRole("button", { name: /Set as Primary/i })).toBeInTheDocument();
+    expect(screen.getAllByRole("button", { name: /Set as Primary/i })).toHaveLength(2);
   });
 
   it("handles setting a photo as primary (Admin only)", async () => {
@@ -207,10 +208,10 @@ describe("CafePhotoGallery", () => {
       />
     );
 
-    const setPrimaryButton = screen.getByRole("button", {
+    const setPrimaryButtons = screen.getAllByRole("button", {
       name: /Set as Primary/i,
     });
-    fireEvent.click(setPrimaryButton);
+    fireEvent.click(setPrimaryButtons[0]);
 
     await waitFor(() => {
       expect(mockSetPrimaryPhoto).toHaveBeenCalledWith(mockPhotos[0].id, 1);

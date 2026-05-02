@@ -100,7 +100,7 @@ export function CafeMap({ address, cafeName }: CafeMapProps) {
   }
 
   return (
-    <div className="w-full h-[400px] rounded-lg overflow-hidden border z-10">
+    <div className="w-full h-[300px] rounded-lg overflow-hidden border z-10">
       <MapContent
         coordinates={coordinates}
         cafeName={cafeName}
