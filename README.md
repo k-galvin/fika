@@ -1,15 +1,38 @@
-# CMSI4071-Group12
-Fall Semester Senior Project   
+# Fika
 
-Contributors: Kate Galvin, Ahtziri Gutierrez, Giselle Eliasi, Jillian Hunter 
+Fika is a web application for coffee lovers to discover, share, and enjoy the best cafes around. Originally developed as a group project, this repository is now the primary home for its ongoing evolution and improvement.
 
-## Project Structure
-This repository contains two main directories:
-- `documents/`: Contains project-related documentation, such as proposals, design documents, and feedback.
-- `fika/`: Contains the source code for the Fika application, a Next.js project.
+[Live Demo](https://findyourfika.vercel.app)
+
+## Features
+
+- **Discover Cafes:** Browse cafes on an interactive map with advanced filtering (WiFi, Price, Vibe, Parking, etc.).
+- **User Profiles:** Save your favorite spots, log visits, and track your cafe habits with visual charts.
+- **Community:** Connect with friends to see their favorite cafes and ratings.
+- **Contributions:** Suggest new cafes, upload photos, and update cafe information.
+
+---
 
 ## User Manual
-Fika can be accessed at [https://findyourfika.vercel.app](https://findyourfika.vercel.app)   
 
-For a detailed user manual and information on how to use the Fika application, please refer to the `README.md` file located in the `fika/` directory.
+### Creating an Account
 
+Click the "Sign Up" button on the top right of the homepage. After filling in your details, verify your account via the confirmation email.
+
+### User Profile & Analytics
+Your profile serves as your personal coffee dashboard:
+- **My Cafes:** Manage your "Saved" (want to visit) and "Visited" lists in one place.
+- **Cafe Breakdown:** View visual analytics of your habits, including your most visited cities and a breakdown of your favorite cafe vibes and amenities.
+- **Friend Network:** Search for other users to add them as friends. Once connected, you can view their profiles to see their favorite spots and latest ratings.
+
+### Discovering Cafes
+
+The "Discover" page allows you to filter cafes by city, amenities (WiFi, outlets, seating), price, parking, and vibe.
+
+### Cafe Pages
+
+View details, location, photos, and popularity graphs for any cafe. You can "Save" cafes for later or "Log Visit" to rate them.
+
+### Suggesting Updates
+
+Know a cafe we're missing? Use the "Suggest a Cafe" form. You can also upload photos or suggest updates to existing cafe data (price, parking, etc.) directly on the cafe's page.
