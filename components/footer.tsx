@@ -70,10 +70,14 @@ export function Footer({
           )}
         </div>
         <div className="flex flex-col items-center gap-2">
-          <Button variant="link" onClick={handleSuggestClick}>
+          <Button 
+            variant="link" 
+            onClick={handleSuggestClick}
+            className="text-base md:text-lg font-kate font-bold text-primary hover:text-primary/70 transition-colors"
+          >
             Know a great spot? Suggest it for our list!
           </Button>
-          <p>© fika</p>
+          <p className="font-kate text-sm text-primary/60">© fika</p>
         </div>
       </footer>
       <SuggestCafeForm

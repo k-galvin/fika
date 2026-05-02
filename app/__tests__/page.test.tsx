@@ -10,7 +10,7 @@ jest.mock("@/lib/supabase/server", () => ({
 
 // Mock the FeaturedCafes component
 jest.mock("../featured-cafes", () => ({
-  FeaturedCafes: () => <div>Featured Cafes</div>,
+  FeaturedCafes: () => <h2>Current Favorites</h2>,
 }));
 
 // Mock the Footer component
@@ -29,13 +29,10 @@ describe("Home page", () => {
     });
   });
 
-  it("should render the welcome message and featured cafes", async () => {
+  it("should render the current favorites section", async () => {
     render(await Home());
 
-    expect(
-      screen.getByRole("heading", { name: /welcome to fika/i })
-    ).toBeInTheDocument();
-    expect(screen.getByText("Featured Cafes")).toBeInTheDocument();
+    expect(screen.getByText("Current Favorites")).toBeInTheDocument();
     expect(screen.getByText("Mock Footer")).toBeInTheDocument();
   });
 });

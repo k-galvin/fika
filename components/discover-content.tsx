@@ -149,13 +149,10 @@ export function DiscoverContent({
 
   return (
     <>
-      <div className="text-center px-4">
-        <h1 className="tracking-tight text-gray-900 text-7xl font-kate">
-          Discover Cafes
+      <div className="flex flex-col items-center text-center px-6 pt-4 pb-2">
+        <h1 className="text-6xl md:text-7xl font-bold font-kate text-primary tracking-tighter">
+          Discover
         </h1>
-        <p className="mt-6 text-2xl leading-8 text-black font-kate">
-          Browse our collection of coffee shops.
-        </p>
       </div>
       <div className="flex-1 flex flex-col gap-10 max-w-7xl p-5 w-full">
         <DiscoverFilters
@@ -185,8 +182,12 @@ export function DiscoverContent({
             </div>
             {hasMore && (
               <div className="flex justify-center mt-8">
-                <Button onClick={fetchMoreShops} disabled={loading}>
-                  {loading ? "Loading..." : "Load More"}
+                <Button 
+                  onClick={fetchMoreShops} 
+                  disabled={loading}
+                  className="font-kate font-bold text-xl px-10 py-6 handwritten-border !border-primary/20 hover:bg-primary/5 transition-all"
+                >
+                  {loading ? "loading..." : "load more"}
                 </Button>
               </div>
             )}

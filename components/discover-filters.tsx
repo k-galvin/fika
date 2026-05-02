@@ -48,7 +48,7 @@ export function DiscoverFilters({
           options={["Yes", "No"]}
           filterKey="has_outlets"
         />
-        <Button variant="ghost" onClick={clearFilters}>
+        <Button variant="ghost" onClick={clearFilters} className="font-kate font-bold text-lg">
           Clear Filters
         </Button>
       </div>

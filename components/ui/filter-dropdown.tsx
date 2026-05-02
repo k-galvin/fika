@@ -26,12 +26,12 @@ export function FilterDropdown({ title, options, filterKey }: { title: string, o
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" className="uppercase">{title}</Button>
+        <Button variant="outline" className="uppercase font-kate font-bold">{title}</Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuRadioGroup value={selectedValue} onValueChange={handleFilterChange}>
             {options.map(option => (
-            <DropdownMenuRadioItem key={option} value={option}>
+            <DropdownMenuRadioItem key={option} value={option} className="font-kate font-bold text-primary">
                 {option}
             </DropdownMenuRadioItem>
             ))}

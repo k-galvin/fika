@@ -8,67 +8,45 @@ export async function FeaturedCafes() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const { data: featuredShopsData } = await supabase
+  const { data: featuredShops } = await supabase
     .from("coffee_shops")
     .select(
       `
       *,
       shop_photos (
-        id,
         photo_url,
-        is_primary,
         is_approved
       )
     `
     )
     .eq("is_featured", true);
 
-  let savedCafeIds: Set<number> = new Set();
-  let visitedCafeIds: Set<number> = new Set();
-
-  if (user) {
-    // Fetch all saved cafes for the user
-    const { data: savedCafes } = await supabase
-      .from("user_saved_cafes")
-      .select("coffee_shop_id")
-      .eq("profile_id", user.id);
-    if (savedCafes) {
-      savedCafeIds = new Set(savedCafes.map((cafe) => cafe.coffee_shop_id));
-    }
-
-    // Fetch all visited cafes for the user
-    const { data: visitedCafes } = await supabase
-      .from("user_visits")
-      .select("coffee_shop_id")
-      .eq("profile_id", user.id);
-    if (visitedCafes) {
-      visitedCafeIds = new Set(visitedCafes.map((cafe) => cafe.coffee_shop_id));
-    }
-  }
-
-  const featuredShops: CoffeeShop[] =
-    featuredShopsData?.map((shop) => {
+  const shopsWithPhotos: CoffeeShop[] =
+    featuredShops?.map((shop) => {
+      const approvedPhotos = shop.shop_photos?.filter(
+        (p: { is_approved: boolean }) => p.is_approved
+      );
       return {
         ...shop,
-        isInitiallySaved: savedCafeIds.has(shop.id),
-        isInitiallyVisited: visitedCafeIds.has(shop.id),
-        shop_photos: shop.shop_photos || [],
+        shop_photos: approvedPhotos || [],
       };
     }) || [];
 
   return (
     <>
-      {featuredShops && featuredShops.length > 0 && (
-        <section className="flex flex-col gap-6">
-          <h2 className="text-4xl font-kate text-gray-900">Featured Cafes</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {featuredShops.map((shop) => (
+      {shopsWithPhotos && shopsWithPhotos.length > 0 && (
+        <section className="flex flex-col gap-10 w-full">
+          <h2 className="text-6xl md:text-7xl font-bold font-kate text-primary text-center tracking-tighter">
+            Current Favorites
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 w-full">
+            {shopsWithPhotos.map((shop) => (
               <CafeQuickView
                 key={shop.id}
                 shop={shop}
                 user={user}
-                isInitiallySaved={shop.isInitiallySaved}
-                isInitiallyVisited={shop.isInitiallyVisited}
+                isInitiallySaved={false}
+                isInitiallyVisited={false}
               />
             ))}
           </div>

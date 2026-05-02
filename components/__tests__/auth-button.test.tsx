@@ -44,7 +44,7 @@ jest.mock("@/lib/supabase/client", () => ({
 describe("AuthButton", () => {
   it("renders sign in button when user is not authenticated", async () => {
     render(<AuthButton initialUser={null} initialProfile={null} />);
-    expect(await screen.findByText("Sign in")).toBeInTheDocument();
+    expect(await screen.findByText("sign in")).toBeInTheDocument();
   });
 
   it("renders logout button when user is authenticated", async () => {
@@ -59,7 +59,7 @@ describe("AuthButton", () => {
 
   it("directs to login page when user is not logged in", async () => {
     render(<AuthButton initialUser={null} initialProfile={null} />);
-    const signInButton = await screen.findByText("Sign in");
+    const signInButton = await screen.findByText("sign in");
     expect(signInButton.closest("a")).toHaveAttribute(
       "href",
       "/auth/login?redirect=/"

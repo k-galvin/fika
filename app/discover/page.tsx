@@ -83,57 +83,55 @@ export default async function DiscoverPage({ searchParams: searchParamsPromise }
     }) || [];
 
   return (
-    <main className="min-h-screen flex flex-col items-center pt-12 relative">
+    <main className="min-h-screen flex flex-col items-center pt-8 relative">
+      {/* Row 1 */}
       <Image
         src="/cardamomBun.png"
         alt="decoration"
         width={96}
         height={96}
-        className="hidden sm:block fixed top-20 left-8 z-[-1]"
+        className="hidden lg:block fixed top-[15%] left-8 z-[-1]"
       />
       <Image
-        src="/swanLatte.png"
+        src="/hotMatchaLatte.png"
         alt="decoration"
-        width={96}
-        height={96}
-        className="hidden sm:block fixed top-1/3 left-20 z-[-1]"
+        width={100}
+        height={100}
+        className="hidden lg:block fixed top-[15%] right-8 z-[-1]"
       />
+
+      {/* Row 2 */}
       <Image
         src="/icedMatchaLatte.png"
         alt="decoration"
         width={96}
         height={96}
-        className="hidden sm:block fixed top-24 right-10 z-[-1]"
-      />
-      <Image
-        src="/hotMatchaLatte.png"
-        alt="decoration"
-        width={96}
-        height={96}
-        className="hidden sm:block fixed top-1/2 right-16 z-[-1]"
-      />
-      <Image
-        src="/creamTopLatte.png"
-        alt="decoration"
-        width={95}
-        height={95}
-        className="hidden sm:block fixed bottom-8 left-16 z-[-1]"
-      />
-      <Image
-        src="/icedLatte.png"
-        alt="decoration"
-        width={95}
-        height={95}
-        className="hidden sm:block fixed bottom-12 right-8 z-[-1]"
+        className="hidden lg:block fixed top-[48%] left-12 z-[-1]"
       />
       <Image
         src="/cakeSlice.png"
         alt="decoration"
         width={120}
         height={120}
-        className="hidden sm:block fixed bottom-1/3 left-5 z-[-1]"
+        className="hidden lg:block fixed top-[48%] right-12 z-[-1]"
       />
-      <div className="flex-1 w-full flex flex-col gap-12 items-center">
+
+      {/* Row 3 */}
+      <Image
+        src="/creamTopLatte.png"
+        alt="decoration"
+        width={95}
+        height={95}
+        className="hidden lg:block fixed top-[80%] left-8 z-[-1]"
+      />
+      <Image
+        src="/icedLatte.png"
+        alt="decoration"
+        width={95}
+        height={95}
+        className="hidden lg:block fixed top-[80%] right-8 z-[-1]"
+      />
+      <div className="flex-1 w-full flex flex-col gap-4 items-center">
         <DiscoverContent initialShops={initialShops} user={user} />
       </div>
     </main>

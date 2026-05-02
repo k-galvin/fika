@@ -169,14 +169,14 @@ describe("DiscoverContent", () => {
   it("renders 'Load More' button when there are more shops to load", () => {
     (useTheme as jest.Mock).mockReturnValue({ isAfterHours: false });
     render(<DiscoverContent initialShops={MOCK_SHOPS_FULL_PAGE} user={null} />);
-    expect(screen.getByText("Load More")).toBeInTheDocument();
+    expect(screen.getByText("load more")).toBeInTheDocument();
   });
 
   it("clicking 'Load More' fetches and displays more shops", async () => {
     (useTheme as jest.Mock).mockReturnValue({ isAfterHours: false });
     render(<DiscoverContent initialShops={MOCK_SHOPS_FULL_PAGE} user={null} />);
 
-    const loadMoreButton = screen.getByText("Load More");
+    const loadMoreButton = screen.getByText("load more");
     await act(async () => {
       fireEvent.click(loadMoreButton);
     });
@@ -192,7 +192,7 @@ describe("DiscoverContent", () => {
       <DiscoverContent initialShops={initialShops} user={mockUser} />
     );
 
-    const loadMoreButton = screen.getByText("Load More");
+    const loadMoreButton = screen.getByText("load more");
     fireEvent.click(loadMoreButton);
 
     await waitFor(() => {
@@ -221,7 +221,7 @@ describe("DiscoverContent", () => {
       <DiscoverContent initialShops={initialShops} user={mockUser} />
     );
 
-    const loadMoreButton = screen.getByText("Load More");
+    const loadMoreButton = screen.getByText("load more");
     fireEvent.click(loadMoreButton);
 
     await waitFor(() => {

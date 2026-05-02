@@ -18,7 +18,7 @@ export default function DiscoBallAndStars() {
           alt="Disco Ball"
           width={100}
           height={100}
-          className="disco-ball"
+          className="filter drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]"
         />
       </div>
       {/* Star icons */}

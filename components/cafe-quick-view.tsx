@@ -1,5 +1,4 @@
 import { CoffeeShop } from "@/lib/types";
-import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 import Image from "next/image";
 import { LogVisitButton } from "./log-visit-button";
@@ -30,33 +29,45 @@ export function CafeQuickView({
     : "/hotLatte.png";
 
   return (
-    <Link href={`/cafe/${shop.id}`} className="block w-full h-full">
-      <Card className="w-full h-full flex flex-col relative group hover:shadow-lg transition-shadow duration-200 ease-in-out">
-        <div className="flex justify-between items-start p-4 pl-6 pr-[1.1rem] min-h-[4.5rem]">
-          <h2 className="font-kate font-semibold leading-tight text-lg flex-shrink break-words max-w-[70%] line-clamp-2">
-            {shop.name}
-          </h2>
-          <div className="flex items-center gap-2 mt-1">
-            <LogVisitButton
-              shopId={shop.id}
-              isInitiallyVisited={isInitiallyVisited}
-              initialRating={null}
-            />
-            <SaveButton shopId={shop.id} isInitiallySaved={isInitiallySaved} />
-          </div>
-        </div>
-        <div className="flex-grow"></div>
-        <CardContent className="px-4 pb-4">
+    <Link href={`/cafe/${shop.id}`} className="block w-full h-full group">
+      <div className="relative h-full flex flex-col p-3 transition-all duration-300 group-hover:-translate-y-1">
+        {/* The 'Photo' Container */}
+        <div className="relative aspect-square w-full overflow-hidden rounded-sm bg-secondary/20 shadow-[0_4px_20px_-2px_rgba(0,0,0,0.1)] handwritten-border !border-primary/20">
           <Image
             src={imageUrl}
             alt={shop.name || "No name found"}
-            width={300}
-            height={300}
+            fill
             priority
-            className="w-full aspect-square object-cover rounded-md"
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
           />
-        </CardContent>
-      </Card>
+          
+          {/* Subtle overlay for buttons to make them pop against photos */}
+          <div className="absolute top-2 right-2 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <div className="bg-background/80 backdrop-blur-sm rounded-full p-1 shadow-sm border border-primary/10">
+              <LogVisitButton
+                shopId={shop.id}
+                isInitiallyVisited={isInitiallyVisited}
+                initialRating={null}
+              />
+            </div>
+            <div className="bg-background/80 backdrop-blur-sm rounded-full p-1 shadow-sm border border-primary/10">
+              <SaveButton shopId={shop.id} isInitiallySaved={isInitiallySaved} />
+            </div>
+          </div>
+        </div>
+
+        {/* The 'Caption' */}
+        <div className="mt-4 px-1 flex flex-col gap-1">
+          <h2 className="font-kate font-bold text-2xl text-primary leading-tight tracking-tight">
+            {shop.name}
+          </h2>
+          {shop.city && (
+            <p className="font-kate text-primary/60 text-sm italic italic tracking-wide">
+              {shop.city}
+            </p>
+          )}
+        </div>
+      </div>
     </Link>
   );
 }

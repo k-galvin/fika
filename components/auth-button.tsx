@@ -50,19 +50,26 @@ export function AuthButton({
 
   return user ? (
     <div className="flex items-center gap-6">
-      <Button asChild variant="outline" size="sm">
-        <Link href="/profile" aria-label="Profile">
+      <Link 
+        href="/profile" 
+        className="flex items-center gap-2 text-primary/80 hover:text-primary transition-colors group"
+      >
+        <div className="bg-primary/5 p-1.5 rounded-full group-hover:bg-primary/10 transition-colors">
           <UserIcon className="size-4" />
-          <span className="ml-2">{displayName}</span>
-        </Link>
+        </div>
+        <span className="font-kate text-lg font-bold">{displayName}</span>
+      </Link>
+      <Button 
+        onClick={logout}
+        variant="ghost"
+        className="font-kate text-lg text-primary/60 hover:text-destructive/80 hover:bg-destructive/5 transition-all font-bold"
+      >
+        Logout
       </Button>
-      <Button onClick={logout}>Logout</Button>
     </div>
   ) : (
-    <div className="flex gap-2">
-      <Button asChild size="sm" variant={"outline"}>
-        <Link href={`/auth/login?redirect=${pathname}`}>Sign in</Link>
-      </Button>
-    </div>
+    <Button asChild variant="ghost" className="font-kate text-lg text-primary/80 hover:bg-primary/5 transition-all handwritten-border !border-primary/20 !rounded-xl px-6 font-bold">
+      <Link href={`/auth/login?redirect=${pathname}`}>sign in</Link>
+    </Button>
   );
 }

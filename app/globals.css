@@ -10,17 +10,15 @@
     --card-foreground: 0 0% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
+    --primary: 25 40% 20%; /* Deep Coffee Brown */
+    --primary-foreground: 48 27% 95%;
+    --secondary: 35 30% 88%; /* Creamy Latte */
+    --secondary-foreground: 25 40% 20%;
+    --accent: 140 20% 30%; /* Soft Matcha Green */
+    --accent-foreground: 48 27% 95%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 40 15% 80%;
+    --border: 30 20% 80%;
     --input: 0 0% 89.8%;
     --ring: 0 0% 3.9%;
     --chart-1: 12 76% 61%;
@@ -28,9 +26,10 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
-    --radius: 0.5rem;
-    --skeleton-brown: 30 30% 85%; /* A light brown color */
+    --radius: 0.75rem;
+    --skeleton-brown: 30 20% 90%;
   }
+
   .dark {
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;
@@ -56,6 +55,11 @@
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+  }
+
+  .handwritten-border {
+    border: 1.5px solid hsl(var(--primary) / 0.4);
+    border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
   }
 }
 
@@ -90,20 +94,33 @@ body.after-hours-theme {
 
 @keyframes lowerDiscoBall {
   0% {
-    transform: translateY(-100%);
+    transform: translate(-50%, -200%);
   }
   100% {
-    transform: translateY(0%);
+    transform: translate(-50%, 0%);
   }
 }
 
 .disco-ball-container {
   position: fixed;
-  top: 0;
-  animation: lowerDiscoBall 2s forwards;
-  z-index: 10;
-  width: 100%;
+  top: 5rem; /* Halfway from 10rem */
+  left: 50%;
+  transform: translateX(-50%);
+  animation: lowerDiscoBall 2s ease-out forwards;
+  z-index: 40;
+  width: auto;
   pointer-events: none;
+}
+
+.disco-ball-container::before {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 46%;
+  width: 3px;
+  height: 5rem; /* Halfway from 10rem */
+  background: linear-gradient(to top, #ffffff, transparent);
+  transform: translateX(-50%);
 }
 
 .disco-ball {
