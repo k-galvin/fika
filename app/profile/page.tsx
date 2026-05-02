@@ -40,7 +40,7 @@ export default async function ProfilePage() {
 
   return (
     <main className="min-h-screen flex flex-col items-center pt-10 pb-20 relative">
-      <div className="flex-1 w-full flex flex-col gap-12 max-w-5xl p-6">
+      <div className="flex-1 w-full flex flex-col gap-12 max-w-5xl p-6 animate-in fade-in slide-in-from-bottom-4 duration-1000">
         {/* Editorial Header */}
         <div className="flex flex-col md:flex-row items-baseline gap-6 border-b border-primary/10 pb-8">
           <h1 className="text-6xl md:text-8xl font-bold font-kate text-primary tracking-tighter">

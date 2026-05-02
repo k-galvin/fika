@@ -73,7 +73,7 @@ export default function CafeDetailsClient({
 
   return (
     <main className="min-h-screen flex flex-col items-center relative overflow-hidden bg-background">
-      <div className="w-full flex-1 max-w-7xl px-6 py-12 md:px-12">
+      <div className="w-full flex-1 max-w-7xl px-6 py-12 md:px-12 animate-in fade-in slide-in-from-bottom-4 duration-1000">
         {/* Editorial Header */}
         <div className="flex flex-col md:flex-row justify-between items-baseline gap-8 mb-16 border-b border-primary/10 pb-10">
           <div className="flex flex-col gap-2">

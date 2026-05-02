@@ -949,6 +949,84 @@ export async function unfriendUser(friendId: string) {
   return { success: true, message: "Friend removed successfully." };
 }
 
+export type FriendActivity = {
+  id: string;
+  type: "visit" | "save";
+  timestamp: string;
+  username: string;
+  cafe_name: string;
+  cafe_id: number;
+};
+
+export async function getFriendActivity(): Promise<FriendActivity[]> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return [];
+
+  // 1. Get confirmed friend IDs
+  const { data: friendships } = await supabase
+    .from("friendships")
+    .select("user_id, friend_id")
+    .eq("status", "friends")
+    .or(`user_id.eq.${user.id},friend_id.eq.${user.id}`);
+
+  if (!friendships) return [];
+
+  const friendIds = friendships.map(f => 
+    f.user_id === user.id ? f.friend_id : f.user_id
+  ).filter(id => id !== null) as string[];
+
+  if (friendIds.length === 0) return [];
+
+  // 2. Fetch recent visits
+  const { data: visits } = await supabase
+    .from("user_visits")
+    .select("id, visited_at, profiles(username), coffee_shops(name, id)")
+    .in("profile_id", friendIds)
+    .order("visited_at", { ascending: false })
+    .limit(10);
+
+  // 3. Fetch recent saves
+  const { data: saves } = await supabase
+    .from("user_saved_cafes")
+    .select("id, saved_at, profiles(username), coffee_shops(name, id)")
+    .in("profile_id", friendIds)
+    .order("saved_at", { ascending: false })
+    .limit(10);
+
+  const activity: FriendActivity[] = [];
+
+  visits?.forEach(v => {
+    const profile = Array.isArray(v.profiles) ? v.profiles[0] : v.profiles;
+    const shop = Array.isArray(v.coffee_shops) ? v.coffee_shops[0] : v.coffee_shops;
+    activity.push({
+      id: v.id,
+      type: "visit",
+      timestamp: v.visited_at,
+      username: profile?.username || "Someone",
+      cafe_name: shop?.name || "a cafe",
+      cafe_id: shop?.id || 0
+    });
+  });
+
+  saves?.forEach(s => {
+    const profile = Array.isArray(s.profiles) ? s.profiles[0] : s.profiles;
+    const shop = Array.isArray(s.coffee_shops) ? s.coffee_shops[0] : s.coffee_shops;
+    activity.push({
+      id: s.id,
+      type: "save",
+      timestamp: s.saved_at,
+      username: profile?.username || "Someone",
+      cafe_name: shop?.name || "a cafe",
+      cafe_id: shop?.id || 0
+    });
+  });
+
+  return activity.sort((a, b) => 
+    new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+  ).slice(0, 15);
+}
+
 // --- Updates Page Admin ---
 export async function getCafeUpdates() {
   const supabase = await createServiceRoleClient(

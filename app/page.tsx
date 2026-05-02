@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import Image from "next/image";
 import { Footer } from "@/components/footer";
 import { FeaturedCafes } from "./featured-cafes";
+import { FriendFeed } from "@/components/friend-feed";
 import { CafeCardSkeleton } from "@/components/cafe-card-skeleton";
 import { createClient } from "@/lib/supabase/server";
 
@@ -61,7 +62,7 @@ export default async function Home() {
         className="hidden lg:block absolute top-[55vh] right-10 z-[-1]"
       />
 
-      <div className="flex-1 w-full flex flex-col gap-10 items-center pt-0">
+      <div className="flex-1 w-full flex flex-col gap-10 items-center pt-0 animate-in fade-in slide-in-from-bottom-4 duration-1000 ease-in-out">
         <div className="flex-1 flex flex-col gap-10 max-w-7xl p-5 w-full">
           <Suspense
             fallback={
@@ -87,6 +88,8 @@ export default async function Home() {
           >
             <FeaturedCafes />
           </Suspense>
+
+          {user && <FriendFeed />}
         </div>
       </div>
       <Footer user={user} />

@@ -149,12 +149,12 @@ export function DiscoverContent({
 
   return (
     <>
-      <div className="flex flex-col items-center text-center px-6 pt-4 pb-2">
+      <div className="flex flex-col items-center text-center px-6 pt-4 pb-2 animate-in fade-in slide-in-from-bottom-2 duration-700">
         <h1 className="text-6xl md:text-7xl font-bold font-kate text-primary tracking-tighter">
           Discover
         </h1>
       </div>
-      <div className="flex-1 flex flex-col gap-10 max-w-7xl p-5 w-full">
+      <div className="flex-1 flex flex-col gap-10 max-w-7xl p-5 w-full animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-200">
         <DiscoverFilters
           cities={Constants.public.Enums.Cities as unknown as string[]}
           parkings={
