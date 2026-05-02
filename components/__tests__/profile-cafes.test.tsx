@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { render, screen, fireEvent } from "@testing-library/react";
 import { ProfileCafes } from "../profile-cafes";
 import { UserSavedCafe, UserVisit } from "@/lib/types";
@@ -28,7 +29,7 @@ const MOCK_VISITED_CAFES: UserVisit[] = [
       isInitiallyVisited: true,
       ratings: [],
     },
-  },
+  } as any,
   {
     id: "visit2",
     coffee_shop_id: 2,
@@ -54,7 +55,7 @@ const MOCK_VISITED_CAFES: UserVisit[] = [
       isInitiallyVisited: true,
       ratings: [],
     },
-  },
+  } as any,
 ];
 
 const MOCK_SAVED_CAFES: UserSavedCafe[] = [
@@ -83,7 +84,7 @@ const MOCK_SAVED_CAFES: UserSavedCafe[] = [
       isInitiallyVisited: false,
       ratings: [],
     },
-  },
+  } as any,
   {
     id: "saved2",
     coffee_shop_id: 4,
@@ -109,7 +110,7 @@ const MOCK_SAVED_CAFES: UserSavedCafe[] = [
       isInitiallyVisited: false,
       ratings: [],
     },
-  },
+  } as any,
 ];
 
 // Mock next/navigation

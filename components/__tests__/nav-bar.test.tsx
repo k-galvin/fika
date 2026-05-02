@@ -77,7 +77,7 @@ describe("NavBar", () => {
       },
     };
 
-    render(<NavBar user={loggedInUser as User} profile={null} authButton={authButton} />); // Cast to any to satisfy User type expectation
+    render(<NavBar user={loggedInUser as unknown as User} profile={null} authButton={authButton} />); // Cast to any to satisfy User type expectation
 
     // Desktop view assertions (same as logged-out)
     const fikaLink = screen.getByRole("link", { name: "fika" });

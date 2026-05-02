@@ -70,9 +70,9 @@ export default async function Home() {
                   Current Favorites
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 w-full">
-                  <CafeCardSkeleton size="large" />
-                  <CafeCardSkeleton size="large" />
-                  <CafeCardSkeleton size="large" />
+                  <CafeCardSkeleton />
+                  <CafeCardSkeleton />
+                  <CafeCardSkeleton />
                 </div>
               </section>
             }

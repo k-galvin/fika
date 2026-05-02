@@ -22,7 +22,15 @@ const MOCK_USER: User = {
 const MOCK_SHOP: CoffeeShop = {
   id: 1,
   name: "Fika Cafe",
-  shop_photos: [{ photo_url: "https://example.com/cafe.jpg" }],
+  address: "123 Main St",
+  shop_photos: [
+    {
+      id: 1,
+      photo_url: "https://example.com/cafe.jpg",
+      is_primary: true,
+      is_approved: true,
+    },
+  ],
   busyness: "Medium",
   city: "Los Angeles",
   has_outlets: true,
@@ -62,7 +70,13 @@ jest.mock("next/navigation", () => ({
 // Mock next/link to ensure clicks on Link components trigger mockPush
 jest.mock("next/link", () => {
   // Directly return a named functional component
-  const Link = ({ children, href }) => {
+  const Link = ({
+    children,
+    href,
+  }: {
+    children: React.ReactNode;
+    href: string;
+  }) => {
     return (
       <a
         href={href}

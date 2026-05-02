@@ -26,6 +26,7 @@ jest.mock("@/lib/supabase/client", () => ({
         insert: jest.fn().mockResolvedValue({ data: [], error: null }),
         or: jest.fn().mockReturnThis(),
         eq: jest.fn().mockReturnThis(),
+        ilike: jest.fn().mockReturnThis(),
         maybeSingle: jest.fn().mockResolvedValue({ data: null, error: null }),
         then: jest.fn((cb) => cb({ data: [], error: null })), // Default empty data
       };
