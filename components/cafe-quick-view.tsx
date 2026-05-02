@@ -32,11 +32,11 @@ export function CafeQuickView({
   return (
     <Link href={`/cafe/${shop.id}`} className="block w-full h-full">
       <Card className="w-full h-full flex flex-col relative group hover:shadow-lg transition-shadow duration-200 ease-in-out">
-        <div className="flex justify-between items-center p-4 pl-6 pr-[1.1rem]">
-          <h2 className="font-kate font-semibold leading-none tracking-tight text-lg flex-shrink break-words max-w-[60%]">
+        <div className="flex justify-between items-start p-4 pl-6 pr-[1.1rem] min-h-[4.5rem]">
+          <h2 className="font-kate font-semibold leading-tight text-lg flex-shrink break-words max-w-[70%] line-clamp-2">
             {shop.name}
           </h2>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 mt-1">
             <LogVisitButton
               shopId={shop.id}
               isInitiallyVisited={isInitiallyVisited}

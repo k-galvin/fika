@@ -63,12 +63,14 @@ export default async function Home() {
             All the best coffee and work spots, all in one place.
           </p>
         </div>
-        <div className="flex-1 flex flex-col gap-10 max-w-7xl p-5">
+        <div className="flex-1 flex flex-col gap-10 max-w-7xl p-5 w-full">
           <Suspense
             fallback={
-              <section className="flex flex-col gap-6">
-                <h2 className="text-2xl mb-4">Featured Cafes</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              <section className="flex flex-col gap-6 w-full">
+                <h2 className="text-4xl font-kate text-gray-900">
+                  Featured Cafes
+                </h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 w-full">
                   <CafeCardSkeleton size="large" />
                   <CafeCardSkeleton size="large" />
                   <CafeCardSkeleton size="large" />
