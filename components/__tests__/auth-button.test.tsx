@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { render, screen } from "@testing-library/react";
 import { AuthButton } from "../auth-button";
 
@@ -42,18 +43,22 @@ jest.mock("@/lib/supabase/client", () => ({
 
 describe("AuthButton", () => {
   it("renders sign in button when user is not authenticated", async () => {
-    render(<AuthButton />);
+    render(<AuthButton initialUser={null} initialProfile={null} />);
     expect(await screen.findByText("Sign in")).toBeInTheDocument();
   });
 
   it("renders logout button when user is authenticated", async () => {
-    mockSupabase.auth.getUser.mockResolvedValue({ data: { user: mockUser } });
-    render(<AuthButton />);
+    render(
+      <AuthButton
+        initialUser={mockUser as any}
+        initialProfile={{ username: "testuser" } as any}
+      />
+    );
     expect(await screen.findByText("Logout")).toBeInTheDocument();
   });
 
   it("directs to login page when user is not logged in", async () => {
-    render(<AuthButton />);
+    render(<AuthButton initialUser={null} initialProfile={null} />);
     const signInButton = await screen.findByText("Sign in");
     expect(signInButton.closest("a")).toHaveAttribute(
       "href",
@@ -62,8 +67,12 @@ describe("AuthButton", () => {
   });
 
   it("clicking logout signs the user out", async () => {
-    mockSupabase.auth.getUser.mockResolvedValue({ data: { user: mockUser } });
-    render(<AuthButton />);
+    render(
+      <AuthButton
+        initialUser={mockUser as any}
+        initialProfile={{ username: "testuser" } as any}
+      />
+    );
     const logoutButton = await screen.findByText("Logout");
     logoutButton.click();
     expect(mockSupabase.auth.signOut).toHaveBeenCalled();

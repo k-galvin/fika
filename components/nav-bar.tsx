@@ -12,12 +12,14 @@ import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter, usePathname } from "next/navigation";
 import { User } from "@supabase/supabase-js";
+import { Tables } from "@/lib/supabase/database.types";
 
 export function NavBar({
   user: initialUser,
   authButton,
 }: {
   user: User | null;
+  profile: Tables<"profiles"> | null;
   authButton: React.ReactNode;
 }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -28,16 +30,23 @@ export function NavBar({
   const [user, setUser] = useState<User | null>(initialUser);
 
   useEffect(() => {
+    setUser(initialUser);
+  }, [initialUser]);
+
+  useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (event, session) => {
         setUser(session?.user ?? null);
+        if (event === "SIGNED_IN" || event === "SIGNED_OUT") {
+          router.refresh();
+        }
       }
     );
 
     return () => {
       authListener.subscription.unsubscribe();
     };
-  }, [supabase, supabase.auth]);
+  }, [supabase, router]);
 
   const logout = async () => {
     await supabase.auth.signOut();

@@ -50,8 +50,18 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const supabase = await createClient(); // Create Supabase client
-  const { data: { user } } = await supabase.auth.getUser(); // Get user
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  let profile = null;
+  if (user) {
+    const { data } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", user.id)
+      .single();
+    profile = data;
+  }
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -66,7 +76,11 @@ export default async function RootLayout({
             defaultTheme="light"
             disableTransitionOnChange
           >
-            <NavBar user={user} authButton={<AuthButton key={user?.id || 'logged-out'} />} />
+            <NavBar
+              user={user}
+              profile={profile}
+              authButton={<AuthButton initialUser={user} initialProfile={profile} />}
+            />
             {children}
           </NextThemesProvider>
         </BodyWrapper>
