@@ -79,7 +79,13 @@ export default async function RootLayout({
             <NavBar
               user={user}
               profile={profile}
-              authButton={<AuthButton initialUser={user} initialProfile={profile} />}
+              authButton={
+                <AuthButton
+                  key={user?.id || "logged-out"}
+                  initialUser={user}
+                  initialProfile={profile}
+                />
+              }
             />
             {children}
           </NextThemesProvider>
