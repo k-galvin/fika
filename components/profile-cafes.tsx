@@ -64,7 +64,7 @@ export function ProfileCafes({
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="bg-background/40 p-4 rounded-xl border border-primary/5 min-h-[12rem] max-h-[500px] overflow-y-auto custom-scrollbar">
+        <div className="bg-background/40 p-4 rounded-xl border border-primary/5 min-h-[12rem] max-h-[400px] overflow-y-auto custom-scrollbar">
           {activeTab === "visited" ? (
             <div>
               {visitedCafes && visitedCafes.length > 0 ? (
