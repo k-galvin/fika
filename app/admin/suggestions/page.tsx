@@ -3,6 +3,7 @@
 import { useEffect, useState, useTransition } from "react";
 import { getSuggestedCafes, approveSuggestion, denySuggestion } from "@/app/actions";
 import { SuggestedCafe } from "@/lib/types";
+import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -97,7 +98,26 @@ export default function SuggestionsPage() {
                 </div>
               </CardHeader>
               <CardContent className="flex-1 flex flex-col gap-4">
-                <p className="text-sm italic text-muted-foreground">"{suggestion.description}"</p>
+                {suggestion.photo_urls && suggestion.photo_urls.length > 0 && (
+                  <div className="grid grid-cols-2 gap-2 mb-2">
+                    {suggestion.photo_urls.slice(0, 4).map((url, i) => (
+                      <div key={i} className="relative aspect-square rounded-lg overflow-hidden bg-muted border">
+                        <Image
+                          src={url}
+                          alt="Suggested photo"
+                          fill
+                          sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+                          className="object-cover"
+                        />
+                        {i === 3 && suggestion.photo_urls!.length > 4 && (
+                          <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                            <span className="text-white font-bold">+{suggestion.photo_urls!.length - 3}</span>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
                 
                 <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm border-t pt-4">
                   <div className="flex flex-col">

@@ -16,7 +16,6 @@ const mockSuggestions: SuggestedCafe[] = [
     id: 1,
     name: "Test Cafe 1",
     address: "123 Test St",
-    description: "A great test cafe",
     city: "Los Angeles",
     seating: "Plenty",
     parking: "Easy",
@@ -29,12 +28,12 @@ const mockSuggestions: SuggestedCafe[] = [
     wine_bar: false,
     submitted_by: "user-1",
     created_at: new Date().toISOString(),
+    photo_urls: [],
   },
   {
     id: 2,
     name: "Test Cafe 2",
     address: "456 Test Ave",
-    description: "Another test cafe",
     city: "Copenhagen",
     seating: "Some",
     parking: "Hard",
@@ -47,6 +46,7 @@ const mockSuggestions: SuggestedCafe[] = [
     wine_bar: true,
     submitted_by: "user-2",
     created_at: new Date().toISOString(),
+    photo_urls: [],
   },
 ];
 
@@ -70,7 +70,6 @@ describe("SuggestionsPage", () => {
     });
 
     // Check if details are rendered
-    expect(screen.getByText(/A great test cafe/i)).toBeInTheDocument();
     expect(screen.getByTestId("parking-1")).toHaveTextContent("Easy");
     expect(screen.getByTestId("vibe-2")).toHaveTextContent("Corporate");
   });

@@ -8,7 +8,9 @@ export type CoffeeShop = Database["public"]["Tables"]["coffee_shops"]["Row"] & {
 };
 
 export type SuggestedCafe =
-  Database["public"]["Tables"]["suggested_cafes"]["Row"];
+  Database["public"]["Tables"]["suggested_cafes"]["Row"] & {
+    photo_urls?: string[] | null;
+  };
 
 // New types for user_visits and user_saved_cafes
 export type UserVisit = Database["public"]["Tables"]["user_visits"]["Row"] & {

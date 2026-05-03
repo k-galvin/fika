@@ -150,6 +150,7 @@ export function CafePhotoGallery({
                   src={photo.photo_url}
                   alt={`Photo of ${shopId}`}
                   fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   className="object-cover"
                   priority={index === 0}
                 />
@@ -252,9 +253,9 @@ export function CafePhotoGallery({
                     src={photo.photo_url}
                     alt="Gallery Photo"
                     fill
+                    sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
                     className="object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-                  {index < 4 && (
+                  />                  {index < 4 && (
                     <div className="absolute top-2 right-2 z-10 pointer-events-none">
                       <Badge variant="secondary" className="bg-primary/80 text-white border-none scale-75 origin-top-right backdrop-blur-sm">
                         Grid View

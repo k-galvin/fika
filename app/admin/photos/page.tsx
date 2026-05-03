@@ -157,6 +157,7 @@ export default function AdminPhotosPage() {
                     src={photo.photo_url}
                     alt="Review Photo"
                     fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     className="object-contain"
                   />
                   <div className={`absolute inset-0 bg-primary/10 transition-opacity ${selectedIds.includes(photo.id) ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`} />

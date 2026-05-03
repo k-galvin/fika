@@ -62,6 +62,7 @@ export default function CafeDetailsClient({
               alt={label}
               width={40}
               height={40}
+              style={{ height: 'auto' }}
             />
           </div>
           <span className="font-kate text-primary/70 uppercase tracking-widest text-sm font-bold">{label}</span>
@@ -191,6 +192,7 @@ export default function CafeDetailsClient({
                 src={isAfterHours ? "/wineBarExterior.png" : "/cafeExterior.png"}
                 alt="Cafe exterior"
                 fill
+                sizes="(max-width: 768px) 100vw, 33vw"
                 className="object-contain"
               />
             </div>

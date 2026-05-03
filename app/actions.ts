@@ -58,7 +58,6 @@ export async function suggestCafe(
   // Extract form values
   const name = formData.get("name") as string;
   const address = formData.get("address") as string;
-  const description = getFormValue(formData.get("description"));
   const city = formData.get("city") as string;
   const seating = formData.get("seating") as string;
   const parking = formData.get("parking") as string;
@@ -69,6 +68,10 @@ export async function suggestCafe(
   const has_wifi = formData.get("has_wifi") === "yes";
   const has_outlets = formData.get("has_outlets") === "yes";
   const wine_bar = formData.get("wine_bar") === "yes";
+  
+  // Extract photo URLs if provided
+  const photo_urls_raw = formData.get("photo_urls") as string;
+  const photo_urls = photo_urls_raw ? JSON.parse(photo_urls_raw) : [];
 
   // Server-side validation for required fields
   const requiredFields = {
@@ -97,7 +100,6 @@ export async function suggestCafe(
     {
       name,
       address,
-      description,
       city,
       seating,
       parking,
@@ -109,6 +111,7 @@ export async function suggestCafe(
       has_outlets,
       wine_bar,
       submitted_by: user.id,
+      photo_urls: photo_urls,
     },
   ]);
 
@@ -157,23 +160,27 @@ export async function approveSuggestion(id: number) {
     return { success: false, message: suggestionError.message };
   }
 
-  const { error: insertError } = await supabase.from("coffee_shops").insert([
-    {
-      name: suggestion.name,
-      address: suggestion.address,
-      summary: suggestion.description,
-      city: suggestion.city,
-      seating: suggestion.seating,
-      parking: suggestion.parking,
-      vibe: suggestion.vibe,
-      pricing: suggestion.pricing,
-      busyness: suggestion.busyness,
-      is_laptop_friendly: suggestion.is_laptop_friendly,
-      has_wifi: suggestion.has_wifi,
-      has_outlets: suggestion.has_outlets,
-      wine_bar: suggestion.wine_bar,
-    },
-  ]);
+  // Use select() and single() after insert to get the created cafe's ID
+  const { data: newCafe, error: insertError } = await supabase
+    .from("coffee_shops")
+    .insert([
+      {
+        name: suggestion.name,
+        address: suggestion.address,
+        city: suggestion.city,
+        seating: suggestion.seating,
+        parking: suggestion.parking,
+        vibe: suggestion.vibe,
+        pricing: suggestion.pricing,
+        busyness: suggestion.busyness,
+        is_laptop_friendly: suggestion.is_laptop_friendly,
+        has_wifi: suggestion.has_wifi,
+        has_outlets: suggestion.has_outlets,
+        wine_bar: suggestion.wine_bar,
+      },
+    ])
+    .select()
+    .single();
 
   if (insertError) {
     // Log the detailed error to the server console for debugging
@@ -182,6 +189,20 @@ export async function approveSuggestion(id: number) {
       success: false,
       message: `Failed to approve: ${insertError.message}`,
     };
+  }
+
+  // Handle photos if any
+  if (suggestion.photo_urls && suggestion.photo_urls.length > 0) {
+    const photoInserts = suggestion.photo_urls.map((url: string, index: number) => ({
+      shop_id: newCafe.id,
+      photo_url: url,
+      user_id: suggestion.submitted_by,
+      is_primary: index === 0, // First one is primary
+      is_approved: true, // Auto-approved since the cafe is being approved
+      sort_order: index,
+    }));
+
+    await supabase.from("shop_photos").insert(photoInserts);
   }
 
   const { error: deleteError } = await supabase

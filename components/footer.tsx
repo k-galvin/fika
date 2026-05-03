@@ -41,6 +41,7 @@ export function Footer({
             alt="Table logo (light theme)"
             width={300}
             height={300}
+            style={{ height: 'auto' }}
             className={`absolute top-0 left-0 transition-opacity duration-500 ${
               isAfterHours ? "opacity-0" : "opacity-100"
             }`}
@@ -51,6 +52,7 @@ export function Footer({
             alt="Table logo (dark theme)"
             width={300}
             height={300}
+            style={{ height: 'auto' }}
             className={`absolute top-0 left-0 transition-opacity duration-500 ${
               isAfterHours ? "opacity-100" : "opacity-0"
             }`}

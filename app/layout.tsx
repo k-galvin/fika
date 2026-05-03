@@ -72,12 +72,12 @@ export default async function RootLayout({
       </head>
       <CustomThemeProvider>
         <BodyWrapper karlaClassName={karla.className} kateVariable={kate.variable}>
-          <DiscoBallAndStars />
           <NextThemesProvider
             attribute="class"
             defaultTheme="light"
             disableTransitionOnChange
           >
+            <DiscoBallAndStars />
             <NavBar
               user={user}
               profile={profile}
