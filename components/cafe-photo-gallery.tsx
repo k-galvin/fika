@@ -98,30 +98,34 @@ export function CafePhotoGallery({
 
   return (
     <div className="w-full flex flex-col gap-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <h2 className="text-3xl font-bold font-kate text-primary tracking-tight">Gallery</h2>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2 items-center">
           {isAdmin && approvedPhotos.length > 1 && (
             <Button
               variant="ghost"
+              size="sm"
               onClick={() => {
                 setIsRearranging(true);
                 setViewAllOpen(true);
               }}
-              className="font-kate font-bold gap-2 handwritten-border !border-primary/10 hover:bg-primary/5"
+              className="font-kate font-bold gap-2 handwritten-border !border-primary/10 hover:bg-primary/5 px-2 sm:px-4"
+              title="Rearrange Photos"
             >
               <Move className="size-4" />
-              Rearrange
+              <span className="hidden sm:inline">Rearrange</span>
             </Button>
           )}
           {approvedPhotos.length > 4 && (
             <Button
               variant="ghost"
+              size="sm"
               onClick={() => setViewAllOpen(true)}
-              className="font-kate font-bold gap-2 handwritten-border !border-primary/10 hover:bg-primary/5"
+              className="font-kate font-bold gap-2 handwritten-border !border-primary/10 hover:bg-primary/5 px-2 sm:px-4"
+              title="View All Photos"
             >
               <Maximize2 className="size-4" />
-              View All
+              <span className="hidden sm:inline">View All</span>
             </Button>
           )}
           {user && (

@@ -138,9 +138,14 @@ export function PhotoUploadModal({ shopId, user }: PhotoUploadModalProps) {
   return (
     <Dialog open={open} onOpenChange={(val) => (val ? setOpen(true) : handleClose())}>
       <DialogTrigger asChild>
-        <Button variant="ghost" className="font-kate font-bold gap-2 handwritten-border !border-primary/10 hover:bg-primary/5">
+        <Button 
+          variant="ghost" 
+          size="sm"
+          className="font-kate font-bold gap-2 handwritten-border !border-primary/10 hover:bg-primary/5 px-2 sm:px-4"
+        >
           <Plus className="size-4" />
-          Add Photos
+          <span className="hidden sm:inline">Add Photos</span>
+          <span className="sm:hidden">Add</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="font-kate max-w-2xl">
