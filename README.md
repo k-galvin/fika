@@ -2,7 +2,7 @@
 
 Fika is a web application for coffee lovers to discover, share, and enjoy the best cafes around. Originally developed as a group project, this repository is now the primary home for its ongoing evolution and improvement.
 
-[Live Demo](https://findyourfika.vercel.app)
+[Try it yourself](https://findyourfika.vercel.app)
 
 ## Features
 
