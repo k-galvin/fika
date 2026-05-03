@@ -21,6 +21,7 @@ export const metadata: Metadata = {
   description: "A coffee shop rating app.",
   icons: {
     icon: "/cardamomBun.png",
+    apple: "/cardamomBun.png",
   },
 };
 
