@@ -319,14 +319,14 @@ export function SuggestCafeForm({
         <Dialog open={isOpen} onOpenChange={onOpenChange}>
           <DialogContent className="max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>Suggest a Cafe</DialogTitle>
-              <DialogDescription>
+              <DialogTitle className="text-3xl font-bold font-kate text-primary tracking-tighter">Suggest a Cafe</DialogTitle>
+              <DialogDescription className="font-kate italic text-primary/60">
                 Fill out the form below to suggest a new cafe for our list.
               </DialogDescription>
             </DialogHeader>
             {form}
             {message && message !== "Thank you for your suggestion!" && (
-              <p className="mt-4 text-sm text-red-500">{message}</p>
+              <p className="mt-4 text-sm text-red-500 font-kate">{message}</p>
             )}
           </DialogContent>
         </Dialog>
@@ -335,13 +335,18 @@ export function SuggestCafeForm({
         <Dialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle className="text-green-600">Success!</DialogTitle>
-              <DialogDescription>
+              <DialogTitle className="text-4xl font-bold font-kate text-green-600 tracking-tighter">Success!</DialogTitle>
+              <DialogDescription className="font-kate italic text-primary/60">
                 Thank you for your suggestion! It has been submitted for review.
               </DialogDescription>
             </DialogHeader>
             <div className="flex justify-end">
-              <Button onClick={() => setShowSuccessDialog(false)}>OK</Button>
+              <Button 
+                onClick={() => setShowSuccessDialog(false)}
+                className="font-kate font-bold px-8 handwritten-border !border-primary/10"
+              >
+                OK
+              </Button>
             </div>
           </DialogContent>
         </Dialog>

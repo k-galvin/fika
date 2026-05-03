@@ -35,10 +35,13 @@ jest.mock("@/lib/supabase/client", () => ({
 
 // Mock server actions
 const mockUploadShopPhoto = jest.fn();
+const mockUploadShopPhotosBatch = jest.fn();
 const mockSetPrimaryPhoto = jest.fn();
 jest.mock("@/app/actions", () => ({
   uploadShopPhoto: (shopId: number, photoUrl: string, userId: string) =>
     mockUploadShopPhoto(shopId, photoUrl, userId),
+  uploadShopPhotosBatch: (shopId: number, photoUrls: string[], userId: string) =>
+    mockUploadShopPhotosBatch(shopId, photoUrls, userId),
   setPrimaryPhoto: (photoId: number, cafeId: number) =>
     mockSetPrimaryPhoto(photoId, cafeId),
 }));
@@ -52,6 +55,12 @@ jest.mock("sonner", () => ({
     error: (message: string) => mockToastError(message),
   },
 }));
+
+// Mock URL methods for jsdom
+if (typeof window !== "undefined") {
+  window.URL.createObjectURL = jest.fn(() => "http://mock.url/preview");
+  window.URL.revokeObjectURL = jest.fn();
+}
 
 const mockUser: User = {
   id: "user-123",
@@ -124,39 +133,43 @@ describe("CafePhotoGallery", () => {
       <CafePhotoGallery shopId={1} photos={[]} user={null} userRole={null} />
     );
     expect(
-      screen.queryByRole("button", { name: /Add Photo/i })
+      screen.queryByRole("button", { name: /Add Photos/i })
     ).not.toBeInTheDocument();
 
     rerender(
       <CafePhotoGallery shopId={1} photos={[]} user={mockUser} userRole={"user"} />
     );
     expect(
-      screen.getByRole("button", { name: /Add Photo/i })
+      screen.getByRole("button", { name: /Add Photos/i })
     ).toBeInTheDocument();
   });
 
-  it("opens file dialog when 'Add Photo' is clicked", () => {
+  it("opens file dialog when 'Add Photos' is clicked", () => {
     render(
       <CafePhotoGallery shopId={1} photos={[]} user={mockUser} userRole={"user"} />
     );
-    fireEvent.click(screen.getByRole("button", { name: /Add Photo/i }));
+    fireEvent.click(screen.getByRole("button", { name: /Add Photos/i }));
     expect(screen.getByTestId("file-input")).toBeInTheDocument();
   });
 
   it("handles file upload successfully", async () => {
-    mockUploadShopPhoto.mockResolvedValue({ success: true });
+    mockUploadShopPhotosBatch.mockResolvedValue({ success: true });
 
     render(
       <CafePhotoGallery shopId={1} photos={[]} user={mockUser} userRole={"user"} />
     );
 
-    const addPhotoBtn = await screen.findByRole("button", { name: /Add Photo/i });
-    fireEvent.click(addPhotoBtn);
+    const addPhotosBtn = await screen.findByRole("button", { name: /Add Photos/i });
+    fireEvent.click(addPhotosBtn);
     
     const fileInput = screen.getByTestId("file-input");
 
     const file = new File(["(⌐□_□)"], "chucknorris.png", { type: "image/png" });
     fireEvent.change(fileInput, { target: { files: [file] } });
+
+    // Review step: Click the upload button that now appears
+    const uploadBtn = screen.getByRole("button", { name: /Upload 1 Photo/i });
+    fireEvent.click(uploadBtn);
 
     await waitFor(() => {
       expect(mockSupabase.storage.from).toHaveBeenCalledWith("images");
@@ -165,12 +178,12 @@ describe("CafePhotoGallery", () => {
         expect.stringContaining("1/"),
         file
       );
-      expect(mockUploadShopPhoto).toHaveBeenCalledWith(
+      expect(mockUploadShopPhotosBatch).toHaveBeenCalledWith(
         1,
-        expect.stringContaining("http://mock.url/1/"),
+        [expect.stringContaining("http://mock.url/1/")],
         mockUser.id
       );
-      expect(mockToastSuccess).toHaveBeenCalledWith("Photo uploaded successfully!");
+      expect(mockToastSuccess).toHaveBeenCalledWith("Successfully uploaded 1 photo!");
     });
   });
 

@@ -81,9 +81,19 @@ export default function SuggestionsPage() {
             <Card key={suggestion.id} className="flex flex-col">
               <CardHeader>
                 <CardTitle className="text-2xl font-kate">{suggestion.name}</CardTitle>
-                <div className="flex items-start gap-2 text-sm text-muted-foreground">
-                  <MapPin className="w-4 h-4 mt-0.5 shrink-0" />
-                  <span>{suggestion.address}, {suggestion.city}</span>
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex items-start gap-2 text-sm text-muted-foreground">
+                    <MapPin className="w-4 h-4 mt-0.5 shrink-0" />
+                    <span>{suggestion.address}, {suggestion.city}</span>
+                  </div>
+                  <a 
+                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${suggestion.name} ${suggestion.address} ${suggestion.city}`)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs font-semibold text-primary hover:underline shrink-0"
+                  >
+                    View on Map
+                  </a>
                 </div>
               </CardHeader>
               <CardContent className="flex-1 flex flex-col gap-4">

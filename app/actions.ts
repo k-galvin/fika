@@ -619,6 +619,34 @@ export async function uploadShopPhoto(
   }
 
   revalidatePath(`/cafe/${cafeId}`);
+  revalidatePath("/admin/photos"); // Added to update admin count
+  return { success: true };
+}
+
+export async function uploadShopPhotosBatch(
+  cafeId: number,
+  photoUrls: string[],
+  userId: string
+): Promise<{ success: boolean; message?: string }> {
+  const supabase = await createClient();
+
+  const inserts = photoUrls.map((url) => ({
+    shop_id: cafeId,
+    photo_url: url,
+    user_id: userId,
+    is_primary: false,
+    is_approved: false,
+  }));
+
+  const { error } = await supabase.from("shop_photos").insert(inserts);
+
+  if (error) {
+    console.error("Error batch uploading shop photos:", error.message);
+    return { success: false, message: error.message };
+  }
+
+  revalidatePath(`/cafe/${cafeId}`);
+  revalidatePath("/admin/photos");
   return { success: true };
 }
 
@@ -680,6 +708,39 @@ export async function setPrimaryPhoto(
   return { success: true };
 }
 
+export async function updatePhotoOrder(
+  shopId: number,
+  photoOrders: { id: number; sort_order: number }[]
+): Promise<{ success: boolean; message?: string }> {
+  const authSupabase = await createClient();
+  const { data: { user } } = await authSupabase.auth.getUser();
+
+  if (!user) return { success: false, message: "User not found" };
+
+  const { data: isAdmin } = await authSupabase.rpc("is_admin");
+  if (!isAdmin) return { success: false, message: "Unauthorized" };
+
+  const supabase = createServiceRoleClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+
+  const updates = photoOrders.map((p) =>
+    supabase.from("shop_photos").update({ sort_order: p.sort_order }).eq("id", p.id)
+  );
+
+  const results = await Promise.all(updates);
+  const error = results.find((r) => r.error)?.error;
+
+  if (error) {
+    console.error("Error updating photo order:", error.message);
+    return { success: false, message: error.message };
+  }
+
+  revalidatePath(`/cafe/${shopId}`);
+  return { success: true };
+}
+
 export async function getUnapprovedPhotos(): Promise<UnapprovedPhoto[] | null> {
   const supabase = createServiceRoleClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -697,12 +758,86 @@ export async function getUnapprovedPhotos(): Promise<UnapprovedPhoto[] | null> {
     return null;
   }
 
-  console.log("Fetched unapproved photos:", data); // Added log
-  data?.forEach((photo) =>
-    console.log("Unapproved photo URL:", photo.photo_url)
+  return data;
+}
+
+export async function approvePhotosBatch(
+  photoIds: number[]
+): Promise<{ success: boolean; message?: string }> {
+  const supabase = createServiceRoleClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
   );
 
-  return data;
+  // Get shop IDs to revalidate their pages later
+  const { data: photos, error: fetchError } = await supabase
+    .from("shop_photos")
+    .select("shop_id")
+    .in("id", photoIds);
+
+  if (fetchError || !photos) {
+    return { success: false, message: "Could not find selected photos." };
+  }
+
+  const { error } = await supabase
+    .from("shop_photos")
+    .update({ is_approved: true })
+    .in("id", photoIds);
+
+  if (error) {
+    console.error("Error batch approving photos:", error.message);
+    return { success: false, message: error.message };
+  }
+
+  // Revalidate admin and unique shop pages
+  revalidatePath("/admin/photos");
+  const uniqueShopIds = [...new Set(photos.map((p) => p.shop_id))];
+  uniqueShopIds.forEach((shopId) => revalidatePath(`/cafe/${shopId}`));
+
+  return { success: true };
+}
+
+export async function denyPhotosBatch(
+  photos: { id: number; url: string }[]
+): Promise<{ success: boolean; message?: string }> {
+  const supabase = createServiceRoleClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+
+  const photoIds = photos.map((p) => p.id);
+  const filePaths = photos.map((p) => {
+    try {
+      return new URL(p.url).pathname.split("/images/")[1];
+    } catch {
+      return null;
+    }
+  }).filter(Boolean) as string[];
+
+  // 1. Delete photos from storage
+  if (filePaths.length > 0) {
+    const { error: storageError } = await supabase.storage
+      .from("images")
+      .remove(filePaths);
+
+    if (storageError) {
+      console.error("Error batch deleting photos from storage:", storageError.message);
+    }
+  }
+
+  // 2. Delete photos from the database
+  const { error: dbError } = await supabase
+    .from("shop_photos")
+    .delete()
+    .in("id", photoIds);
+
+  if (dbError) {
+    console.error("Error batch deleting photos from database:", dbError.message);
+    return { success: false, message: dbError.message };
+  }
+
+  revalidatePath("/admin/photos");
+  return { success: true };
 }
 
 export async function approvePhoto(

@@ -89,9 +89,9 @@ describe("CafeMap", () => {
     expect(screen.getByText("Test Cafe")).toBeInTheDocument();
   });
 
-  it('should show "Address not found" message for valid but unlocatable address', async () => {
+  it('should show "Address not found on map" message for valid but unlocatable address', async () => {
     // Simulate an empty array response
-    (global.fetch as jest.Mock).mockResolvedValueOnce({
+    (global.fetch as jest.Mock).mockResolvedValue({
       ok: true,
       json: async () => [],
     });
@@ -100,13 +100,14 @@ describe("CafeMap", () => {
 
     // Wait for the error message to appear
     await waitFor(() => {
-      expect(screen.getByText("Address not found")).toBeInTheDocument();
+      expect(screen.getByText("Address not found on map")).toBeInTheDocument();
+      expect(screen.getByText("View on Google Maps")).toBeInTheDocument();
     });
   });
 
   it("should show a generic error message on geocoding API failure", async () => {
     // Simulate a failed network request
-    (global.fetch as jest.Mock).mockRejectedValueOnce(
+    (global.fetch as jest.Mock).mockRejectedValue(
       new Error("Failed to fetch")
     );
 
@@ -115,8 +116,9 @@ describe("CafeMap", () => {
     // Wait for the generic error message to appear
     await waitFor(() => {
       expect(
-        screen.getByText("Failed to load map location")
+        screen.getByText("Unable to load map location")
       ).toBeInTheDocument();
+      expect(screen.getByText("View on Google Maps")).toBeInTheDocument();
     });
   });
 

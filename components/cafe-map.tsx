@@ -42,17 +42,28 @@ export function CafeMap({ address, cafeName }: CafeMapProps) {
 
       try {
         // Use Nominatim (OpenStreetMap's geocoding service)
-        const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+        let url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
           address
         )}&limit=1`;
 
-        const response = await fetch(url);
+        let response = await fetch(url);
 
         if (!response.ok) {
           throw new Error("Failed to geocode address");
         }
 
-        const data = await response.json();
+        let data = await response.json();
+
+        // If specific address fails, try a broader search (just the name and city if available)
+        if ((!data || data.length === 0) && cafeName) {
+          url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+            `${cafeName}, ${address.split(',').pop()}`
+          )}&limit=1`;
+          response = await fetch(url);
+          if (response.ok) {
+            data = await response.json();
+          }
+        }
 
         if (!isCancelled) {
           if (data && data.length > 0) {
@@ -62,12 +73,12 @@ export function CafeMap({ address, cafeName }: CafeMapProps) {
             };
             setCoordinates(coords);
           } else {
-            setError("Address not found");
+            setError("Address not found on map");
           }
         }
       } catch {
         if (!isCancelled) {
-          setError("Failed to load map location");
+          setError("Unable to load map location");
         }
       } finally {
         if (!isCancelled) {
@@ -81,7 +92,7 @@ export function CafeMap({ address, cafeName }: CafeMapProps) {
     return () => {
       isCancelled = true;
     };
-  }, [address]);
+  }, [address, cafeName]);
 
   if (loading) {
     return (
@@ -93,8 +104,16 @@ export function CafeMap({ address, cafeName }: CafeMapProps) {
 
   if (error || !coordinates) {
     return (
-      <div className="w-full h-[300px] rounded-xl flex items-center justify-center">
-        <p className="text-card-foreground">{error || "Unable to load map"}</p>
+      <div className="w-full h-[300px] rounded-xl flex flex-col items-center justify-center gap-4 text-center p-6">
+        <p className="text-primary/60 font-kate italic">{error || "Unable to load map"}</p>
+        <a 
+          href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${cafeName} ${address}`)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-sm font-bold font-kate text-primary border-b border-primary/20 hover:border-primary transition-all"
+        >
+          View on Google Maps
+        </a>
       </div>
     );
   }

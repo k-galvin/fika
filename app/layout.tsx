@@ -9,6 +9,7 @@ import DiscoBallAndStars from "./disco-ball-and-stars";
 import BodyWrapper from "./body-wrapper";
 import "./globals.css";
 import { createClient } from "@/lib/supabase/server"; // Import createClient
+import { Toaster } from "sonner";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -88,6 +89,7 @@ export default async function RootLayout({
               }
             />
             {children}
+            <Toaster richColors position="bottom-right" />
           </NextThemesProvider>
         </BodyWrapper>
       </CustomThemeProvider>

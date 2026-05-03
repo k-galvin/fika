@@ -28,9 +28,23 @@ export default async function CafeDetailsPage({ params }: Props) {
 
   const { data: shop } = await supabase
     .from("coffee_shops")
-    .select("*, shop_photos(id, photo_url, is_primary, is_approved)")
+    .select("*, shop_photos(id, photo_url, is_primary, is_approved, sort_order, uploaded_at)")
     .eq("id", resolvedParams.id)
     .single();
+
+  if (shop && shop.shop_photos) {
+    // Sort photos: strictly follow sort_order, fall back to uploaded_at
+    shop.shop_photos.sort((a: any, b: any) => {
+      const orderA = a.sort_order ?? 0;
+      const orderB = b.sort_order ?? 0;
+      if (orderA !== orderB) return orderA - orderB;
+      
+      // Fallback for photos with same sort_order (e.g. newly uploaded)
+      const dateA = new Date(a.uploaded_at || 0).getTime();
+      const dateB = new Date(b.uploaded_at || 0).getTime();
+      return dateB - dateA; // Newer first
+    });
+  }
 
   if (!shop) {
     notFound();

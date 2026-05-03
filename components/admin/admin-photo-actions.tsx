@@ -10,9 +10,10 @@ import { Loader2, Check, Trash2 } from "lucide-react";
 type AdminPhotoActionsProps = {
   photoId: number;
   photoUrl: string;
+  onSuccess?: () => void;
 };
 
-export function AdminPhotoActions({ photoId, photoUrl }: AdminPhotoActionsProps) {
+export function AdminPhotoActions({ photoId, photoUrl, onSuccess }: AdminPhotoActionsProps) {
   const [isPending, startTransition] = useTransition();
 
   const handleApprove = () => {
@@ -20,6 +21,7 @@ export function AdminPhotoActions({ photoId, photoUrl }: AdminPhotoActionsProps)
       const result = await approvePhoto(photoId);
       if (result.success) {
         toast.success("Photo approved successfully!");
+        onSuccess?.();
       } else {
         toast.error(result.message || "Failed to approve photo.");
       }
@@ -31,6 +33,7 @@ export function AdminPhotoActions({ photoId, photoUrl }: AdminPhotoActionsProps)
       const result = await denyPhoto(photoId, photoUrl);
       if (result.success) {
         toast.success("Photo denied and deleted.");
+        onSuccess?.();
       } else {
         toast.error(result.message || "Failed to deny photo.");
       }
