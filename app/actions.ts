@@ -5,6 +5,7 @@ import { createClient as createServiceRoleClient } from "@supabase/supabase-js";
 import { revalidatePath } from "next/cache";
 import { SuggestedCafe, UserSavedCafe, UserVisit } from "@/lib/types"; // Import new types
 import { Database } from "@/lib/supabase/database.types";
+import { sendAdminNotification } from "@/lib/notifications";
 
 type ShopPhoto = Database["public"]["Tables"]["shop_photos"]["Row"];
 type CoffeeShop = Database["public"]["Tables"]["coffee_shops"]["Row"];
@@ -115,6 +116,12 @@ export async function suggestCafe(
     console.error("Supabase insert error:", error); // Log the detailed error
     return { message: `Failed to submit suggestion: ${error.message}` };
   }
+
+  // Send email notification to admin
+  await sendAdminNotification({
+    type: "suggestion",
+    details: `${name} in ${city}`,
+  });
 
   revalidatePath("/discover");
   return { message: "Thank you for your suggestion!" };
@@ -592,6 +599,18 @@ export async function submitCafeUpdates(
     return { message: `Failed to submit updates: ${error.message}` };
   }
 
+  // Fetch cafe name for better notification
+  const { data: cafe } = await supabase
+    .from("coffee_shops")
+    .select("name")
+    .eq("id", cafeId)
+    .single();
+
+  await sendAdminNotification({
+    type: "update",
+    details: `Updates for ${cafe?.name || `Cafe #${cafeId}`}`,
+  });
+
   revalidatePath(`/cafe/${cafeId}`);
   revalidatePath("/discover");
 }
@@ -617,6 +636,18 @@ export async function uploadShopPhoto(
     console.error("Error uploading shop photo:", error.message);
     return { success: false, message: error.message };
   }
+
+  // Fetch cafe name for notification
+  const { data: cafe } = await supabase
+    .from("coffee_shops")
+    .select("name")
+    .eq("id", cafeId)
+    .single();
+
+  await sendAdminNotification({
+    type: "photo",
+    details: `New photo for ${cafe?.name || `Cafe #${cafeId}`}`,
+  });
 
   revalidatePath(`/cafe/${cafeId}`);
   revalidatePath("/admin/photos"); // Added to update admin count
@@ -644,6 +675,19 @@ export async function uploadShopPhotosBatch(
     console.error("Error batch uploading shop photos:", error.message);
     return { success: false, message: error.message };
   }
+
+  // Fetch cafe name for notification
+  const { data: cafe } = await supabase
+    .from("coffee_shops")
+    .select("name")
+    .eq("id", cafeId)
+    .single();
+
+  await sendAdminNotification({
+    type: "photo",
+    details: `New photos for ${cafe?.name || `Cafe #${cafeId}`}`,
+    count: photoUrls.length,
+  });
 
   revalidatePath(`/cafe/${cafeId}`);
   revalidatePath("/admin/photos");

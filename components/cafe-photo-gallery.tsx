@@ -27,7 +27,7 @@ type ShopPhoto = {
   is_primary: boolean | null;
   is_approved: boolean | null;
   uploaded_at: string | null;
-  sort_order: number | null;
+  sort_order?: number | null;
 };
 
 type CafePhotoGalleryProps = {
