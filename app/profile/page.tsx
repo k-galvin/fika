@@ -1,8 +1,9 @@
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { Footer } from "@/components/footer";
 
-import { User } from "lucide-react"; // Added History icon
+import { User, Edit3 } from "lucide-react"; // Added History icon
 import { getSavedCafes, getVisitedCafes } from "@/app/actions"; // Import server actions
 
 import { ProfileCafes } from "@/components/profile-cafes";
@@ -28,6 +29,8 @@ export default async function ProfilePage() {
 
   const savedCafes = await getSavedCafes();
   const visitedCafes = await getVisitedCafes();
+
+  const { data: isAdmin } = await supabase.rpc("is_admin");
 
   const name = profile?.username || user.email;
 
@@ -60,6 +63,23 @@ export default async function ProfilePage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
           {/* Left Column: Account & Friends */}
           <div className="lg:col-span-4 flex flex-col gap-10">
+            {/* Admin Access Card */}
+            {isAdmin && (
+              <Link href="/admin" className="group">
+                <div className="flex flex-col p-6 rounded-2xl bg-primary/5 border border-primary/20 shadow-sm transition-all hover:shadow-md hover:bg-primary/10">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="font-kate font-bold text-xl text-primary flex items-center gap-2">
+                      Administrative Tools
+                    </h3>
+                    <div className="bg-primary/10 p-1.5 rounded-lg group-hover:bg-primary/20 transition-colors">
+                      <Edit3 className="size-4 text-primary" />
+                    </div>
+                  </div>
+                  <p className="text-sm text-primary/60 font-kate">Manage suggestions, photos, and updates.</p>
+                </div>
+              </Link>
+            )}
+
             <div className="flex flex-col p-6 rounded-2xl bg-secondary/30 handwritten-border !border-primary/10 shadow-sm transition-all hover:shadow-md">
               <div className="flex items-center gap-3 mb-4">
                 <div className="bg-primary/5 p-2 rounded-full">

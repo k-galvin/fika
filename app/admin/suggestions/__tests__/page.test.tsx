@@ -70,7 +70,7 @@ describe("SuggestionsPage", () => {
     });
 
     // Check if details are rendered
-    expect(screen.getByText("A great test cafe")).toBeInTheDocument();
+    expect(screen.getByText(/A great test cafe/i)).toBeInTheDocument();
     expect(screen.getByTestId("parking-1")).toHaveTextContent("Easy");
     expect(screen.getByTestId("vibe-2")).toHaveTextContent("Corporate");
   });

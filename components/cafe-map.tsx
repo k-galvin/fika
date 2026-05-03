@@ -8,7 +8,7 @@ const MapContent = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="w-full h-[400px] rounded-xl border bg-card text-card-foreground shadow flex items-center justify-center">
+      <div className="w-full h-[300px] rounded-xl flex items-center justify-center">
         <p className="text-card-foreground">Loading map content...</p>
       </div>
     ),
@@ -85,7 +85,7 @@ export function CafeMap({ address, cafeName }: CafeMapProps) {
 
   if (loading) {
     return (
-      <div className="w-full h-[400px] rounded-xl border bg-card text-card-foreground shadow flex items-center justify-center">
+      <div className="w-full h-[300px] rounded-xl flex items-center justify-center">
         <p className="text-card-foreground">Loading map...</p>
       </div>
     );
@@ -93,14 +93,14 @@ export function CafeMap({ address, cafeName }: CafeMapProps) {
 
   if (error || !coordinates) {
     return (
-      <div className="w-full h-[400px] rounded-xl border bg-card text-card-foreground shadow flex items-center justify-center">
+      <div className="w-full h-[300px] rounded-xl flex items-center justify-center">
         <p className="text-card-foreground">{error || "Unable to load map"}</p>
       </div>
     );
   }
 
   return (
-    <div className="w-full h-[300px] rounded-lg overflow-hidden border z-10">
+    <div className="w-full h-[300px] rounded-lg overflow-hidden z-10">
       <MapContent
         coordinates={coordinates}
         cafeName={cafeName}

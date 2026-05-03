@@ -1107,6 +1107,7 @@ export async function approveUpdateAndDenyOthers(
   }
   // Map user-friendly field names to actual database column names
   const dbColumnMap: { [key: string]: string } = {
+    Address: "address",
     Vibe: "vibe",
     Pricing: "pricing",
     Busyness: "busyness",

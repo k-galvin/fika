@@ -50,6 +50,7 @@ jest.mock("@/lib/supabase/server", () => ({
         ),
       },
       from: mockFrom,
+      rpc: jest.fn(() => Promise.resolve({ data: false, error: null })),
     };
   }),
 }));

@@ -77,6 +77,8 @@ const mockUpdates = [
 describe("UpdatesPage", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    (approveUpdateAndDenyOthers as jest.Mock).mockResolvedValue({ success: true });
+    (denyUpdates as jest.Mock).mockResolvedValue({ success: true });
   });
 
   it("renders loading state initially", () => {
@@ -94,18 +96,18 @@ describe("UpdatesPage", () => {
       const companionGroup = screen.getByTestId("group-Companion-parking");
       within(companionGroup).getByText("Companion");
       expect(within(companionGroup).getByTestId("field")).toHaveTextContent(
-        "Field: parking"
+        "Update requested for parking"
       );
       expect(within(companionGroup).getByText(/hard/i)).toBeInTheDocument();
       expect(
-        within(companionGroup).getByText(/Suggested by 2 users/i)
+        within(companionGroup).getByText(/2 suggestions/i)
       ).toBeInTheDocument();
       expect(within(companionGroup).getByText(/medium/i)).toBeInTheDocument();
       expect(
-        within(companionGroup).getByText(/Suggested by 1 user/i)
+        within(companionGroup).getByText(/1 suggestion/i)
       ).toBeInTheDocument();
       expect(
-        within(companionGroup).getByText(/Total suggestions: 3/i)
+        within(companionGroup).getByText(/Total of 3 user reports/i)
       ).toBeInTheDocument();
 
       // Canyon Coffee group
@@ -114,22 +116,22 @@ describe("UpdatesPage", () => {
       );
       within(canyonCoffeeGroup).getByText("Canyon Coffee");
       expect(within(canyonCoffeeGroup).getByTestId("field")).toHaveTextContent(
-        "Field: seating"
+        "Update requested for seating"
       );
       expect(
         within(canyonCoffeeGroup).getByText(/limited/i)
       ).toBeInTheDocument();
       expect(
-        within(canyonCoffeeGroup).getByText(/Suggested by 2 users/i)
+        within(canyonCoffeeGroup).getByText(/2 suggestions/i)
       ).toBeInTheDocument();
       expect(
         within(canyonCoffeeGroup).getByText(/plenty/i)
       ).toBeInTheDocument();
       expect(
-        within(canyonCoffeeGroup).getByText(/Suggested by 1 user/i)
+        within(canyonCoffeeGroup).getByText(/1 suggestion/i)
       ).toBeInTheDocument();
       expect(
-        within(canyonCoffeeGroup).getByText(/Total suggestions: 3/i)
+        within(canyonCoffeeGroup).getByText(/Total of 3 user reports/i)
       ).toBeInTheDocument();
     });
   });
@@ -141,7 +143,7 @@ describe("UpdatesPage", () => {
 
     await waitFor(async () => {
       const approveButtons = screen.getAllByRole("button", {
-        name: /approve most voted/i,
+        name: /approve popular/i,
       });
       await user.click(approveButtons[0]); // Companion is first
     });

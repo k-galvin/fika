@@ -80,6 +80,7 @@ export function UpdateForm({
   };
 
   const optionsMap: Record<string, string[]> = {
+    Address: [],
     Vibe: ["Minimalistic", "Cool", "Corporate", "Cozy", "Beachy", "Trendy"],
     Pricing: ["$", "$$", "$$$"],
     Busyness: ["Quiet", "Medium", "Very"],
@@ -137,7 +138,7 @@ export function UpdateForm({
 
                 <label className="text-sm font-medium">
                   What’s the correct info?
-                  {optionsMap[update.field_name] ? (
+                  {optionsMap[update.field_name] && optionsMap[update.field_name].length > 0 ? (
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button
@@ -171,7 +172,7 @@ export function UpdateForm({
                         handleChange(index, "suggested_value", e.target.value)
                       }
                       className="mt-1"
-                      placeholder="Pick something above first"
+                      placeholder={update.field_name ? `Enter new ${update.field_name.toLowerCase()}` : "Select a detail above first"}
                       disabled={!update.field_name}
                     />
                   )}
