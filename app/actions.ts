@@ -11,7 +11,7 @@ type ShopPhoto = Database["public"]["Tables"]["shop_photos"]["Row"];
 type CoffeeShop = Database["public"]["Tables"]["coffee_shops"]["Row"];
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 
-type UnapprovedPhoto = ShopPhoto & {
+export type UnapprovedPhoto = ShopPhoto & {
   coffee_shops: Pick<CoffeeShop, "name"> | null;
   profiles: Pick<Profile, "username"> | null;
 };
@@ -33,14 +33,6 @@ export async function searchProfiles(searchTerm: string) {
 }
 
 // --- Cafe Suggestion Actions ---
-
-// Helper to convert empty strings to null
-function getFormValue(value: FormDataEntryValue | null): string | null {
-  if (typeof value === "string" && value.trim() !== "") {
-    return value;
-  }
-  return null;
-}
 
 export async function suggestCafe(
   _prevState: { message: string },

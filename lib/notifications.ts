@@ -25,7 +25,7 @@ export async function sendAdminNotification({ type, details, count }: Notificati
   };
 
   try {
-    const { data, error } = await resend.emails.send({
+    const { error } = await resend.emails.send({
       from: "Fika App <notifications@resend.dev>", // Replace with your domain if configured
       to: ADMIN_EMAIL,
       subject: subjectMap[type],

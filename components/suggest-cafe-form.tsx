@@ -22,8 +22,7 @@ import {
 } from "./ui/dropdown-menu";
 import { Checkbox } from "./ui/checkbox";
 import { createClient } from "@/lib/supabase/client";
-import { toast } from "sonner";
-import { X, UploadCloud, Image as ImageIcon, Loader2 } from "lucide-react";
+import { X, UploadCloud, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const initialState = {

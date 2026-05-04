@@ -67,6 +67,7 @@ describe("CafeDetailsPage", () => {
       select: jest.fn().mockReturnThis(),
       eq: jest.fn().mockReturnThis(),
       single: jest.fn().mockResolvedValue({ data: shop }),
+      order: jest.fn().mockResolvedValue({ data: [] }),
       limit: jest.fn().mockResolvedValue({ data: [] }),
     });
 

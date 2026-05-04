@@ -71,7 +71,7 @@ export default async function JournalPage() {
                         </div>
                         
                         <p className="font-kate text-2xl text-primary/80 whitespace-pre-wrap leading-relaxed mb-6 italic">
-                          "{entry.content}"
+                          &ldquo;{entry.content}&rdquo;
                         </p>
 
                         <Link 

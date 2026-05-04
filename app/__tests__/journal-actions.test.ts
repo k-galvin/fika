@@ -83,18 +83,6 @@ describe("Journal Server Actions", () => {
 
   describe("updateJournalEntry", () => {
     it("should update a journal entry successfully", async () => {
-      (createClient as jest.Mock).mockReturnValue({
-        auth: { getUser: jest.fn().mockResolvedValue({ data: { user: mockUser } }) },
-        from: jest.fn().mockReturnThis(),
-        select: jest.fn().mockReturnThis(),
-        eq: jest.fn().mockReturnThis(),
-        single: jest.fn().mockResolvedValue({ data: { coffee_shop_id: 1 } }),
-        update: jest.fn().mockReturnThis(),
-      });
-
-      // Need to mock the separate call to from().update()
-      const mockUpdate = jest.fn().mockResolvedValue({ error: null });
-      const mockEq = jest.fn().mockReturnThis();
       const mockSingle = jest.fn().mockResolvedValue({ data: { coffee_shop_id: 1 } });
       const mockSelect = jest.fn(() => ({ eq: () => ({ single: mockSingle }) }));
       
@@ -104,7 +92,7 @@ describe("Journal Server Actions", () => {
           if (table === "journal_entries") {
             return {
               select: mockSelect,
-              update: (data: any) => ({ eq: (f: string, v: any) => ({ eq: (f2: string, v2: any) => Promise.resolve({ error: null }) }) }),
+              update: () => ({ eq: () => ({ eq: () => Promise.resolve({ error: null }) }) }),
             };
           }
           return {};
@@ -121,7 +109,7 @@ describe("Journal Server Actions", () => {
     it("should delete a journal entry successfully", async () => {
       (createClient as jest.Mock).mockReturnValue({
         auth: { getUser: jest.fn().mockResolvedValue({ data: { user: mockUser } }) },
-        from: jest.fn((table) => ({
+        from: jest.fn(() => ({
           select: () => ({ eq: () => ({ single: () => Promise.resolve({ data: { coffee_shop_id: 1 } }) }) }),
           delete: () => ({ eq: () => ({ eq: () => Promise.resolve({ error: null }) }) }),
         })),

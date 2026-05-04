@@ -589,8 +589,15 @@ describe("Server Actions", () => {
       const single = jest
         .fn()
         .mockResolvedValue({ data: suggestion, error: null });
-      const select = jest.fn(() => ({ eq: () => ({ single }) }));
-      const insert = jest.fn().mockResolvedValue({ error: null });
+      const select = jest.fn(() => ({ 
+        eq: () => ({ single }),
+        single: () => Promise.resolve({ data: { id: 101 }, error: null }) 
+      }));
+      const insert = jest.fn(() => ({
+        select: () => ({
+          single: () => Promise.resolve({ data: { id: 101 }, error: null })
+        })
+      }));
       const del = jest.fn().mockResolvedValue({ error: null });
       const deleteFn = jest.fn(() => ({ eq: del }));
 
@@ -653,7 +660,14 @@ describe("Server Actions", () => {
     it("should successfully insert a new shop photo", async () => {
       const insert = jest.fn().mockResolvedValue({ error: null });
       (createClient as jest.Mock).mockReturnValue({
-        from: jest.fn(() => ({ insert })),
+        from: jest.fn(() => ({ 
+          insert,
+          select: () => ({
+            eq: () => ({
+              single: () => Promise.resolve({ data: { name: "Test Cafe" }, error: null })
+            })
+          })
+        })),
       });
 
       const result = await uploadShopPhoto(1, "http://example.com/photo.jpg", "user-123");
@@ -674,7 +688,14 @@ describe("Server Actions", () => {
     it("should return success: false if there is a database error", async () => {
       const insert = jest.fn().mockResolvedValue({ error: { message: "DB error" } });
       (createClient as jest.Mock).mockReturnValue({
-        from: jest.fn(() => ({ insert })),
+        from: jest.fn(() => ({ 
+          insert,
+          select: () => ({
+            eq: () => ({
+              single: () => Promise.resolve({ data: { name: "Test Cafe" }, error: null })
+            })
+          })
+        })),
       });
 
       const result = await uploadShopPhoto(1, "http://example.com/photo.jpg", "user-123");

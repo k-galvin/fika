@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/componen
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { AdminEmptyState } from "@/components/admin/admin-empty-state";
-import { Loader2, MapPin, Coffee, ChevronLeft, Check, Trash2 } from "lucide-react";
+import { Loader2, MapPin, ChevronLeft, Check, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 

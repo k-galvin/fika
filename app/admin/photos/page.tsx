@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useTransition } from "react";
-import { getUnapprovedPhotos, approvePhotosBatch, denyPhotosBatch } from "@/app/actions";
+import { getUnapprovedPhotos, approvePhotosBatch, denyPhotosBatch, UnapprovedPhoto } from "@/app/actions";
 import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AdminPhotoActions } from "@/components/admin/admin-photo-actions";
@@ -12,14 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 
-// Local type for unapproved photo
-type UnapprovedPhoto = {
-  id: number;
-  photo_url: string;
-  coffee_shops: { name: string } | null;
-  profiles: { username: string } | null;
-};
-
+// Admin page for photo moderation
 export default function AdminPhotosPage() {
   const [unapprovedPhotos, setUnapprovedPhotos] = useState<UnapprovedPhoto[]>([]);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
@@ -30,7 +23,7 @@ export default function AdminPhotosPage() {
     setLoading(true);
     const photos = await getUnapprovedPhotos();
     if (photos) {
-      setUnapprovedPhotos(photos as any);
+      setUnapprovedPhotos(photos);
     }
     setLoading(false);
   };

@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 import CafeDetailsClient from "./cafe-details-client";
+import { Database } from "@/lib/supabase/database.types";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -34,6 +35,7 @@ export default async function CafeDetailsPage({ params }: Props) {
 
   if (shop && shop.shop_photos) {
     // Sort photos: strictly follow sort_order, fall back to uploaded_at
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     shop.shop_photos.sort((a: any, b: any) => {
       const orderA = a.sort_order ?? 0;
       const orderB = b.sort_order ?? 0;

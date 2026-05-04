@@ -152,7 +152,7 @@ export function PhotoUploadModal({ shopId, user }: PhotoUploadModalProps) {
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold tracking-tighter">Share Your Experience</DialogTitle>
           <DialogDescription className="italic text-primary/60">
-            Select one or more photos to contribute to this spot's journal.
+            Select one or more photos to contribute to this spot&apos;s journal.
           </DialogDescription>
         </DialogHeader>
 
