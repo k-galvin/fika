@@ -16,6 +16,7 @@ import { UpdateForm } from "@/components/update-form";
 import CafeActivityChart from "@/components/CafeActivityChart";
 import { CafePhotoGallery } from "@/components/cafe-photo-gallery";
 import { CafeMap } from "@/components/cafe-map";
+import { JournalSection } from "@/components/journal-section";
 
 type ShopPhoto = Database["public"]["Tables"]["shop_photos"]["Row"];
 type CoffeeShopWithPhotos =
@@ -30,6 +31,7 @@ type CafeDetailsClientProps = {
   isInitiallySaved: boolean;
   isInitiallyVisited: boolean;
   initialRating: number | null;
+  journalEntries: Database["public"]["Tables"]["journal_entries"]["Row"][];
 };
 
 export default function CafeDetailsClient({
@@ -39,6 +41,7 @@ export default function CafeDetailsClient({
   isInitiallySaved,
   isInitiallyVisited,
   initialRating,
+  journalEntries,
 }: CafeDetailsClientProps) {
   const { isAfterHours, setIsAfterHours } = useTheme();
   const router = useRouter();
@@ -213,6 +216,13 @@ export default function CafeDetailsClient({
             </div>
           </section>
         </div>
+
+        {/* Row 3: Journal Section */}
+        <JournalSection
+          cafeId={shop.id}
+          user={user}
+          entries={journalEntries}
+        />
       </div>
       <Footer
         user={user}

@@ -1402,3 +1402,138 @@ export async function checkUserLoggedIn(): Promise<{
   }
   return { success: true };
 }
+
+// --- Journal Actions ---
+
+export async function getJournalEntries(cafeId: number) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) return [];
+
+  const { data, error } = await supabase
+    .from("journal_entries")
+    .select("*")
+    .eq("profile_id", user.id)
+    .eq("coffee_shop_id", cafeId)
+    .order("visit_date", { ascending: false });
+
+  if (error) {
+    console.error("Error fetching journal entries:", error.message);
+    return [];
+  }
+
+  return data;
+}
+
+export async function getAllUserJournalEntries() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) return [];
+
+  const { data, error } = await supabase
+    .from("journal_entries")
+    .select("*, coffee_shops(name, city)")
+    .eq("profile_id", user.id)
+    .order("visit_date", { ascending: false });
+
+  if (error) {
+    console.error("Error fetching all journal entries:", error.message);
+    return [];
+  }
+
+  return data;
+}
+
+export async function addJournalEntry(
+  cafeId: number,
+  content: string,
+  visitDate: string
+): Promise<{ success: boolean; message?: string }> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) return { success: false, message: "User not found" };
+
+  const { error } = await supabase.from("journal_entries").insert([
+    {
+      profile_id: user.id,
+      coffee_shop_id: cafeId,
+      content,
+      visit_date: visitDate,
+    },
+  ]);
+
+  if (error) {
+    console.error("Error adding journal entry:", error.message);
+    return { success: false, message: error.message };
+  }
+
+  revalidatePath(`/cafe/${cafeId}`);
+  return { success: true };
+}
+
+export async function updateJournalEntry(
+  entryId: string,
+  content: string,
+  visitDate: string
+): Promise<{ success: boolean; message?: string }> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) return { success: false, message: "User not found" };
+
+  const { data: entry } = await supabase
+    .from("journal_entries")
+    .select("coffee_shop_id")
+    .eq("id", entryId)
+    .single();
+
+  const { error } = await supabase
+    .from("journal_entries")
+    .update({ content, visit_date: visitDate })
+    .eq("id", entryId)
+    .eq("profile_id", user.id);
+
+  if (error) {
+    console.error("Error updating journal entry:", error.message);
+    return { success: false, message: error.message };
+  }
+
+  if (entry) {
+    revalidatePath(`/cafe/${entry.coffee_shop_id}`);
+  }
+  return { success: true };
+}
+
+export async function deleteJournalEntry(
+  entryId: string
+): Promise<{ success: boolean; message?: string }> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) return { success: false, message: "User not found" };
+
+  const { data: entry } = await supabase
+    .from("journal_entries")
+    .select("coffee_shop_id")
+    .eq("id", entryId)
+    .single();
+
+  const { error } = await supabase
+    .from("journal_entries")
+    .delete()
+    .eq("id", entryId)
+    .eq("profile_id", user.id);
+
+  if (error) {
+    console.error("Error deleting journal entry:", error.message);
+    return { success: false, message: error.message };
+  }
+
+  if (entry) {
+    revalidatePath(`/cafe/${entry.coffee_shop_id}`);
+  }
+  return { success: true };
+}

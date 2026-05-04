@@ -67,6 +67,15 @@ export function NavBar({
               discover
               <span className="absolute -bottom-1 left-0 w-0 h-px bg-primary/40 transition-all duration-300 group-hover:w-full" />
             </Link>
+            {user && (
+              <Link 
+                href="/journal" 
+                className="hover:text-primary transition-colors relative group uppercase tracking-widest text-sm font-bold"
+              >
+                journal
+                <span className="absolute -bottom-1 left-0 w-0 h-px bg-primary/40 transition-all duration-300 group-hover:w-full" />
+              </Link>
+            )}
           </div>
 
           {/* Center: Brand */}
@@ -112,6 +121,9 @@ export function NavBar({
                 </DropdownMenuItem>
                 {user ? (
                   <>
+                    <DropdownMenuItem asChild className="font-kate text-2xl px-4 py-3 focus:bg-primary/5">
+                      <Link href="/journal">journal</Link>
+                    </DropdownMenuItem>
                     <DropdownMenuItem asChild className="font-kate text-2xl px-4 py-3 focus:bg-primary/5">
                       <Link href="/profile">profile</Link>
                     </DropdownMenuItem>

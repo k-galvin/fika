@@ -53,6 +53,7 @@ export default async function CafeDetailsPage({ params }: Props) {
   let isInitiallySaved = false;
   let isInitiallyVisited = false;
   let initialRating: number | null = null;
+  let journalEntries: Database["public"]["Tables"]["journal_entries"]["Row"][] = [];
 
   if (user) {
     // Check if cafe is saved by the user
@@ -73,6 +74,15 @@ export default async function CafeDetailsPage({ params }: Props) {
       .single();
     isInitiallyVisited = !!visitedData;
     initialRating = visitedData?.rating || null;
+
+    // Fetch journal entries for the user
+    const { data: journalData } = await supabase
+      .from("journal_entries")
+      .select("*")
+      .eq("profile_id", user.id)
+      .eq("coffee_shop_id", shop.id)
+      .order("visit_date", { ascending: false });
+    journalEntries = journalData || [];
   }
 
   return (
@@ -83,6 +93,7 @@ export default async function CafeDetailsPage({ params }: Props) {
       isInitiallySaved={isInitiallySaved}
       isInitiallyVisited={isInitiallyVisited}
       initialRating={initialRating}
+      journalEntries={journalEntries}
     />
   );
 }

@@ -173,6 +173,48 @@ export type Database = {
           },
         ]
       }
+      journal_entries: {
+        Row: {
+          coffee_shop_id: number
+          content: string
+          created_at: string
+          id: string
+          profile_id: string
+          visit_date: string
+        }
+        Insert: {
+          coffee_shop_id: number
+          content: string
+          created_at?: string
+          id?: string
+          profile_id: string
+          visit_date?: string
+        }
+        Update: {
+          coffee_shop_id?: number
+          content?: string
+          created_at?: string
+          id?: string
+          profile_id?: string
+          visit_date?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "journal_entries_coffee_shop_id_fkey"
+            columns: ["coffee_shop_id"]
+            isOneToOne: false
+            referencedRelation: "coffee_shops"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "journal_entries_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           id: string
