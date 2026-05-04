@@ -88,10 +88,10 @@ export function NavBar({
           <div className="md:hidden">
             <DropdownMenu open={isMenuOpen} onOpenChange={setIsMenuOpen}>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="hover:bg-primary/5">
+                <Button variant="ghost" size="icon-lg" className="hover:bg-primary/5">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6 text-primary"
+                    className="h-8 w-8 text-primary"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -99,32 +99,32 @@ export function NavBar({
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      strokeWidth={1.2}
+                      strokeWidth={1.5}
                       d="M4 6h16M4 12h16M4 18h16"
                     />
                   </svg>
                   <span className="sr-only">Toggle menu</span>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="min-w-[12rem] mt-2 handwritten-border !border-primary/10 bg-background/95 backdrop-blur-lg">
-                <DropdownMenuItem asChild className="font-kate text-lg focus:bg-primary/5">
+              <DropdownMenuContent align="end" className="min-w-[16rem] mt-2 handwritten-border !border-primary/10 bg-background/95 backdrop-blur-lg p-2">
+                <DropdownMenuItem asChild className="font-kate text-2xl px-4 py-3 focus:bg-primary/5">
                   <Link href="/discover">discover</Link>
                 </DropdownMenuItem>
                 {user ? (
                   <>
-                    <DropdownMenuItem asChild className="font-kate text-lg focus:bg-primary/5">
+                    <DropdownMenuItem asChild className="font-kate text-2xl px-4 py-3 focus:bg-primary/5">
                       <Link href="/profile">profile</Link>
                     </DropdownMenuItem>
-                    <div className="h-px bg-primary/5 my-1" />
+                    <div className="h-px bg-primary/5 my-2" />
                     <DropdownMenuItem 
                       onClick={logout}
-                      className="font-kate text-lg text-destructive/80 focus:bg-destructive/5 cursor-pointer"
+                      className="font-kate text-2xl px-4 py-3 text-destructive/80 focus:bg-destructive/5 cursor-pointer"
                     >
                       log out
                     </DropdownMenuItem>
                   </>
                 ) : (
-                  <DropdownMenuItem asChild className="font-kate text-lg focus:bg-primary/5">
+                  <DropdownMenuItem asChild className="font-kate text-2xl px-4 py-3 focus:bg-primary/5">
                     <Link href={`/auth/login?redirect=${pathname}`}>sign in</Link>
                   </DropdownMenuItem>
                 )}
