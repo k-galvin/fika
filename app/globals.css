@@ -62,6 +62,36 @@
     border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
   }
 
+  .paper-texture {
+    background-image: url("https://www.transparenttextures.com/patterns/natural-paper.png");
+  }
+
+  .notebook-lines {
+    background-image: linear-gradient(hsl(var(--primary) / 0.05) 1px, transparent 1px);
+    background-size: 100% 2rem;
+  }
+
+  .washi-tape {
+    position: absolute;
+    width: 80px;
+    height: 30px;
+    background-color: hsl(var(--accent) / 0.4);
+    opacity: 0.6;
+    transform: rotate(-3deg);
+    z-index: 20;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+
+  .washi-tape-edge {
+    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+  }
+
+  .binder-rings {
+    background-image: radial-gradient(circle, hsl(var(--primary) / 0.2) 30%, transparent 35%);
+    background-size: 100% 3rem;
+    width: 20px;
+  }
+
   .custom-scrollbar::-webkit-scrollbar {
     width: 4px;
   }

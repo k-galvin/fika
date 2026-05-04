@@ -2,7 +2,8 @@ import { createClient } from "@/lib/supabase/server";
 import { getAllUserJournalEntries } from "@/app/actions";
 import { Footer } from "@/components/footer";
 import Link from "next/link";
-import { MapPin, BookOpen, ChevronRight } from "lucide-react";
+import Image from "next/image";
+import { MapPin, BookOpen } from "lucide-react";
 import { redirect } from "next/navigation";
 
 export default async function JournalPage() {
@@ -18,7 +19,13 @@ export default async function JournalPage() {
   return (
     <main className="min-h-screen flex flex-col items-center pt-12 relative overflow-hidden bg-background">
       <div className="w-full flex-1 max-w-5xl px-6 animate-in fade-in slide-in-from-bottom-4 duration-1000">
-        <header className="flex flex-col gap-4 mb-16 text-center">
+        <header className="flex flex-col gap-4 mb-16 text-center relative">
+          <div className="absolute -top-10 -left-10 opacity-10 rotate-[-15deg] hidden lg:block">
+            <Image src="/icedLatte.png" alt="Iced Latte Doodle" width={120} height={120} />
+          </div>
+          <div className="absolute top-0 -right-20 opacity-10 rotate-[20deg] hidden lg:block">
+            <Image src="/cakeSlice.png" alt="Cake Doodle" width={100} height={100} />
+          </div>
           <h1 className="text-7xl md:text-8xl font-bold font-kate text-primary tracking-tighter leading-none">
             Your Journal
           </h1>
@@ -27,9 +34,9 @@ export default async function JournalPage() {
           </p>
         </header>
 
-        <div className="flex flex-col gap-12 pb-24">
+        <div className="pb-24 relative">
           {entries.length === 0 ? (
-            <div className="bg-secondary/5 border-2 border-dashed border-primary/10 rounded-3xl p-20 text-center">
+            <div className="bg-secondary/5 border-2 border-dashed border-primary/10 rounded-3xl p-20 text-center max-w-3xl mx-auto">
               <BookOpen className="size-16 text-primary/10 mx-auto mb-6" />
               <p className="font-kate italic text-primary/40 text-2xl">
                 Your journal is waiting for its first entry.
@@ -42,58 +49,84 @@ export default async function JournalPage() {
               </Link>
             </div>
           ) : (
-            <div className="relative">
-              {/* Vertical line for the feed/journal feel */}
-              <div className="absolute left-0 md:left-1/2 top-0 bottom-0 w-px bg-primary/5 hidden md:block" />
-
-              <div className="flex flex-col gap-12">
-                {entries.map((entry, index) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 items-start">
+              {entries.map((entry) => (
+                <div 
+                  key={entry.id} 
+                  className="relative group w-full pt-8"
+                >
+                  {/* Washi Tape - Centered and Overlapping */}
                   <div 
-                    key={entry.id} 
-                    className={`relative flex flex-col md:flex-row gap-8 items-start ${
-                      index % 2 === 0 ? "md:flex-row-reverse" : ""
-                    }`}
-                  >
-                    {/* Date circle for desktop */}
-                    <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 top-0 size-4 rounded-full bg-background border-2 border-primary/20 z-10" />
+                    className="washi-tape top-4 left-1/2 -translate-x-1/2 w-24 h-8 bg-accent/30 rotate-[-2deg] z-20"
+                  />
+                  
+                  <div className="paper-texture bg-secondary/10 p-6 md:p-8 rounded-sm shadow-lg relative overflow-hidden handwritten-border !border-primary/5 min-h-[380px] flex flex-col transition-all duration-300 hover:shadow-xl hover:translate-y-[-4px]">
+                    {/* Binder Rings Aesthetic - Slimmer */}
+                    <div className="absolute left-2 top-0 bottom-0 binder-rings opacity-20 w-4" />
                     
-                    <div className="w-full md:w-[45%] flex flex-col gap-4">
-                      <div className="bg-secondary/10 p-8 rounded-3xl handwritten-border !border-primary/10 shadow-sm hover:shadow-md transition-shadow group">
-                        <div className="flex justify-between items-start mb-4">
-                          <span className="font-kate text-primary/40 text-sm uppercase tracking-widest font-bold">
-                            {new Date(entry.visit_date).toLocaleDateString("en-US", {
-                              month: "long",
-                              day: "numeric",
-                              year: "numeric",
-                              timeZone: "UTC",
-                            })}
-                          </span>
-                        </div>
-                        
-                        <p className="font-kate text-2xl text-primary/80 whitespace-pre-wrap leading-relaxed mb-6 italic">
-                          &ldquo;{entry.content}&rdquo;
-                        </p>
-
-                        <Link 
-                          href={`/cafe/${entry.coffee_shop_id}`}
-                          className="flex items-center justify-between pt-6 border-t border-primary/5 group/link"
-                        >
-                          <div className="flex flex-col">
-                            <span className="font-kate font-bold text-xl text-primary group-hover/link:text-primary/70 transition-colors">
-                              {entry.coffee_shops?.name}
-                            </span>
-                            <div className="flex items-center gap-1 text-primary/30 text-sm font-kate uppercase tracking-tighter">
-                              <MapPin className="size-3" />
-                              <span>{entry.coffee_shops?.city}</span>
-                            </div>
-                          </div>
-                          <ChevronRight className="size-6 text-primary/20 group-hover/link:translate-x-1 transition-transform" />
-                        </Link>
+                    {/* Date Stamp - Smaller */}
+                    <div className="flex justify-end mb-6">
+                      <div className="border border-primary/10 rounded-full px-3 py-1 rotate-[-3deg] font-kate font-bold text-primary/30 uppercase tracking-[0.1em] text-[10px]">
+                        {new Date(entry.visit_date).toLocaleDateString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                          timeZone: "UTC",
+                        })}
                       </div>
                     </div>
+                    
+                    {/* Journal Content - Responsive sizing */}
+                    <div className="pl-4 relative flex-grow">
+                      <div className="absolute left-0 top-0 bottom-0 w-px bg-primary/5" />
+                      <p className="font-kate text-xl md:text-2xl text-primary/80 whitespace-pre-wrap leading-[1.6] notebook-lines pb-6">
+                        {entry.content}
+                      </p>
+                    </div>
+
+                    {/* Polaroid-style Cafe Link - Compact Polaroid */}
+                    <div className="mt-4 flex justify-end">
+                      <Link 
+                        href={`/cafe/${entry.coffee_shop_id}`}
+                        className="bg-white p-2 pb-6 shadow-md rotate-[1.5deg] hover:rotate-0 transition-all duration-300 w-[140px] border border-primary/5 group/link"
+                      >
+                        <div className="aspect-square bg-secondary/10 mb-2 flex items-center justify-center overflow-hidden relative">
+                          {(() => {
+                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                            const photos = (entry.coffee_shops as any)?.shop_photos || [];
+                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                            const primaryPhoto = photos.find((p: any) => p.is_primary && p.is_approved) || 
+                                               // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                                               photos.find((p: any) => p.is_approved) || 
+                                               photos[0];
+                            
+                            if (primaryPhoto?.photo_url) {
+                              return (
+                                <Image 
+                                  src={primaryPhoto.photo_url} 
+                                  alt={entry.coffee_shops?.name || "Cafe"} 
+                                  fill
+                                  className="object-cover group-hover/link:scale-110 transition-transform duration-500"
+                                />
+                              );
+                            }
+                            return <BookOpen className="size-6 text-primary/10 group-hover/link:scale-110 transition-transform" />;
+                          })()}
+                        </div>
+                        <div className="flex flex-col gap-0.5">
+                          <span className="font-kate font-bold text-sm text-primary leading-tight truncate">
+                            {entry.coffee_shops?.name}
+                          </span>
+                          <div className="flex items-center gap-0.5 text-primary/30 text-[9px] font-kate uppercase tracking-tighter">
+                            <MapPin className="size-2" />
+                            <span>{entry.coffee_shops?.city}</span>
+                          </div>
+                        </div>
+                      </Link>
+                    </div>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
           )}
         </div>

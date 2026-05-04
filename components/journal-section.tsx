@@ -18,6 +18,7 @@ import { Label } from "./ui/label";
 import { addJournalEntry, updateJournalEntry, deleteJournalEntry } from "@/app/actions";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 type JournalEntry = Database["public"]["Tables"]["journal_entries"]["Row"];
 
@@ -96,11 +97,20 @@ export function JournalSection({
         04
       </div>
       <div className="relative z-10 flex flex-col gap-8">
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center relative">
           <h2 className="text-4xl font-bold font-kate text-primary tracking-tighter flex items-center gap-3">
-            <BookOpen className="size-8" />
+            <BookOpen className="size-8 rotate-[-5deg]" />
             Your Journal
           </h2>
+          {/* Decorative Doodle */}
+          <div className="hidden lg:block absolute -left-12 -top-12 opacity-10 rotate-[-15deg] select-none pointer-events-none">
+            <Image 
+              src="/swanLatte.png" 
+              alt="Swan Latte Doodle" 
+              width={100} 
+              height={100}
+            />
+          </div>
           <Button
             variant="journal"
             onClick={handleAddClick}
@@ -111,7 +121,7 @@ export function JournalSection({
           </Button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {entries.length === 0 ? (
             <div className="col-span-full bg-secondary/5 border-2 border-dashed border-primary/10 rounded-2xl p-12 text-center">
               <p className="font-kate italic text-primary/40 text-xl">
@@ -122,35 +132,45 @@ export function JournalSection({
             entries.map((entry) => (
               <div
                 key={entry.id}
-                className="bg-secondary/10 p-6 rounded-2xl handwritten-border !border-primary/10 shadow-sm flex flex-col gap-4 group relative"
+                className="relative group pt-6"
               >
-                <div className="flex justify-between items-start">
-                  <span className="font-kate text-primary/40 text-sm uppercase tracking-widest font-bold">
-                    {new Date(entry.visit_date).toLocaleDateString("en-US", {
-                      month: "long",
-                      day: "numeric",
-                      year: "numeric",
-                      timeZone: "UTC",
-                    })}
-                  </span>
-                  <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button
-                      onClick={() => handleEditClick(entry)}
-                      className="text-primary/40 hover:text-primary transition-colors"
-                    >
-                      <Pencil className="size-4" />
-                    </button>
-                    <button
-                      onClick={() => handleDeleteClick(entry.id)}
-                      className="text-destructive/40 hover:text-destructive transition-colors"
-                    >
-                      <Trash2 className="size-4" />
-                    </button>
+                {/* Washi Tape - Unified and Overlapping */}
+                <div 
+                  className="washi-tape top-2 left-1/2 -translate-x-1/2 w-24 h-8 bg-accent/30 rotate-[1deg] z-20"
+                />
+                
+                <div className="paper-texture bg-secondary/10 p-6 pt-10 rounded-sm shadow-md handwritten-border !border-primary/5 flex flex-col gap-4 relative overflow-hidden transition-transform hover:scale-[1.02] duration-300">
+                  {/* Binder Rings */}
+                  <div className="absolute left-2 top-0 bottom-0 binder-rings opacity-20 w-4" />
+                  
+                  <div className="flex justify-between items-start relative z-10 pl-4">
+                    <span className="font-kate text-primary/40 text-sm uppercase tracking-widest font-bold border-b border-primary/10 pb-1">
+                      {new Date(entry.visit_date).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                        timeZone: "UTC",
+                      })}
+                    </span>
+                    <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button
+                        onClick={() => handleEditClick(entry)}
+                        className="text-primary/40 hover:text-primary transition-colors"
+                      >
+                        <Pencil className="size-4" />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteClick(entry.id)}
+                        className="text-destructive/40 hover:text-destructive transition-colors"
+                      >
+                        <Trash2 className="size-4" />
+                      </button>
+                    </div>
                   </div>
+                  <p className="font-kate text-2xl text-primary/80 whitespace-pre-wrap leading-[2rem] notebook-lines pl-4">
+                    {entry.content}
+                  </p>
                 </div>
-                <p className="font-kate text-lg text-primary/80 whitespace-pre-wrap leading-relaxed">
-                  {entry.content}
-                </p>
               </div>
             ))
           )}
@@ -187,7 +207,7 @@ export function JournalSection({
                 onChange={(e) => setContent(e.target.value)}
                 placeholder="What did you order? How was the atmosphere today?"
                 required
-                className="min-h-[150px] w-full rounded-md border-2 border-primary/10 bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 handwritten-border"
+                className="min-h-[250px] w-full rounded-md border-2 border-primary/10 bg-background px-6 py-4 text-2xl focus:outline-none focus:ring-2 focus:ring-primary/20 handwritten-border paper-texture notebook-lines leading-[2rem]"
               />
             </div>
             <DialogFooter>

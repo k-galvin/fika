@@ -1426,7 +1426,7 @@ export async function getAllUserJournalEntries() {
 
   const { data, error } = await supabase
     .from("journal_entries")
-    .select("*, coffee_shops(name, city)")
+    .select("*, coffee_shops(name, city, shop_photos(photo_url, is_primary, is_approved))")
     .eq("profile_id", user.id)
     .order("visit_date", { ascending: false });
 
