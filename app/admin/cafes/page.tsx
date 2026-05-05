@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Card, CardTitle, CardDescription } from "@/components/ui/card";
 import { Trash2, ExternalLink, Search, ArrowLeft } from "lucide-react";
 import { getAllCafes, deleteCafe } from "@/app/actions";
 import { Input } from "@/components/ui/input";

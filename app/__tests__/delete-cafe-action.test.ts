@@ -17,6 +17,7 @@ jest.mock("next/cache", () => ({
   revalidatePath: jest.fn(),
 }));
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 describe("deleteCafe Action", () => {
   let mockSupabase: any;
   let mockServiceRoleSupabase: any;
