@@ -20,6 +20,8 @@ export default async function Home() {
         alt="decoration"
         width={96}
         height={96}
+        style={{ width: 'auto', height: 'auto' }}
+        priority
         className="hidden lg:block absolute top-[5vh] left-10 z-[-1]"
       />
       <Image
@@ -27,6 +29,8 @@ export default async function Home() {
         alt="decoration"
         width={100}
         height={100}
+        style={{ width: 'auto', height: 'auto' }}
+        priority
         className="hidden lg:block absolute top-[5vh] right-10 z-[-1]"
       />
 
@@ -36,6 +40,8 @@ export default async function Home() {
         alt="decoration"
         width={96}
         height={96}
+        style={{ width: 'auto', height: 'auto' }}
+        priority
         className="hidden lg:block absolute top-[30vh] left-14 z-[-1]"
       />
       <Image
@@ -43,6 +49,8 @@ export default async function Home() {
         alt="decoration"
         width={96}
         height={96}
+        style={{ width: 'auto', height: 'auto' }}
+        priority
         className="hidden lg:block absolute top-[30vh] right-14 z-[-1]"
       />
 
@@ -52,6 +60,7 @@ export default async function Home() {
         alt="decoration"
         width={110}
         height={110}
+        style={{ width: 'auto', height: 'auto' }}
         className="hidden lg:block absolute top-[55vh] left-10 z-[-1]"
       />
       <Image
@@ -59,6 +68,7 @@ export default async function Home() {
         alt="decoration"
         width={96}
         height={96}
+        style={{ width: 'auto', height: 'auto' }}
         className="hidden lg:block absolute top-[55vh] right-10 z-[-1]"
       />
 

@@ -2,8 +2,8 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Coffee, Camera, Edit3, ChevronRight, Star } from "lucide-react";
-import { getSuggestedCafes, getUnapprovedPhotos, getCafeUpdates, getFeaturedCafes } from "@/app/actions";
+import { Coffee, Camera, Edit3, ChevronRight, Star, MapPin } from "lucide-react";
+import { getSuggestedCafes, getUnapprovedPhotos, getCafeUpdates, getFeaturedCafes, getCities } from "@/app/actions";
 import { Badge } from "@/components/ui/badge";
 
 export default async function AdminDashboard() {
@@ -23,11 +23,12 @@ export default async function AdminDashboard() {
   }
 
   // Fetch counts for badges
-  const [suggestions, photos, updates, featured] = await Promise.all([
+  const [suggestions, photos, updates, featured, cities] = await Promise.all([
     getSuggestedCafes(),
     getUnapprovedPhotos(),
     getCafeUpdates(),
     getFeaturedCafes(),
+    getCities(),
   ]);
 
   const counts = {
@@ -35,6 +36,7 @@ export default async function AdminDashboard() {
     photos: photos?.length || 0,
     updates: updates?.length || 0,
     featured: featured?.length || 0,
+    cities: cities?.length || 0,
   };
 
   const adminModules = [
@@ -73,6 +75,15 @@ export default async function AdminDashboard() {
       color: "text-yellow-600",
       bgColor: "bg-yellow-50 dark:bg-yellow-900/10",
       count: counts.featured,
+    },
+    {
+      title: "Cities",
+      description: "Manage the list of supported cities across the application.",
+      href: "/admin/cities",
+      icon: MapPin,
+      color: "text-emerald-600",
+      bgColor: "bg-emerald-50 dark:bg-emerald-900/10",
+      count: 0, // No badge needed for total cities
     },
   ];
 

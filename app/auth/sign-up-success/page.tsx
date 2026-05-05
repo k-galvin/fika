@@ -22,6 +22,7 @@ export default function Page() {
                 alt="Cardamom Bun Illustration"
                 width={100}
                 height={100}
+                style={{ width: 'auto', height: 'auto' }}
                 className="mx-auto mt-6"
               />
             </CardContent>

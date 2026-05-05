@@ -119,7 +119,15 @@ jest.mock("@/lib/supabase/client", () => ({
   })),
 }));
 
-jest.mock("@/app/actions");
+jest.mock("@/app/actions", () => ({
+  getCities: jest.fn(() => Promise.resolve([])),
+  suggestCafe: jest.fn(),
+  getSuggestedCafes: jest.fn(),
+  approveSuggestion: jest.fn(),
+  denySuggestion: jest.fn(),
+  toggleFeaturedCafe: jest.fn(),
+  getFeaturedCafes: jest.fn(),
+}));
 
 // Mock Supabase database types
 jest.mock("@/lib/supabase/database.types", () => ({
@@ -149,7 +157,7 @@ describe("DiscoverContent", () => {
 
   it("renders a list of cafe cards", async () => {
     (useTheme as jest.Mock).mockReturnValue({ isAfterHours: false });
-    render(<DiscoverContent initialShops={MOCK_SHOPS} user={null} />);
+    render(<DiscoverContent initialShops={MOCK_SHOPS} user={null} cities={[]} />);
 
     const heading = screen.getByRole("heading", { level: 1 });
     expect(heading).toBeInTheDocument();
@@ -160,7 +168,7 @@ describe("DiscoverContent", () => {
 
   it("renders 'No shops found' message when initialShops is empty", () => {
     (useTheme as jest.Mock).mockReturnValue({ isAfterHours: false });
-    render(<DiscoverContent initialShops={[]} user={null} />);
+    render(<DiscoverContent initialShops={[]} user={null} cities={[]} />);
     expect(
       screen.getByText("No shops found matching your criteria.")
     ).toBeInTheDocument();
@@ -168,13 +176,13 @@ describe("DiscoverContent", () => {
 
   it("renders 'Load More' button when there are more shops to load", () => {
     (useTheme as jest.Mock).mockReturnValue({ isAfterHours: false });
-    render(<DiscoverContent initialShops={MOCK_SHOPS_FULL_PAGE} user={null} />);
+    render(<DiscoverContent initialShops={MOCK_SHOPS_FULL_PAGE} user={null} cities={[]} />);
     expect(screen.getByText("load more")).toBeInTheDocument();
   });
 
   it("clicking 'Load More' fetches and displays more shops", async () => {
     (useTheme as jest.Mock).mockReturnValue({ isAfterHours: false });
-    render(<DiscoverContent initialShops={MOCK_SHOPS_FULL_PAGE} user={null} />);
+    render(<DiscoverContent initialShops={MOCK_SHOPS_FULL_PAGE} user={null} cities={[]} />);
 
     const loadMoreButton = screen.getByText("load more");
     await act(async () => {
@@ -189,7 +197,7 @@ describe("DiscoverContent", () => {
       createMockCoffeeShop(i)
     );
     const { rerender } = render(
-      <DiscoverContent initialShops={initialShops} user={mockUser} />
+      <DiscoverContent initialShops={initialShops} user={mockUser} cities={[]} />
     );
 
     const loadMoreButton = screen.getByText("load more");
@@ -205,7 +213,7 @@ describe("DiscoverContent", () => {
     }));
 
     rerender(
-      <DiscoverContent initialShops={refreshedInitialShops} user={mockUser} />
+      <DiscoverContent initialShops={refreshedInitialShops} user={mockUser} cities={[]} />
     );
 
     await waitFor(() => {
@@ -218,7 +226,7 @@ describe("DiscoverContent", () => {
       createMockCoffeeShop(i)
     );
     const { rerender } = render(
-      <DiscoverContent initialShops={initialShops} user={mockUser} />
+      <DiscoverContent initialShops={initialShops} user={mockUser} cities={[]} />
     );
 
     const loadMoreButton = screen.getByText("load more");
@@ -234,7 +242,7 @@ describe("DiscoverContent", () => {
     }));
 
     rerender(
-      <DiscoverContent initialShops={refreshedInitialShops} user={mockUser} />
+      <DiscoverContent initialShops={refreshedInitialShops} user={mockUser} cities={[]} />
     );
 
     await waitFor(() => {

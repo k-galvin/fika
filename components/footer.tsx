@@ -12,6 +12,7 @@ type FooterProps = {
   setIsAfterHours?: (value: boolean) => void;
   isWineBar?: boolean | null;
   user: User | null;
+  cities?: string[];
 };
 
 export function Footer({
@@ -19,6 +20,7 @@ export function Footer({
   setIsAfterHours,
   isWineBar,
   user,
+  cities,
 }: FooterProps) {
   const [isSuggestCafeOpen, setIsSuggestCafeOpen] = useState(false);
   const router = useRouter();
@@ -39,10 +41,9 @@ export function Footer({
           <Image
             src="/tablescape.png"
             alt="Table logo (light theme)"
-            width={300}
-            height={300}
-            style={{ height: 'auto' }}
-            className={`absolute top-0 left-0 transition-opacity duration-500 ${
+            fill
+            sizes="300px"
+            className={`object-contain transition-opacity duration-500 ${
               isAfterHours ? "opacity-0" : "opacity-100"
             }`}
             priority // Keep priority for the default image
@@ -50,10 +51,9 @@ export function Footer({
           <Image
             src="/tablescapeDark.png"
             alt="Table logo (dark theme)"
-            width={300}
-            height={300}
-            style={{ height: 'auto' }}
-            className={`absolute top-0 left-0 transition-opacity duration-500 ${
+            fill
+            sizes="300px"
+            className={`object-contain transition-opacity duration-500 ${
               isAfterHours ? "opacity-100" : "opacity-0"
             }`}
           />
@@ -67,6 +67,7 @@ export function Footer({
                 alt="Wine Glass Icon"
                 width={40}
                 height={40}
+                style={{ height: 'auto' }}
               />
             </div>
           )}
@@ -85,6 +86,7 @@ export function Footer({
       <SuggestCafeForm
         isOpen={isSuggestCafeOpen}
         onOpenChange={setIsSuggestCafeOpen}
+        cities={cities}
       />
     </>
   );

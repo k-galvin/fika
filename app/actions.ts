@@ -536,6 +536,78 @@ export async function logVisit(
   return { success: true };
 }
 
+// --- City Management Actions ---
+
+export async function getCities() {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("cities")
+    .select("*")
+    .order("name");
+
+  if (error) {
+    console.error("Error fetching cities:", error.message);
+    return [];
+  }
+
+  return data;
+}
+
+export async function addCity(name: string) {
+  const supabase = await createClient();
+  
+  // Verify admin status
+  const { data: isAdmin } = await supabase.rpc("is_admin");
+  if (!isAdmin) return { success: false, message: "Unauthorized" };
+
+  const adminSupabase = createServiceRoleClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+
+  const { data, error } = await adminSupabase
+    .from("cities")
+    .insert([{ name }])
+    .select()
+    .single();
+
+  if (error) {
+    console.error("Error adding city:", error.message);
+    return { success: false, message: error.message };
+  }
+
+  revalidatePath("/admin/cities");
+  revalidatePath("/discover");
+  return { success: true, data };
+}
+
+export async function deleteCity(id: number) {
+  const supabase = await createClient();
+  
+  // Verify admin status
+  const { data: isAdmin } = await supabase.rpc("is_admin");
+  if (!isAdmin) return { success: false, message: "Unauthorized" };
+
+  const adminSupabase = createServiceRoleClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+
+  const { error } = await adminSupabase
+    .from("cities")
+    .delete()
+    .eq("id", id);
+
+  if (error) {
+    console.error("Error deleting city:", error.message);
+    return { success: false, message: error.message };
+  }
+
+  revalidatePath("/admin/cities");
+  revalidatePath("/discover");
+  return { success: true };
+}
+
 // --- Cafe Rating Actions ---
 
 export async function rateCafe(

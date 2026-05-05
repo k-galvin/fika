@@ -11,7 +11,7 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Button } from "./ui/button";
 import { useState, useRef, useEffect } from "react";
-import { suggestCafe } from "@/app/actions";
+import { suggestCafe, getCities } from "@/app/actions";
 import { Constants } from "@/lib/supabase/database.types";
 import {
   DropdownMenu,
@@ -50,17 +50,33 @@ export function SuggestCafeForm({
   isOpen,
   onOpenChange,
   withDialog = true,
+  cities: propCities,
 }: {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
   withDialog?: boolean;
+  cities?: string[];
 }) {
   const [formData, setFormData] = useState(initialState);
   const [pending, setPending] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<SelectedFile[]>([]);
   const [message, setMessage] = useState("");
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [cities, setCities] = useState<string[]>(propCities || []);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Fetch cities if not provided as props
+  useEffect(() => {
+    if (!propCities || propCities.length === 0) {
+      const fetchCitiesList = async () => {
+        const data = await getCities();
+        setCities(data.map(c => c.name));
+      };
+      fetchCitiesList();
+    } else {
+      setCities(propCities);
+    }
+  }, [propCities]);
 
   // Clean up object URLs
   useEffect(() => {
@@ -221,7 +237,7 @@ export function SuggestCafeForm({
                   value={formData.city}
                   onValueChange={(value) => handleDropdownChange("city", value)}
                 >
-                  {Constants.public.Enums.Cities.map((city) => (
+                  {cities.map((city) => (
                     <DropdownMenuRadioItem key={city} value={city}>
                       {city}
                     </DropdownMenuRadioItem>

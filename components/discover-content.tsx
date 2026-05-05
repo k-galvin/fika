@@ -28,17 +28,25 @@ function usePrevious<T>(value: T): T | undefined {
 export function DiscoverContent({
   initialShops,
   user,
+  cities: initialCities,
 }: {
   initialShops: CoffeeShop[];
   user: User | null;
+  cities: string[];
 }) {
   const [shops, setShops] = useState<CoffeeShop[]>(initialShops);
+  const [cities, setCities] = useState<string[]>(initialCities);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(initialShops.length === PAGE_SIZE);
   const [loading, setLoading] = useState(false);
   const searchParams = useSearchParams();
   const paramsString = searchParams.toString();
   const prevParamsString = usePrevious(paramsString);
+
+  // Update cities if they change from props
+  useEffect(() => {
+    setCities(initialCities);
+  }, [initialCities]);
 
   useEffect(() => {
     if (paramsString !== prevParamsString) {
@@ -156,7 +164,7 @@ export function DiscoverContent({
       </div>
       <div className="flex-1 flex flex-col gap-10 max-w-7xl p-5 w-full">
         <DiscoverFilters
-          cities={Constants.public.Enums.Cities as unknown as string[]}
+          cities={cities}
           parkings={
             Constants.public.Enums["Parking Difficulty"] as unknown as string[]
           }
@@ -204,7 +212,7 @@ export function DiscoverContent({
           </div>
         )}
       </div>
-      <Footer user={user} />
+      <Footer user={user} cities={cities} />
     </div>
   );
 }

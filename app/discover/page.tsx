@@ -70,7 +70,12 @@ export default async function DiscoverPage({ searchParams: searchParamsPromise }
   const to = from + PAGE_SIZE - 1;
   query = query.range(from, to);
 
-  const { data: initialShopsData } = await query;
+  const [ { data: initialShopsData }, { data: citiesData } ] = await Promise.all([
+    query,
+    supabase.from("cities").select("name").order("name")
+  ]);
+
+  const cities = citiesData?.map(c => c.name) || [];
 
   const initialShops: CoffeeShop[] =
     initialShopsData?.map((shop) => {
@@ -90,6 +95,8 @@ export default async function DiscoverPage({ searchParams: searchParamsPromise }
         alt="decoration"
         width={96}
         height={96}
+        style={{ width: 'auto', height: 'auto' }}
+        priority
         className="hidden lg:block fixed top-[15%] left-8 z-[-1]"
       />
       <Image
@@ -97,6 +104,8 @@ export default async function DiscoverPage({ searchParams: searchParamsPromise }
         alt="decoration"
         width={100}
         height={100}
+        style={{ width: 'auto', height: 'auto' }}
+        priority
         className="hidden lg:block fixed top-[15%] right-8 z-[-1]"
       />
 
@@ -106,6 +115,8 @@ export default async function DiscoverPage({ searchParams: searchParamsPromise }
         alt="decoration"
         width={96}
         height={96}
+        style={{ width: 'auto', height: 'auto' }}
+        priority
         className="hidden lg:block fixed top-[48%] left-12 z-[-1]"
       />
       <Image
@@ -113,6 +124,8 @@ export default async function DiscoverPage({ searchParams: searchParamsPromise }
         alt="decoration"
         width={120}
         height={120}
+        style={{ width: 'auto', height: 'auto' }}
+        priority
         className="hidden lg:block fixed top-[48%] right-12 z-[-1]"
       />
 
@@ -122,6 +135,7 @@ export default async function DiscoverPage({ searchParams: searchParamsPromise }
         alt="decoration"
         width={95}
         height={95}
+        style={{ width: 'auto', height: 'auto' }}
         className="hidden lg:block fixed top-[80%] left-8 z-[-1]"
       />
       <Image
@@ -129,10 +143,11 @@ export default async function DiscoverPage({ searchParams: searchParamsPromise }
         alt="decoration"
         width={95}
         height={95}
+        style={{ width: 'auto', height: 'auto' }}
         className="hidden lg:block fixed top-[80%] right-8 z-[-1]"
       />
       <div className="flex-1 w-full flex flex-col gap-4 items-center">
-        <DiscoverContent initialShops={initialShops} user={user} />
+        <DiscoverContent initialShops={initialShops} user={user} cities={cities} />
       </div>
     </main>
   );

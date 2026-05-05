@@ -38,6 +38,24 @@ export type Database = {
         }
         Relationships: []
       }
+      cities: {
+        Row: {
+          id: number
+          name: string
+          created_at: string
+        }
+        Insert: {
+          id?: number
+          name: string
+          created_at?: string
+        }
+        Update: {
+          id?: number
+          name?: string
+          created_at?: string
+        }
+        Relationships: []
+      }
       cafe_updates: {
         Row: {
           approved: boolean | null
@@ -87,7 +105,7 @@ export type Database = {
         Row: {
           address: string | null
           busyness: Database["public"]["Enums"]["Busyness"] | null
-          city: Database["public"]["Enums"]["Cities"] | null
+          city: string | null
           has_outlets: boolean | null
           has_wifi: boolean | null
           id: number
@@ -104,7 +122,7 @@ export type Database = {
         Insert: {
           address?: string | null
           busyness?: Database["public"]["Enums"]["Busyness"] | null
-          city?: Database["public"]["Enums"]["Cities"] | null
+          city?: string | null
           has_outlets?: boolean | null
           has_wifi?: boolean | null
           id?: number
@@ -121,7 +139,7 @@ export type Database = {
         Update: {
           address?: string | null
           busyness?: Database["public"]["Enums"]["Busyness"] | null
-          city?: Database["public"]["Enums"]["Cities"] | null
+          city?: string | null
           has_outlets?: boolean | null
           has_wifi?: boolean | null
           id?: number
@@ -282,7 +300,7 @@ export type Database = {
         Row: {
           address: string | null
           busyness: Database["public"]["Enums"]["Busyness"] | null
-          city: Database["public"]["Enums"]["Cities"] | null
+          city: string | null
           created_at: string
           description: string | null
           has_outlets: boolean | null
@@ -300,7 +318,7 @@ export type Database = {
         Insert: {
           address?: string | null
           busyness?: Database["public"]["Enums"]["Busyness"] | null
-          city?: Database["public"]["Enums"]["Cities"] | null
+          city?: string | null
           created_at?: string
           description?: string | null
           has_outlets?: boolean | null
@@ -318,7 +336,7 @@ export type Database = {
         Update: {
           address?: string | null
           busyness?: Database["public"]["Enums"]["Busyness"] | null
-          city?: Database["public"]["Enums"]["Cities"] | null
+          city?: string | null
           created_at?: string
           description?: string | null
           has_outlets?: boolean | null

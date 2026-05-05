@@ -28,6 +28,8 @@ export default async function JournalPage() {
               alt="Swan Latte Doodle"
               width={120}
               height={120}
+              style={{ width: 'auto', height: 'auto' }}
+              priority
             />
           </div>
           <div className="absolute top-10 -right-20 rotate-[20deg] hidden lg:block">
@@ -36,6 +38,8 @@ export default async function JournalPage() {
               alt="Cake Doodle"
               width={100}
               height={100}
+              style={{ width: 'auto', height: 'auto' }}
+              priority
             />
           </div>
           <h1 className="text-7xl md:text-8xl font-bold font-kate text-primary tracking-tighter leading-none">
@@ -121,6 +125,7 @@ export default async function JournalPage() {
                                   src={primaryPhoto.photo_url}
                                   alt={entry.coffee_shops?.name || "Cafe"}
                                   fill
+                                  sizes="140px"
                                   className="object-cover group-hover/link:scale-110 transition-transform duration-500"
                                 />
                               );

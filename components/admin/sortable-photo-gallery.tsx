@@ -75,6 +75,7 @@ function SortablePhoto({ photo, index }: SortablePhotoProps) {
         src={photo.photo_url}
         alt="Gallery Photo"
         fill
+        sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
         className="object-cover"
       />
       {index < 4 && (

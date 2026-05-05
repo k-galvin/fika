@@ -109,6 +109,7 @@ export function JournalSection({
               alt="Swan Latte Doodle" 
               width={100} 
               height={100}
+              style={{ width: 'auto', height: 'auto' }}
             />
           </div>
           <Button
