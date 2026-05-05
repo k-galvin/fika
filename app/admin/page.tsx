@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Coffee, Camera, Edit3, ChevronRight, Star, MapPin } from "lucide-react";
-import { getSuggestedCafes, getUnapprovedPhotos, getCafeUpdates, getFeaturedCafes, getCities } from "@/app/actions";
+import { getSuggestedCafes, getUnapprovedPhotos, getCafeUpdates, getFeaturedCafes, getCities, getAllCafes } from "@/app/actions";
 import { Badge } from "@/components/ui/badge";
 
 export default async function AdminDashboard() {
@@ -23,12 +23,13 @@ export default async function AdminDashboard() {
   }
 
   // Fetch counts for badges
-  const [suggestions, photos, updates, featured, cities] = await Promise.all([
+  const [suggestions, photos, updates, featured, cities, cafes] = await Promise.all([
     getSuggestedCafes(),
     getUnapprovedPhotos(),
     getCafeUpdates(),
     getFeaturedCafes(),
     getCities(),
+    getAllCafes(),
   ]);
 
   const counts = {
@@ -37,9 +38,19 @@ export default async function AdminDashboard() {
     updates: updates?.length || 0,
     featured: featured?.length || 0,
     cities: cities?.length || 0,
+    cafes: cafes?.length || 0,
   };
 
   const adminModules = [
+    {
+      title: "Cafes",
+      description: "Manage the complete list of cafes, including the ability to remove them.",
+      href: "/admin/cafes",
+      icon: Coffee,
+      color: "text-amber-600",
+      bgColor: "bg-amber-50 dark:bg-amber-900/10",
+      count: counts.cafes,
+    },
     {
       title: "Suggestions",
       description: "Review and approve new cafe submissions from the community.",

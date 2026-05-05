@@ -1511,6 +1511,87 @@ export async function denyUpdates(updateIds: number[]) {
   return { success: true };
 }
 
+export async function deleteCafe(cafeId: number): Promise<{ success: boolean; message?: string }> {
+  const authSupabase = await createClient();
+  const { data: isAdmin } = await authSupabase.rpc("is_admin");
+  if (!isAdmin) return { success: false, message: "Unauthorized" };
+
+  const supabase = createServiceRoleClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+
+  // 1. Fetch photos to delete from storage
+  const { data: photos } = await supabase
+    .from("shop_photos")
+    .select("photo_url")
+    .eq("shop_id", cafeId);
+
+  if (photos && photos.length > 0) {
+    const filePaths = photos.map(p => {
+      try {
+        // Extract file path from URL. Assuming structure: .../images/<filePath>
+        return new URL(p.photo_url).pathname.split("/images/")[1];
+      } catch {
+        return null;
+      }
+    }).filter(Boolean) as string[];
+
+    if (filePaths.length > 0) {
+      const { error: storageError } = await supabase.storage
+        .from("images")
+        .remove(filePaths);
+      
+      if (storageError) {
+        console.error("Error deleting cafe photos from storage:", storageError.message);
+      }
+    }
+  }
+
+  // 2. Explicitly delete dependent records from database tables
+  // We do this because the database might not have ON DELETE CASCADE set up.
+  await Promise.all([
+    supabase.from("shop_photos").delete().eq("shop_id", cafeId),
+    supabase.from("cafe_updates").delete().eq("cafe_id", cafeId),
+    supabase.from("journal_entries").delete().eq("coffee_shop_id", cafeId),
+    supabase.from("user_saved_cafes").delete().eq("coffee_shop_id", cafeId),
+    supabase.from("user_visits").delete().eq("coffee_shop_id", cafeId),
+  ]);
+
+  // 3. Delete the cafe
+  const { error } = await supabase
+    .from("coffee_shops")
+    .delete()
+    .eq("id", cafeId);
+
+  if (error) {
+    console.error("Error deleting cafe:", error.message);
+    return { success: false, message: error.message };
+  }
+
+  revalidatePath("/");
+  revalidatePath("/discover");
+  revalidatePath("/admin/featured");
+  revalidatePath(`/cafe/${cafeId}`);
+  
+  return { success: true };
+}
+
+export async function getAllCafes() {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("coffee_shops")
+    .select("id, name, city")
+    .order("name");
+
+  if (error) {
+    console.error("Error fetching all cafes:", error.message);
+    return [];
+  }
+
+  return data;
+}
+
 export async function checkUserLoggedIn(): Promise<{
   success: boolean;
   message?: string;

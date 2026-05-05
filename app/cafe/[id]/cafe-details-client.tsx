@@ -5,7 +5,7 @@ import { Footer } from "@/components/footer";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { User } from "@supabase/supabase-js";
-import { Bookmark, MapPin } from "lucide-react";
+import { Bookmark, MapPin, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
 import { useTheme } from "../../theme-context";
@@ -17,6 +17,17 @@ import CafeActivityChart from "@/components/CafeActivityChart";
 import { CafePhotoGallery } from "@/components/cafe-photo-gallery";
 import { CafeMap } from "@/components/cafe-map";
 import { JournalSection } from "@/components/journal-section";
+import { deleteCafe } from "@/app/actions";
+import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 type ShopPhoto = Database["public"]["Tables"]["shop_photos"]["Row"];
 type CoffeeShopWithPhotos =
@@ -47,10 +58,26 @@ export default function CafeDetailsClient({
   const router = useRouter();
   const pathname = usePathname();
   const [isClient, setIsClient] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
   }, []);
+
+  async function handleDelete() {
+    setIsDeleting(true);
+    const result = await deleteCafe(shop.id);
+    setIsDeleting(false);
+    setDeleteDialogOpen(false);
+    
+    if (result.success) {
+      toast.success("Cafe deleted successfully.");
+      router.push("/discover");
+    } else {
+      toast.error(result.message || "Failed to delete cafe.");
+    }
+  }
 
   const attributeRow = (icon: string, label: string, value: string | boolean | null) => {
     if (value === null || value === undefined) return null;
@@ -92,6 +119,48 @@ export default function CafeDetailsClient({
 
           <div className="flex items-center gap-4">
             <div className="bg-secondary/10 p-3 rounded-2xl handwritten-border !border-primary/10 flex items-center gap-4">
+              {userRole === "admin" && (
+                <>
+                  <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+                    <DialogTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon-lg"
+                        className="text-destructive/60 hover:text-destructive hover:bg-destructive/10"
+                      >
+                        <Trash2 className="h-8 w-8" />
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle className="text-2xl font-kate">Delete Cafe?</DialogTitle>
+                        <DialogDescription className="text-base">
+                          Are you sure you want to delete <strong>{shop.name}</strong>? 
+                          This action is permanent and will remove all associated photos, journal entries, and visits.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <DialogFooter className="mt-6">
+                        <Button
+                          variant="outline"
+                          onClick={() => setDeleteDialogOpen(false)}
+                          disabled={isDeleting}
+                        >
+                          Cancel
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          onClick={handleDelete}
+                          disabled={isDeleting}
+                          className="gap-2"
+                        >
+                          {isDeleting ? "Deleting..." : "Delete Permanently"}
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                  <div className="h-8 w-px bg-primary/10" />
+                </>
+              )}
               <LogVisitButton
                 shopId={shop.id}
                 isInitiallyVisited={isInitiallyVisited}
