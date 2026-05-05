@@ -12,6 +12,7 @@ import {
   denyFriendRequest,
   unfriendUser,
   sendFriendRequest,
+  unsendFriendRequest,
 } from "@/app/actions";
 
 interface Profile {
@@ -243,16 +244,26 @@ export function FindFriends() {
                   </div>
                 </div>
                 <Button
-                  onClick={() => addFriend(user.id)}
+                  onClick={async () => {
+                    if (friendships[user.id] === "pending") {
+                      const result = await unsendFriendRequest(user.id);
+                      if (result.success) {
+                        setFriendships((prev) => {
+                          const copy = { ...prev };
+                          delete copy[user.id];
+                          return copy;
+                        });
+                      }
+                    } else if (friendships[user.id] !== "friends") {
+                      addFriend(user.id);
+                    }
+                  }}
                   variant="ghost"
                   className="font-kate font-bold text-xs handwritten-border !border-primary/10"
-                  disabled={
-                    friendships[user.id] === "pending" ||
-                    friendships[user.id] === "friends"
-                  }
+                  disabled={friendships[user.id] === "friends"}
                 >
                   {friendships[user.id] === "pending"
-                    ? "Pending"
+                    ? "Cancel"
                     : friendships[user.id] === "friends"
                     ? "Friends"
                     : "Add"}

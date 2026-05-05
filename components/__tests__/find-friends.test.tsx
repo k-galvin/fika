@@ -1,7 +1,7 @@
 import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
 import { FindFriends } from "@/components/find-friends";
 import { useSearchParams } from "next/navigation";
-import { sendFriendRequest } from "@/app/actions";
+import { sendFriendRequest, unsendFriendRequest } from "@/app/actions";
 
 jest.mock("@/app/actions", () => ({
   acceptFriendRequest: jest.fn(),
@@ -103,6 +103,37 @@ describe("FindFriends", () => {
       expect(sendFriendRequest).toHaveBeenCalledWith("user-456");
     });
 
-    expect(await screen.findByText("Pending")).toBeInTheDocument();
+    expect(await screen.findByText("Cancel")).toBeInTheDocument();
+  });
+
+  it('unsends a friend request when "Cancel" is clicked', async () => {
+    (useSearchParams as jest.Mock).mockReturnValue(
+      new URLSearchParams("search=test")
+    );
+    await act(async () => {
+      render(<FindFriends />);
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText("testuser")).toBeInTheDocument();
+    });
+
+    // First, send the request
+    const addButton = screen.getByText("Add");
+    fireEvent.click(addButton);
+
+    // Verify it changed to Cancel
+    const cancelButton = await screen.findByText("Cancel");
+    expect(cancelButton).toBeInTheDocument();
+
+    // Now, cancel it
+    fireEvent.click(cancelButton);
+
+    await waitFor(() => {
+      expect(unsendFriendRequest).toHaveBeenCalledWith("user-456");
+    });
+
+    // Verify it changed back to Add
+    expect(await screen.findByText("Add")).toBeInTheDocument();
   });
 });

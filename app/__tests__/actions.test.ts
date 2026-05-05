@@ -12,10 +12,12 @@ import {
   denySuggestion,
   toggleFeaturedCafe,
   uploadShopPhoto,
+  sendFriendRequest,
 } from "../actions";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createServiceRoleClient } from "@supabase/supabase-js";
 import { revalidatePath } from "next/cache";
+import { sendFriendRequestNotification } from "@/lib/notifications";
 
 // Mock the Supabase client to prevent actual database calls during tests.
 jest.mock("@/lib/supabase/server", () => ({
@@ -29,6 +31,12 @@ jest.mock("@supabase/supabase-js", () => ({
 // Mock the revalidatePath function to prevent errors during tests.
 jest.mock("next/cache", () => ({
   revalidatePath: jest.fn(),
+}));
+
+// Mock the notifications library
+jest.mock("@/lib/notifications", () => ({
+  sendAdminNotification: jest.fn().mockResolvedValue(undefined),
+  sendFriendRequestNotification: jest.fn().mockResolvedValue(undefined),
 }));
 
 describe("Server Actions", () => {
@@ -736,6 +744,70 @@ describe("Server Actions", () => {
       expect(insert).toHaveBeenCalled();
       expect(revalidatePath).not.toHaveBeenCalled();
       expect(result).toEqual({ success: false, message: "DB error" });
+    });
+  });
+
+  describe("sendFriendRequest", () => {
+    const user = { id: "user-123", email: "sender@example.com" };
+    const friendId = "friend-456";
+
+    it("should return error if user not authenticated", async () => {
+      (createClient as jest.Mock).mockReturnValue({
+        auth: { getUser: jest.fn().mockResolvedValue({ data: { user: null } }) },
+      });
+
+      const result = await sendFriendRequest(friendId);
+      expect(result.success).toBe(false);
+      expect(result.message).toContain("logged in");
+    });
+
+    it("should return error if sending to self", async () => {
+      (createClient as jest.Mock).mockReturnValue({
+        auth: { getUser: jest.fn().mockResolvedValue({ data: { user } }) },
+      });
+
+      const result = await sendFriendRequest(user.id);
+      expect(result.success).toBe(false);
+      expect(result.message).toContain("yourself");
+    });
+
+    it("should successfully send request and trigger notification", async () => {
+      const insert = jest.fn().mockResolvedValue({ error: null });
+      const maybeSingle = jest.fn().mockResolvedValue({ data: null });
+      const select = jest.fn(() => ({ 
+        or: () => ({ maybeSingle }),
+        eq: () => ({ single: () => Promise.resolve({ data: { username: "SenderUser" } }) })
+      }));
+
+      (createClient as jest.Mock).mockReturnValue({
+        auth: { getUser: jest.fn().mockResolvedValue({ data: { user } }) },
+        from: jest.fn((table) => {
+          if (table === "friendships") return { select, insert };
+          if (table === "profiles") return { select: () => ({ eq: () => ({ single: () => Promise.resolve({ data: { username: "SenderUser" } }) }) }) };
+          return {};
+        }),
+      });
+
+      const result = await sendFriendRequest(friendId);
+
+      expect(insert).toHaveBeenCalledWith([{ user_id: user.id, friend_id: friendId, status: "pending" }]);
+      expect(sendFriendRequestNotification).toHaveBeenCalledWith(friendId, "SenderUser");
+      expect(result.success).toBe(true);
+      expect(revalidatePath).toHaveBeenCalledWith("/friends");
+    });
+
+    it("should return error if request already pending", async () => {
+      const maybeSingle = jest.fn().mockResolvedValue({ data: { status: "pending" } });
+      const select = jest.fn(() => ({ or: () => ({ maybeSingle }) }));
+
+      (createClient as jest.Mock).mockReturnValue({
+        auth: { getUser: jest.fn().mockResolvedValue({ data: { user } }) },
+        from: jest.fn(() => ({ select })),
+      });
+
+      const result = await sendFriendRequest(friendId);
+      expect(result.success).toBe(false);
+      expect(result.message).toContain("already pending");
     });
   });
 });
