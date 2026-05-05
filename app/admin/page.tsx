@@ -2,8 +2,8 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Coffee, Camera, Edit3, ChevronRight } from "lucide-react";
-import { getSuggestedCafes, getUnapprovedPhotos, getCafeUpdates } from "@/app/actions";
+import { Coffee, Camera, Edit3, ChevronRight, Star } from "lucide-react";
+import { getSuggestedCafes, getUnapprovedPhotos, getCafeUpdates, getFeaturedCafes } from "@/app/actions";
 import { Badge } from "@/components/ui/badge";
 
 export default async function AdminDashboard() {
@@ -23,16 +23,18 @@ export default async function AdminDashboard() {
   }
 
   // Fetch counts for badges
-  const [suggestions, photos, updates] = await Promise.all([
+  const [suggestions, photos, updates, featured] = await Promise.all([
     getSuggestedCafes(),
     getUnapprovedPhotos(),
     getCafeUpdates(),
+    getFeaturedCafes(),
   ]);
 
   const counts = {
     suggestions: suggestions?.length || 0,
     photos: photos?.length || 0,
     updates: updates?.length || 0,
+    featured: featured?.length || 0,
   };
 
   const adminModules = [
@@ -63,6 +65,15 @@ export default async function AdminDashboard() {
       bgColor: "bg-orange-50 dark:bg-orange-900/10",
       count: counts.updates,
     },
+    {
+      title: "Featured",
+      description: "Select the three cafes highlighted as favorites on the home page.",
+      href: "/admin/featured",
+      icon: Star,
+      color: "text-yellow-600",
+      bgColor: "bg-yellow-50 dark:bg-yellow-900/10",
+      count: counts.featured,
+    },
   ];
 
   return (
@@ -72,7 +83,7 @@ export default async function AdminDashboard() {
         <p className="text-muted-foreground">Welcome back. What would you like to manage today?</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full mt-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full mt-4">
         {adminModules.map((module) => (
           <Link key={module.href} href={module.href} className="group relative">
             <Card className="h-full transition-all hover:shadow-md hover:border-primary/20 bg-card/50 backdrop-blur-sm">

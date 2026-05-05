@@ -32,6 +32,65 @@ export async function searchProfiles(searchTerm: string) {
   return data;
 }
 
+export async function searchCafes(searchTerm: string) {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("coffee_shops")
+    .select("id, name, city")
+    .ilike("name", `%${searchTerm}%`)
+    .limit(10);
+
+  if (error) {
+    console.error("Error searching cafes:", error);
+    return [];
+  }
+
+  return data;
+}
+
+export async function toggleFeaturedCafe(cafeId: number, isFeatured: boolean) {
+  const supabase = await createClient();
+  
+  // Verify admin status
+  const { data: isAdmin } = await supabase.rpc("is_admin");
+  if (!isAdmin) return { success: false, message: "Unauthorized" };
+
+  const adminSupabase = createServiceRoleClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+
+  const { error } = await adminSupabase
+    .from("coffee_shops")
+    .update({ is_featured: isFeatured })
+    .eq("id", cafeId);
+
+  if (error) {
+    console.error("Error toggling featured status:", error.message);
+    return { success: false, message: error.message };
+  }
+
+  revalidatePath("/");
+  revalidatePath("/admin/featured");
+  return { success: true };
+}
+
+export async function getFeaturedCafes() {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("coffee_shops")
+    .select("id, name, city, is_featured")
+    .eq("is_featured", true)
+    .order("name");
+
+  if (error) {
+    console.error("Error fetching featured cafes:", error.message);
+    return [];
+  }
+
+  return data;
+}
+
 // --- Cafe Suggestion Actions ---
 
 export async function suggestCafe(

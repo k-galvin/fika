@@ -10,6 +10,7 @@ import {
   getSuggestedCafes,
   approveSuggestion,
   denySuggestion,
+  toggleFeaturedCafe,
   uploadShopPhoto,
 } from "../actions";
 import { createClient } from "@/lib/supabase/server";
@@ -653,6 +654,38 @@ describe("Server Actions", () => {
       expect(del).toHaveBeenCalledWith("id", 1);
       expect(revalidatePath).toHaveBeenCalledWith("/admin/suggestions");
       expect(result.success).toBe(true);
+    });
+  });
+
+  describe("toggleFeaturedCafe", () => {
+    it("should toggle featured status successfully using service role client", async () => {
+      const update = jest.fn().mockReturnThis();
+      const eq = jest.fn().mockResolvedValue({ error: null });
+      (createClient as jest.Mock).mockReturnValue({
+        rpc: jest.fn().mockResolvedValue({ data: true }),
+      });
+      (createServiceRoleClient as jest.Mock).mockReturnValue({
+        from: jest.fn(() => ({ update, eq })),
+      });
+
+      const result = await toggleFeaturedCafe(1, true);
+
+      expect(createServiceRoleClient).toHaveBeenCalled();
+      expect(update).toHaveBeenCalledWith({ is_featured: true });
+      expect(revalidatePath).toHaveBeenCalledWith("/");
+      expect(result.success).toBe(true);
+    });
+
+    it("should fail if user is not an admin", async () => {
+      (createClient as jest.Mock).mockReturnValue({
+        rpc: jest.fn().mockResolvedValue({ data: false }),
+      });
+
+      const result = await toggleFeaturedCafe(1, true);
+
+      expect(createServiceRoleClient).not.toHaveBeenCalled();
+      expect(result.success).toBe(false);
+      expect(result.message).toBe("Unauthorized");
     });
   });
 
