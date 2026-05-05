@@ -161,17 +161,17 @@ export function CafePhotoGallery({
                 )}
                 {isAdmin && (
                   <div 
-                    className="absolute inset-0 bg-primary/20 backdrop-blur-[2px] flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-20"
+                    className="absolute inset-0 bg-primary/20 backdrop-blur-[2px] flex flex-col items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-20"
                     onClick={(e) => e.stopPropagation()}
                   >
                     <Button
                       variant="journal"
                       size="sm"
-                      className="bg-background/90 text-primary border-primary/20"
+                      className="bg-background/90 text-primary border-primary/20 h-8 px-3 text-xs"
                       onClick={() => handleSetPrimary(photo.id)}
                       disabled={isPending}
                     >
-                      Set as Primary
+                      Set Primary
                     </Button>
                     <Button
                       variant="destructive"
@@ -268,15 +268,15 @@ export function CafePhotoGallery({
                     </Badge>
                   )}
                   {isAdmin && (
-                    <div className="absolute inset-0 bg-primary/20 backdrop-blur-[2px] flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="absolute inset-0 bg-primary/20 backdrop-blur-[2px] flex flex-col items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                       <Button
                         variant="journal"
                         size="sm"
-                        className="bg-background/90 text-primary border-primary/20 scale-75"
+                        className="bg-background/90 text-primary border-primary/20 h-7 px-2 text-[10px]"
                         onClick={() => handleSetPrimary(photo.id)}
                         disabled={isPending}
                       >
-                        Set as Primary
+                        Set Primary
                       </Button>
                       <Button
                         variant="destructive"

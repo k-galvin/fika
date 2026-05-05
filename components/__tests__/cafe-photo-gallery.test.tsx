@@ -196,7 +196,7 @@ describe("CafePhotoGallery", () => {
         userRole={"user"}
       />
     );
-    expect(screen.queryByRole("button", { name: /Set as Primary/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /Set Primary/i })).not.toBeInTheDocument();
 
     rerender(
       <CafePhotoGallery
@@ -206,7 +206,7 @@ describe("CafePhotoGallery", () => {
         userRole={"admin"}
       />
     );
-    expect(screen.getAllByRole("button", { name: /Set as Primary/i })).toHaveLength(2);
+    expect(screen.getAllByRole("button", { name: /Set Primary/i })).toHaveLength(2);
   });
 
   it("handles setting a photo as primary (Admin only)", async () => {
@@ -222,7 +222,7 @@ describe("CafePhotoGallery", () => {
     );
 
     const setPrimaryButtons = screen.getAllByRole("button", {
-      name: /Set as Primary/i,
+      name: /Set Primary/i,
     });
     fireEvent.click(setPrimaryButtons[0]);
 

@@ -102,16 +102,17 @@ export default async function JournalPage() {
                       >
                         <div className="aspect-square bg-secondary/10 mb-2 flex items-center justify-center overflow-hidden relative">
                           {(() => {
-                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                            const photos =
-                              (entry.coffee_shops as any)?.shop_photos || [];
-                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                            const shop = entry.coffee_shops as unknown as { 
+                              name: string; 
+                              city: string; 
+                              shop_photos: { photo_url: string; is_primary: boolean; is_approved: boolean }[] 
+                            };
+                            const photos = shop?.shop_photos || [];
                             const primaryPhoto =
                               photos.find(
-                                (p: any) => p.is_primary && p.is_approved,
+                                (p) => p.is_primary && p.is_approved,
                               ) ||
-                              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                              photos.find((p: any) => p.is_approved) ||
+                              photos.find((p) => p.is_approved) ||
                               photos[0];
 
                             if (primaryPhoto?.photo_url) {
