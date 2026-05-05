@@ -39,6 +39,11 @@ export function DiscoverFilters({
         />
         <FilterDropdown title="Vibe" options={vibes} filterKey="vibe" />
         <FilterDropdown
+          title="Laptop"
+          options={["Yes", "No"]}
+          filterKey="is_laptop_friendly"
+        />
+        <FilterDropdown
           title="Wifi"
           options={["Yes", "No"]}
           filterKey="has_wifi"

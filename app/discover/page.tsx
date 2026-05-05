@@ -57,6 +57,8 @@ export default async function DiscoverPage({ searchParams: searchParamsPromise }
     query = query.eq("seating", searchParams.seating as string);
   if (searchParams.vibe)
     query = query.eq("vibe", searchParams.vibe as string);
+  if (searchParams.is_laptop_friendly !== undefined)
+    query = query.eq("is_laptop_friendly", searchParams.is_laptop_friendly === "Yes");
   if (searchParams.has_wifi !== undefined)
     query = query.eq("has_wifi", searchParams.has_wifi === "Yes");
   if (searchParams.has_outlets !== undefined)

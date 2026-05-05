@@ -29,6 +29,7 @@ describe("DiscoverFilters", () => {
     expect(screen.getByText("Parking")).toBeInTheDocument();
     expect(screen.getByText("Seating")).toBeInTheDocument();
     expect(screen.getByText("Vibe")).toBeInTheDocument();
+    expect(screen.getByText("Laptop")).toBeInTheDocument();
     expect(screen.getByText("Wifi")).toBeInTheDocument();
     expect(screen.getByText("Outlets")).toBeInTheDocument();
   });

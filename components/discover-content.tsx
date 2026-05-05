@@ -98,6 +98,11 @@ export function DiscoverContent({
       query = query.eq("seating", searchParams.get("seating") as string);
     if (searchParams.get("vibe"))
       query = query.eq("vibe", searchParams.get("vibe") as string);
+    if (searchParams.get("is_laptop_friendly"))
+      query = query.eq(
+        "is_laptop_friendly",
+        searchParams.get("is_laptop_friendly") === "Yes"
+      );
     if (searchParams.get("has_wifi"))
       query = query.eq("has_wifi", searchParams.get("has_wifi") === "Yes");
     if (searchParams.get("has_outlets"))
