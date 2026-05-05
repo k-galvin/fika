@@ -54,15 +54,14 @@ describe("LogVisitButton", () => {
     });
   });
 
-  it("opens rating dialog on button click", async () => {
+  it("opens rating dialog and logs visit on button click", async () => {
     render(<LogVisitButton shopId={1} isInitiallyVisited={false} initialRating={null} />);
     const button = await screen.findByTestId("plus-icon");
     fireEvent.click(button);
     await waitFor(() => {
+      expect(mockedActions.logVisit).toHaveBeenCalledWith(1);
       expect(screen.getByText("Rate your experience")).toBeInTheDocument();
-      expect(screen.getByText("Save")).toBeInTheDocument();
-      expect(screen.getByText("Cancel")).toBeInTheDocument();
-      expect(screen.getAllByTestId(/star-icon/)).toHaveLength(5);
+      expect(screen.getByTestId("check-icon")).toBeInTheDocument();
     });
   });
 
@@ -71,7 +70,9 @@ describe("LogVisitButton", () => {
     const button = await screen.findByTestId("plus-icon");
     fireEvent.click(button);
 
-    const stars = await screen.findAllByTestId(/star-icon/);
+    await waitFor(() => expect(screen.getByText("Rate your experience")).toBeInTheDocument());
+
+    const stars = screen.getAllByTestId(/star-icon/);
     fireEvent.click(stars[3]); // Click the 4th star
 
     const saveButton = screen.getByText("Save");
@@ -82,7 +83,7 @@ describe("LogVisitButton", () => {
     });
   });
 
-  it("closes rating dialog on cancel", async () => {
+  it("closes rating dialog on cancel but keeps visit logged", async () => {
     render(<LogVisitButton shopId={1} isInitiallyVisited={false} initialRating={null} />);
     const button = await screen.findByTestId("plus-icon");
     act(() => {
@@ -97,7 +98,7 @@ describe("LogVisitButton", () => {
 
     await waitFor(() => {
       expect(screen.queryByText("Rate your experience")).not.toBeInTheDocument();
-      expect(screen.getByTestId("plus-icon")).toBeInTheDocument();
+      expect(screen.getByTestId("check-icon")).toBeInTheDocument();
     });
   });
 

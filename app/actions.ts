@@ -1577,6 +1577,20 @@ export async function deleteCafe(cafeId: number): Promise<{ success: boolean; me
   return { success: true };
 }
 
+export async function getCafeCount(): Promise<number> {
+  const supabase = await createClient();
+  const { count, error } = await supabase
+    .from("coffee_shops")
+    .select("*", { count: "exact", head: true });
+
+  if (error) {
+    console.error("Error fetching cafe count:", error.message);
+    return 0;
+  }
+
+  return count || 0;
+}
+
 export async function getAllCafes() {
   const supabase = await createClient();
   const { data, error } = await supabase

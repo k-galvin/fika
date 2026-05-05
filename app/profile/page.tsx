@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { Footer } from "@/components/footer";
 
 import { User, Edit3 } from "lucide-react"; // Added History icon
-import { getSavedCafes, getVisitedCafes } from "@/app/actions"; // Import server actions
+import { getSavedCafes, getVisitedCafes, getCafeCount } from "@/app/actions"; // Import server actions
 
 import { ProfileCafes } from "@/components/profile-cafes";
 import ProfileCharts from "@/components/ProfileCharts";
@@ -29,6 +29,7 @@ export default async function ProfilePage() {
 
   const savedCafes = await getSavedCafes();
   const visitedCafes = await getVisitedCafes();
+  const totalCafeCount = await getCafeCount();
 
   const { data: isAdmin } = await supabase.rpc("is_admin");
 
@@ -121,6 +122,7 @@ export default async function ProfilePage() {
               <ProfileCafes
                 savedCafes={savedCafes || []}
                 visitedCafes={visitedCafes || []}
+                totalCafeCount={totalCafeCount}
               />
             </section>
           </div>

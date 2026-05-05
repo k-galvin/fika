@@ -13,7 +13,6 @@ import { Database } from "@/lib/supabase/database.types";
 import { SaveButton } from "@/components/save-button";
 import { LogVisitButton } from "@/components/log-visit-button";
 import { UpdateForm } from "@/components/update-form";
-import CafeActivityChart from "@/components/CafeActivityChart";
 import { CafePhotoGallery } from "@/components/cafe-photo-gallery";
 import { CafeMap } from "@/components/cafe-map";
 import { JournalSection } from "@/components/journal-section";
@@ -269,21 +268,6 @@ export default function CafeDetailsClient({
               />
             </div>
           </aside>
-        </div>
-
-        {/* Row 2: Popularity Log Full Width */}
-        <div className="pt-4 -mt-8">
-          <section className="relative">
-            <div className="absolute -top-6 -left-6 text-primary/10 font-kate font-bold text-8xl z-0 select-none">
-              03
-            </div>
-            <div className="relative z-10 flex flex-col gap-10">
-              <h2 className="text-4xl font-bold font-kate text-primary tracking-tighter">Popularity Log</h2>
-              <div className="bg-secondary/5 p-8 md:p-12 rounded-2xl handwritten-border !border-primary/10">
-                <CafeActivityChart cafeId={shop.id} />
-              </div>
-            </div>
-          </section>
         </div>
 
         {/* Row 3: Journal Section */}

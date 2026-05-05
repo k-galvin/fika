@@ -69,13 +69,26 @@ export function LogVisitButton({
       // If not visited, check authentication status first
       setIsLogging(true);
       const authCheckResult = await checkUserLoggedIn();
-      setIsLogging(false);
 
       if (!authCheckResult.success) {
+        setIsLogging(false);
         router.push(`/auth/login?redirect=${pathname}`);
       } else {
-        // User is logged in, open rating dialog
-        setIsRating(true);
+        // Mark as visited immediately
+        try {
+          const logResult = await logVisit(shopId);
+          if (logResult.success) {
+            setHasVisited(true);
+            setIsRating(true); // Still open rating dialog for ranking
+            router.refresh();
+          } else {
+            console.error("Failed to log visit:", logResult.message);
+          }
+        } catch (error) {
+          console.error("Error logging visit:", error);
+        } finally {
+          setIsLogging(false);
+        }
       }
     }
   };
@@ -83,39 +96,14 @@ export function LogVisitButton({
   const handleSaveRating = async () => {
     setIsLogging(true);
     try {
-      let result;
-      // It's possible the user logged in, came back, and now wants to log/rate.
-      // If they haven't visited yet, log the visit first.
-      if (!hasVisited) {
-        const logResult = await logVisit(shopId);
-        if (!logResult.success) {
-          // Handle error if logging visit fails
-          console.error(
-            "Failed to log visit before rating:",
-            logResult.message
-          );
-          setIsRating(false);
-          setIsLogging(false);
-          return;
-        }
-        setHasVisited(true); // Update state to reflect visit logged
-      }
-
-      // Now, rate the cafe if a rating is provided
-      if (rating > 0) {
-        result = await rateCafe(shopId, rating);
-      } else {
-        // If no rating and they just logged visit (which is handled above),
-        // we can just close the dialog.
-        result = { success: true };
-      }
+      // Visit is already logged by now if we're in this dialog
+      const result = await rateCafe(shopId, rating);
 
       if (result.success) {
         router.refresh(); // Re-fetch data and re-render
         setIsRating(false); // Close on success
       } else {
         if (result.message === "User not found") {
-          // This should ideally not be reached due to early auth check in handleButtonClick
           router.push(`/auth/login?redirect=${pathname}`);
         } else {
           setIsRating(false); // Close on other errors

@@ -92,9 +92,9 @@ export function JournalSection({
   if (!user) return null;
 
   return (
-    <section className="relative mt-20 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+    <section className="relative -mt-4 animate-in fade-in slide-in-from-bottom-4 duration-1000">
       <div className="absolute -top-6 -left-6 text-primary/10 font-kate font-bold text-8xl z-0 select-none">
-        04
+        03
       </div>
       <div className="relative z-10 flex flex-col gap-8">
         <div className="flex justify-between items-center relative">

@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { Footer } from "@/components/footer";
-import { getSavedCafes, getVisitedCafes } from "@/app/actions";
+import { getSavedCafes, getVisitedCafes, getCafeCount } from "@/app/actions";
 import { ProfileCafes } from "@/components/profile-cafes";
 import ProfileCharts from "@/components/ProfileCharts";
 
@@ -19,6 +19,7 @@ export default async function FriendProfilePage({
 
   const savedCafes = await getSavedCafes(id);
   const visitedCafes = await getVisitedCafes(id);
+  const totalCafeCount = await getCafeCount();
 
   const { data: profile, error: profileError } = await supabase
     .from("profiles")
@@ -75,6 +76,7 @@ export default async function FriendProfilePage({
             <ProfileCafes
               savedCafes={savedCafes || []}
               visitedCafes={visitedCafes || []}
+              totalCafeCount={totalCafeCount}
               friendView
             />
           </section>
