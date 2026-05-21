@@ -8,7 +8,7 @@ import { ThemeProvider as CustomThemeProvider } from "./theme-context";
 import DiscoBallAndStars from "./disco-ball-and-stars";
 import BodyWrapper from "./body-wrapper";
 import "./globals.css";
-import { createClient } from "@/lib/supabase/server"; // Import createClient
+import { getUser, getProfile } from "@/lib/supabase/server"; // Import cached functions
 import { Toaster } from "sonner";
 
 const defaultUrl = process.env.VERCEL_URL
@@ -52,24 +52,11 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-
-  let profile = null;
-  if (user) {
-    const { data } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", user.id)
-      .single();
-    profile = data;
-  }
+  const { user } = await getUser();
+  const { profile } = user ? await getProfile(user.id) : { profile: null };
 
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <link rel="preload" href="/tablescapeDark.png" as="image" />
-      </head>
       <CustomThemeProvider>
         <BodyWrapper karlaClassName={karla.className} kateVariable={kate.variable}>
           <NextThemesProvider

@@ -1,16 +1,23 @@
 
 import { render, screen } from "@testing-library/react";
 import Home from "../page";
-import { createClient } from "@/lib/supabase/server";
+import { getUser } from "@/lib/supabase/server";
 
-// Mock the Supabase client
+// Mock the Supabase server functions
 jest.mock("@/lib/supabase/server", () => ({
   createClient: jest.fn(),
+  getUser: jest.fn(),
 }));
 
 // Mock the FeaturedCafes component
 jest.mock("../featured-cafes", () => ({
   FeaturedCafes: () => <h2>Current Favorites</h2>,
+}));
+
+// Mock the FriendFeed component
+jest.mock("@/components/friend-feed", () => ({
+  FriendFeed: () => <div>Friend Feed</div>,
+  FriendFeedSkeleton: () => <div>Loading Friends...</div>,
 }));
 
 // Mock the Footer component
@@ -21,12 +28,8 @@ jest.mock("@/components/footer", () => ({
 describe("Home page", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    // Default mock for createClient to return a user
-    (createClient as jest.Mock).mockReturnValue({
-      auth: {
-        getUser: jest.fn().mockResolvedValue({ data: { user: { id: "123" } } }),
-      },
-    });
+    // Default mock for getUser to return a user
+    (getUser as jest.Mock).mockResolvedValue({ user: { id: "123" } });
   });
 
   it("should render the current favorites section", async () => {

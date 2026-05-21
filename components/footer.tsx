@@ -46,7 +46,6 @@ export function Footer({
             className={`object-contain transition-opacity duration-500 ${
               isAfterHours ? "opacity-0" : "opacity-100"
             }`}
-            priority // Keep priority for the default image
           />
           <Image
             src="/tablescapeDark.png"

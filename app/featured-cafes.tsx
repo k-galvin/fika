@@ -1,12 +1,10 @@
 import { CafeQuickView } from "@/components/cafe-quick-view";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getUser } from "@/lib/supabase/server";
 import { CoffeeShop } from "@/lib/types";
 
 export async function FeaturedCafes() {
+  const { user } = await getUser();
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
 
   const { data: featuredShops } = await supabase
     .from("coffee_shops")
@@ -15,7 +13,8 @@ export async function FeaturedCafes() {
       *,
       shop_photos (
         photo_url,
-        is_approved
+        is_approved,
+        is_primary
       )
     `
     )

@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { cache } from "react";
 
 /**
  * Especially important if using Fluid compute: Don't put this client in a
@@ -32,3 +33,19 @@ export async function createClient() {
     }
   );
 }
+
+export const getUser = cache(async () => {
+  const supabase = await createClient();
+  const { data: { user }, error } = await supabase.auth.getUser();
+  return { user, error };
+});
+
+export const getProfile = cache(async (userId: string) => {
+  const supabase = await createClient();
+  const { data: profile, error } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", userId)
+    .single();
+  return { profile, error };
+});

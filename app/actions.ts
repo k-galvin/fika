@@ -1,6 +1,6 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getUser } from "@/lib/supabase/server";
 import { createClient as createServiceRoleClient } from "@supabase/supabase-js";
 import { revalidatePath } from "next/cache";
 import { SuggestedCafe, UserSavedCafe, UserVisit } from "@/lib/types"; // Import new types
@@ -1297,10 +1297,10 @@ export type FriendActivity = {
 };
 
 export async function getFriendActivity(): Promise<FriendActivity[]> {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const { user } = await getUser();
   if (!user) return [];
 
+  const supabase = await createClient();
   // 1. Get confirmed friend IDs
   const { data: friendships } = await supabase
     .from("friendships")
@@ -1316,21 +1316,24 @@ export async function getFriendActivity(): Promise<FriendActivity[]> {
 
   if (friendIds.length === 0) return [];
 
-  // 2. Fetch recent visits
-  const { data: visits } = await supabase
-    .from("user_visits")
-    .select("id, visited_at, profiles(username), coffee_shops(name, id)")
-    .in("profile_id", friendIds)
-    .order("visited_at", { ascending: false })
-    .limit(10);
+  // 2 & 3. Fetch recent visits and saves in parallel
+  const [visitsResponse, savesResponse] = await Promise.all([
+    supabase
+      .from("user_visits")
+      .select("id, visited_at, profiles(username), coffee_shops(name, id)")
+      .in("profile_id", friendIds)
+      .order("visited_at", { ascending: false })
+      .limit(10),
+    supabase
+      .from("user_saved_cafes")
+      .select("id, saved_at, profiles(username), coffee_shops(name, id)")
+      .in("profile_id", friendIds)
+      .order("saved_at", { ascending: false })
+      .limit(10)
+  ]);
 
-  // 3. Fetch recent saves
-  const { data: saves } = await supabase
-    .from("user_saved_cafes")
-    .select("id, saved_at, profiles(username), coffee_shops(name, id)")
-    .in("profile_id", friendIds)
-    .order("saved_at", { ascending: false })
-    .limit(10);
+  const visits = visitsResponse.data;
+  const saves = savesResponse.data;
 
   const activity: FriendActivity[] = [];
 

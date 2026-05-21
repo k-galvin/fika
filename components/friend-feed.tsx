@@ -1,31 +1,10 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { FriendActivity, getFriendActivity } from "@/app/actions";
+import { getFriendActivity } from "@/app/actions";
 import Link from "next/link";
 import { Coffee, Bookmark } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export function FriendFeed() {
-  const [activity, setActivity] = useState<FriendActivity[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function load() {
-      const data = await getFriendActivity();
-      setActivity(data);
-      setLoading(false);
-    }
-    load();
-  }, []);
-
-  if (loading) return (
-    <div className="w-full max-w-7xl px-5 h-24 flex items-center gap-4 animate-pulse">
-        <div className="w-48 h-12 bg-secondary/20 rounded-xl" />
-        <div className="w-48 h-12 bg-secondary/20 rounded-xl" />
-        <div className="w-48 h-12 bg-secondary/20 rounded-xl" />
-    </div>
-  );
+export async function FriendFeed() {
+  const activity = await getFriendActivity();
   
   if (activity.length === 0) return null;
 
@@ -61,6 +40,19 @@ export function FriendFeed() {
             </div>
           </Link>
         ))}
+      </div>
+    </div>
+  );
+}
+
+export function FriendFeedSkeleton() {
+  return (
+    <div className="w-full flex flex-col gap-4 overflow-hidden animate-pulse">
+      <div className="px-5 h-3 w-32 bg-secondary/10 rounded mb-1" />
+      <div className="flex gap-4 overflow-x-auto pb-4 px-5">
+        <div className="w-48 h-[72px] bg-secondary/10 rounded-2xl flex-shrink-0" />
+        <div className="w-48 h-[72px] bg-secondary/10 rounded-2xl flex-shrink-0" />
+        <div className="w-48 h-[72px] bg-secondary/10 rounded-2xl flex-shrink-0" />
       </div>
     </div>
   );
