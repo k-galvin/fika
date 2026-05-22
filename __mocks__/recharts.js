@@ -4,7 +4,15 @@ import React from 'react';
 export const ResponsiveContainer = ({ children }) => <div className="recharts-responsive-container">{children}</div>;
 export const PieChart = ({ children }) => <div className="recharts-pie-chart">{children}</div>;
 export const Pie = ({ data, outerRadius, dataKey, label, children }) => {
-  const labelText = label && data && data.length > 0 ? label({ name: data[0].name, percent: 0.1 }) : '';
+  let labelText = '';
+  if (label && data && data.length > 0) {
+    const renderedLabel = label({ name: data[0].name, percent: 0.1, x: 100, y: 100, cx: 50 });
+    if (typeof renderedLabel === 'string') {
+      labelText = renderedLabel;
+    } else if (renderedLabel && renderedLabel.props && renderedLabel.props.children) {
+      labelText = renderedLabel.props.children;
+    }
+  }
   return (
     <div className="recharts-pie" data-testid="pie-chart" data-outer-radius={outerRadius} data-data-key={dataKey} data-label={labelText}>
       <div data-testid="pie-data">{JSON.stringify(data)}</div>

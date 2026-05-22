@@ -223,7 +223,11 @@ export function FindFriends() {
         <CardTitle className="font-kate text-2xl text-primary/80">Social Connections</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
-        <SearchBar placeholder="Find other cafe lovers..." />
+        <SearchBar 
+          id="friend-search" 
+          name="friend-search" 
+          placeholder="Find other cafe lovers..." 
+        />
 
         {loading && <p className="mt-3 font-kate italic text-sm text-primary/40">Searching...</p>}
 

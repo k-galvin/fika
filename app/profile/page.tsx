@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { getUser, getProfile, createClient } from "@/lib/supabase/server"; // Use cached functions
 import { Footer } from "@/components/footer";
 
 import { User, Edit3 } from "lucide-react"; // Added History icon
@@ -11,25 +11,26 @@ import ProfileCharts from "@/components/ProfileCharts";
 import { FindFriends } from "@/components/find-friends";
 
 export default async function ProfilePage() {
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { user } = await getUser();
 
   if (!user) {
     redirect("/auth/login");
   }
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("username")
-    .eq("id", user.id)
-    .single();
-
-  const savedCafes = await getSavedCafes();
-  const visitedCafes = await getVisitedCafes();
-  const totalCafeCount = await getCafeCount();
+  // Parallelize all data fetching
+  const [
+    { profile },
+    savedCafes,
+    visitedCafes,
+    totalCafeCount,
+    supabase
+  ] = await Promise.all([
+    getProfile(user.id),
+    getSavedCafes(),
+    getVisitedCafes(),
+    getCafeCount(),
+    createClient()
+  ]);
 
   const { data: isAdmin } = await supabase.rpc("is_admin");
 

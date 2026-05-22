@@ -1,16 +1,60 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
+import js from "@eslint/js";
+import nextPlugin from "@next/eslint-plugin-next";
+import reactPlugin from "eslint-plugin-react";
+import hooksPlugin from "eslint-plugin-react-hooks";
+import typescriptEslint from "@typescript-eslint/eslint-plugin";
+import tsParser from "@typescript-eslint/parser";
+import globals from "globals";
+import { fixupPluginRules } from "@eslint/compat";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
-
-const eslintConfig = [{
-  ignores: ["node_modules/**", ".next/**", "out/**", "build/**", "next-env.d.ts"]
-}, ...compat.extends("next/core-web-vitals", "next/typescript")];
-
-export default eslintConfig;
+export default [
+  js.configs.recommended,
+  {
+    files: ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"],
+    languageOptions: {
+      parser: tsParser,
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+        ...globals.jest,
+        React: "readonly",
+        FormDataEntryValue: "readonly",
+      },
+    },
+    plugins: {
+      "@typescript-eslint": typescriptEslint,
+      react: fixupPluginRules(reactPlugin),
+      "react-hooks": fixupPluginRules(hooksPlugin),
+      "@next/next": fixupPluginRules(nextPlugin),
+    },
+    rules: {
+      ...typescriptEslint.configs.recommended.rules,
+      ...reactPlugin.configs.recommended.rules,
+      ...hooksPlugin.configs.recommended.rules,
+      ...nextPlugin.configs.recommended.rules,
+      "react/react-in-jsx-scope": "off",
+      "react/display-name": "off",
+      "react/prop-types": "off",
+      "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/no-unused-vars": "warn",
+      "react-hooks/set-state-in-effect": "warn",
+      "react-hooks/purity": "warn",
+      "react-hooks/refs": "warn",
+      "@next/next/no-html-link-for-pages": "error",
+      "@next/next/no-img-element": "warn",
+    },
+    settings: {
+      react: {
+        version: "detect",
+      },
+    },
+  },
+  {
+    ignores: [".next/*", "node_modules/*"],
+  }
+];

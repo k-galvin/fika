@@ -11,9 +11,9 @@ describe('VisitedCafesPieChart', () => {
     { name: 'Category C', value: 30 },
   ];
 
-  it('renders the chart title correctly', () => {
+  it('renders the chart title correctly', async () => {
     render(<VisitedCafesPieChart data={mockData} title="Test Category" />);
-    expect(screen.getByText('Test Category')).toBeInTheDocument();
+    expect(await screen.findByText('Test Category')).toBeInTheDocument();
   });
 
   it('renders a message when no data is available', () => {
@@ -21,9 +21,9 @@ describe('VisitedCafesPieChart', () => {
     expect(screen.getByText(/No entries recorded for Empty Category/i)).toBeInTheDocument();
   });
 
-  it('renders the Pie component with correct data and props', () => {
+  it('renders the Pie component with correct data and props', async () => {
     render(<VisitedCafesPieChart data={mockData} title="Test Category" />);
-    const pieElement = screen.getByTestId('pie-chart');
+    const pieElement = await screen.findByTestId('pie-chart');
     const pieDataElement = screen.getByTestId('pie-data');
     const pieData = JSON.parse(pieDataElement.textContent || '[]');
     
@@ -33,9 +33,9 @@ describe('VisitedCafesPieChart', () => {
     expect(pieElement.dataset.label).toBe('Category A (10%)');
   });
 
-  it('renders the correct number of Cells based on data', () => {
+  it('renders the correct number of Cells based on data', async () => {
     render(<VisitedCafesPieChart data={mockData} title="Test Category" />);
-    const cells = screen.getAllByText('', { selector: '.recharts-cell' });
+    const cells = await screen.findAllByText('', { selector: '.recharts-cell' });
     expect(cells).toHaveLength(mockData.length);
   });
 });

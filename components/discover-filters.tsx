@@ -57,7 +57,11 @@ export function DiscoverFilters({
           Clear Filters
         </Button>
       </div>
-      <SearchBar placeholder="Search by name..." />
+      <SearchBar 
+        id="cafe-search" 
+        name="cafe-search" 
+        placeholder="Search by name..." 
+      />
     </div>
   );
 }

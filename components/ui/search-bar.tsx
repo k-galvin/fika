@@ -4,7 +4,15 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
 import { Input } from "./input";
 
-export function SearchBar({ placeholder }: { placeholder: string }) {
+export function SearchBar({ 
+  placeholder, 
+  id = "search", 
+  name = "search" 
+}: { 
+  placeholder: string;
+  id?: string;
+  name?: string;
+}) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -23,6 +31,8 @@ export function SearchBar({ placeholder }: { placeholder: string }) {
     <div className="w-full md:w-auto">
       <Input
         type="search"
+        id={id}
+        name={name}
         placeholder={placeholder}
         className="w-full md:w-64"
         defaultValue={searchParams.get("search") || ""}
