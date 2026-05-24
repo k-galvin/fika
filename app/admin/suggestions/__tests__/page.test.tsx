@@ -28,6 +28,7 @@ const mockSuggestions: SuggestedCafe[] = [
     wine_bar: false,
     submitted_by: "user-1",
     created_at: new Date().toISOString(),
+    description: "A cozy place for testing.",
     photo_urls: [],
   },
   {
@@ -46,6 +47,7 @@ const mockSuggestions: SuggestedCafe[] = [
     wine_bar: true,
     submitted_by: "user-2",
     created_at: new Date().toISOString(),
+    description: "Another test location.",
     photo_urls: [],
   },
 ];

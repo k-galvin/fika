@@ -327,6 +327,7 @@ export async function saveCafe(
   revalidatePath(`/cafe/${cafeId}`);
   revalidatePath("/profile");
   revalidatePath("/discover");
+  revalidatePath("/");
   return { success: true };
 }
 
@@ -355,6 +356,7 @@ export async function unsaveCafe(
   revalidatePath(`/cafe/${cafeId}`);
   revalidatePath("/profile");
   revalidatePath("/discover");
+  revalidatePath("/");
   return { success: true };
 }
 
@@ -533,6 +535,8 @@ export async function logVisit(
 
   revalidatePath(`/cafe/${cafeId}`);
   revalidatePath("/profile");
+  revalidatePath("/discover");
+  revalidatePath("/");
   return { success: true };
 }
 
@@ -645,6 +649,8 @@ export async function rateCafe(
 
   revalidatePath(`/cafe/${cafeId}`);
   revalidatePath("/profile");
+  revalidatePath("/discover");
+  revalidatePath("/");
   return { success: true };
 }
 
@@ -672,6 +678,8 @@ export async function unlogVisit(
 
   revalidatePath(`/cafe/${cafeId}`);
   revalidatePath("/profile");
+  revalidatePath("/discover");
+  revalidatePath("/");
   return { success: true };
 }
 

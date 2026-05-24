@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "./ui/button";
 import {
   Dialog,
@@ -34,16 +34,20 @@ export function LogVisitButton({
 }: LogVisitButtonProps) {
   const [isLogging, setIsLogging] = useState(false);
   const [hasVisited, setHasVisited] = useState(isInitiallyVisited);
+  const [prevIsInitiallyVisited, setPrevIsInitiallyVisited] = useState(isInitiallyVisited);
   const [isRating, setIsRating] = useState(false);
   const [rating, setRating] = useState(initialRating || 0);
+  const [prevInitialRating, setPrevInitialRating] = useState(initialRating);
   const [hoverRating, setHoverRating] = useState(0);
   const router = useRouter();
   const pathname = usePathname();
 
-  useEffect(() => {
+  if (isInitiallyVisited !== prevIsInitiallyVisited || initialRating !== prevInitialRating) {
     setHasVisited(isInitiallyVisited);
     setRating(initialRating || 0);
-  }, [isInitiallyVisited, initialRating]);
+    setPrevIsInitiallyVisited(isInitiallyVisited);
+    setPrevInitialRating(initialRating);
+  }
 
   const handleButtonClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();

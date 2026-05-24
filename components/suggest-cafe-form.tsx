@@ -11,6 +11,7 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Button } from "./ui/button";
 import { useState, useRef, useEffect } from "react";
+import Image from "next/image";
 import { suggestCafe, getCities } from "@/app/actions";
 import { Constants } from "@/lib/supabase/database.types";
 import {
@@ -397,7 +398,13 @@ export function SuggestCafeForm({
             <div className="grid grid-cols-4 gap-2 pt-2">
               {selectedFiles.map((file) => (
                 <div key={file.id} className="relative aspect-square rounded-lg overflow-hidden border border-primary/10 group">
-                  <img src={file.preview} alt="Preview" className="w-full h-full object-cover" />
+                  <Image 
+                    src={file.preview} 
+                    alt="Preview" 
+                    fill
+                    unoptimized
+                    className="object-cover" 
+                  />
                   {!pending && (
                     <button
                       type="button"

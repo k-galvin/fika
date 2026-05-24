@@ -3,7 +3,7 @@ import React from "react";
 import { render, screen } from "@testing-library/react";
 import ProfilePage from "@/app/profile/page";
 import { getSavedCafes, getVisitedCafes, getCafeCount } from "@/app/actions";
-import { createClient, getUser, getProfile } from "@/lib/supabase/server";
+import { getUser, getProfile } from "@/lib/supabase/server";
 import { UserVisit } from "@/lib/types";
 
 jest.mock("next/navigation", () => ({

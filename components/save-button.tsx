@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "./ui/button";
 import { Bookmark } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
@@ -23,13 +23,15 @@ export function SaveButton({
 }: SaveButtonProps) {
   const { isAfterHours } = useTheme();
   const [isSaved, setIsSaved] = useState(isInitiallySaved); // Initialize with prop
+  const [prevIsInitiallySaved, setPrevIsInitiallySaved] = useState(isInitiallySaved);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
 
-  useEffect(() => {
+  if (isInitiallySaved !== prevIsInitiallySaved) {
     setIsSaved(isInitiallySaved);
-  }, [isInitiallySaved]);
+    setPrevIsInitiallySaved(isInitiallySaved);
+  }
 
   const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();

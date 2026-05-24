@@ -6,6 +6,8 @@ import { FriendFeed, FriendFeedSkeleton } from "@/components/friend-feed";
 import { CafeCardSkeleton } from "@/components/cafe-card-skeleton";
 import { getUser } from "@/lib/supabase/server";
 
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
   const { user } = await getUser();
 
@@ -91,7 +93,7 @@ export default async function Home() {
               </section>
             }
           >
-            <FeaturedCafes />
+            <FeaturedCafes user={user} />
           </Suspense>
 
           {user && (

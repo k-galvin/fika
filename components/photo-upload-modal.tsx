@@ -16,6 +16,7 @@ import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
 import { uploadShopPhotosBatch } from "@/app/actions";
 import { User } from "@supabase/supabase-js";
+import Image from "next/image";
 import { Plus, X, UploadCloud, Image as ImageIcon } from "lucide-react";
 
 interface PhotoUploadModalProps {
@@ -203,10 +204,12 @@ export function PhotoUploadModal({ shopId, user }: PhotoUploadModalProps) {
               <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 max-h-[300px] overflow-y-auto p-1">
                 {selectedFiles.map((file) => (
                   <div key={file.id} className="relative aspect-square rounded-xl overflow-hidden group border border-primary/10 shadow-sm">
-                    <img 
+                    <Image 
                       src={file.preview} 
                       alt="Preview" 
-                      className="w-full h-full object-cover"
+                      fill
+                      unoptimized
+                      className="object-cover"
                     />
                     {!uploading && (
                       <button

@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode, useEffect } from "react";
+import { createContext, useContext, useState, ReactNode } from "react";
 import { usePathname } from "next/navigation";
 
 type ThemeContextType = {
@@ -12,11 +12,13 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [isAfterHours, setIsAfterHours] = useState(false);
+  const [prevPathname, setPrevPathname] = useState("");
   const pathname = usePathname();
 
-  useEffect(() => {
+  if (pathname !== prevPathname) {
     setIsAfterHours(false);
-  }, [pathname]);
+    setPrevPathname(pathname);
+  }
 
   return (
     <ThemeContext.Provider value={{ isAfterHours, setIsAfterHours }}>

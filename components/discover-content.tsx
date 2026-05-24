@@ -16,15 +16,6 @@ import { Footer } from "@/components/footer";
 
 const PAGE_SIZE = 20;
 
-// Custom hook to get the previous value of a prop or state
-function usePrevious<T>(value: T): T | undefined {
-  const ref = useRef<T | undefined>(undefined);
-  useEffect(() => {
-    ref.current = value;
-  });
-  return ref.current;
-}
-
 export function DiscoverContent({
   initialShops,
   user,
@@ -36,23 +27,26 @@ export function DiscoverContent({
 }) {
   const [shops, setShops] = useState<CoffeeShop[]>(initialShops);
   const [cities, setCities] = useState<string[]>(initialCities);
+  const [prevInitialCities, setPrevInitialCities] = useState<string[]>(initialCities);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(initialShops.length === PAGE_SIZE);
   const [loading, setLoading] = useState(false);
   const searchParams = useSearchParams();
   const paramsString = searchParams.toString();
-  const prevParamsString = usePrevious(paramsString);
+  const prevParamsStringRef = useRef(paramsString);
 
   // Update cities if they change from props
-  useEffect(() => {
+  if (initialCities !== prevInitialCities) {
     setCities(initialCities);
-  }, [initialCities]);
+    setPrevInitialCities(initialCities);
+  }
 
   useEffect(() => {
-    if (paramsString !== prevParamsString) {
+    if (paramsString !== prevParamsStringRef.current) {
       setShops(initialShops);
       setPage(1);
       setHasMore(initialShops.length === PAGE_SIZE);
+      prevParamsStringRef.current = paramsString;
     } else {
       // If the filters haven't changed, we're just updating the existing shops
       // with new data (e.g. after a save or visit)
@@ -71,7 +65,7 @@ export function DiscoverContent({
         });
       });
     }
-  }, [initialShops, paramsString, prevParamsString]);
+  }, [initialShops, paramsString]);
 
   const fetchMoreShops = useCallback(async () => {
     setLoading(true);
