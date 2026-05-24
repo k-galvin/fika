@@ -5,7 +5,7 @@ import { createClient as createServiceRoleClient } from "@supabase/supabase-js";
 import { revalidatePath } from "next/cache";
 import { SuggestedCafe, UserSavedCafe, UserVisit } from "@/lib/types"; // Import new types
 import { Database } from "@/lib/supabase/database.types";
-import { sendAdminNotification, sendFriendRequestNotification } from "@/lib/notifications";
+import { sendAdminNotification } from "@/lib/notifications";
 
 type ShopPhoto = Database["public"]["Tables"]["shop_photos"]["Row"];
 type CoffeeShop = Database["public"]["Tables"]["coffee_shops"]["Row"];
@@ -1174,23 +1174,8 @@ export async function sendFriendRequest(friendId: string) {
     return { success: false, message: error.message };
   }
 
-  // Send notification email to the recipient
-  try {
-    const { data: senderProfile } = await supabase
-      .from("profiles")
-      .select("username")
-      .eq("id", user.id)
-      .single();
-
-    const senderName = senderProfile?.username || user.email || "A Fika user";
-    await sendFriendRequestNotification(friendId, senderName);
-  } catch (notifyError) {
-    console.error("Error triggering friend request notification:", notifyError);
-    // We don't return error here because the request was actually sent in the DB
-  }
-
   revalidatePath("/discover");
-  revalidatePath("/friends");
+  revalidatePath("/profile");
   return { success: true, message: "Friend request sent." };
 }
 
@@ -1215,7 +1200,7 @@ export async function unsendFriendRequest(friendId: string) {
   }
 
   revalidatePath("/discover");
-  revalidatePath("/friends");
+  revalidatePath("/profile");
   return { success: true, message: "Friend request unsent." };
 }
 
@@ -1241,7 +1226,7 @@ export async function acceptFriendRequest(requestId: string) {
     return { success: false, message: error.message };
   }
 
-  revalidatePath("/friends");
+  revalidatePath("/profile");
   return { success: true, message: "Friend request accepted." };
 }
 
@@ -1264,7 +1249,7 @@ export async function denyFriendRequest(friendId: string) {
     return { success: false, message: error.message };
   }
 
-  revalidatePath("/friends");
+  revalidatePath("/profile");
   return { success: true, message: "Friend request denied." };
 }
 
@@ -1289,7 +1274,7 @@ export async function unfriendUser(friendId: string) {
     return { success: false, message: error.message };
   }
 
-  revalidatePath("/friends");
+  revalidatePath("/profile");
   revalidatePath("/discover");
 
   return { success: true, message: "Friend removed successfully." };

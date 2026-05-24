@@ -17,7 +17,6 @@ import {
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createServiceRoleClient } from "@supabase/supabase-js";
 import { revalidatePath } from "next/cache";
-import { sendFriendRequestNotification } from "@/lib/notifications";
 
 // Mock the Supabase client to prevent actual database calls during tests.
 jest.mock("@/lib/supabase/server", () => ({
@@ -36,7 +35,6 @@ jest.mock("next/cache", () => ({
 // Mock the notifications library
 jest.mock("@/lib/notifications", () => ({
   sendAdminNotification: jest.fn().mockResolvedValue(undefined),
-  sendFriendRequestNotification: jest.fn().mockResolvedValue(undefined),
 }));
 
 describe("Server Actions", () => {
@@ -791,10 +789,9 @@ describe("Server Actions", () => {
       const result = await sendFriendRequest(friendId);
 
       expect(insert).toHaveBeenCalledWith([{ user_id: user.id, friend_id: friendId, status: "pending" }]);
-      expect(sendFriendRequestNotification).toHaveBeenCalledWith(friendId, "SenderUser");
       expect(result.success).toBe(true);
-      expect(revalidatePath).toHaveBeenCalledWith("/friends");
-    });
+      expect(revalidatePath).toHaveBeenCalledWith("/profile");
+      });
 
     it("should return error if request already pending", async () => {
       const maybeSingle = jest.fn().mockResolvedValue({ data: { status: "pending" } });
