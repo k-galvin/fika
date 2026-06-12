@@ -18,23 +18,36 @@ export async function GET(request: NextRequest, { params }: Props) {
   
   let width = 1179;
   let height = 2556;
-  let isDark = false;
   
   if (match) {
     width = parseInt(match[1], 10);
     height = parseInt(match[2], 10);
-    isDark = match[3] === "dark";
   }
 
   let base64Image = "";
   try {
-    // We can use a different icon for dark mode if it exists, but the cardamom bun looks great on dark too
     const imagePath = path.join(process.cwd(), "public", "cardamomBun.png");
     const imageBuffer = fs.readFileSync(imagePath);
     base64Image = `data:image/png;base64,${imageBuffer.toString("base64")}`;
   } catch (error) {
     console.error("Error reading cardamomBun.png for splash screen:", error);
   }
+
+  // Load custom Kate-Bold font from app/fonts/
+  let fontData: Buffer | null = null;
+  try {
+    const fontPath = path.join(process.cwd(), "app", "fonts", "Kate-Bold.ttf");
+    fontData = fs.readFileSync(fontPath);
+  } catch (error) {
+    console.error("Error reading Kate-Bold.ttf font for splash screen:", error);
+  }
+
+  const fontsOption = fontData ? [{
+    name: "Kate",
+    data: fontData,
+    weight: 700 as const,
+    style: "normal" as const,
+  }] : [];
 
   return new ImageResponse(
     (
@@ -46,7 +59,7 @@ export async function GET(request: NextRequest, { params }: Props) {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor: isDark ? "#0a0a0a" : "#faf8f5",
+          backgroundColor: "#faf8f5", // Always light warm paper background for branding consistency
         }}
       >
         <div
@@ -64,18 +77,18 @@ export async function GET(request: NextRequest, { params }: Props) {
               src={base64Image}
               alt="fika icon"
               style={{
-                width: "160px",
-                height: "160px",
-                marginBottom: "20px",
+                width: "220px", // Larger bun icon (was 160px)
+                height: "220px",
+                marginBottom: "24px",
               }}
             />
           )}
           <div
             style={{
-              fontFamily: "serif",
-              fontSize: "64px",
+              fontFamily: "Kate, serif", // Match fika's signature branding font
+              fontSize: "88px", // Larger branding text (was 64px)
               fontWeight: "bold",
-              color: isDark ? "#f5f5f5" : "#34261b",
+              color: "#34261b", // Always deep coffee brown text for contrast
               letterSpacing: "-0.05em",
             }}
           >
@@ -87,6 +100,7 @@ export async function GET(request: NextRequest, { params }: Props) {
     {
       width,
       height,
+      fonts: fontsOption,
       headers: {
         "Cache-Control": "public, max-age=31536000, immutable",
       },
