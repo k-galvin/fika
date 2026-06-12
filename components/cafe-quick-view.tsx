@@ -43,7 +43,7 @@ export function CafeQuickView({
           />
           
           {/* Subtle overlay for buttons to make them pop against photos */}
-          <div className="absolute top-2 right-2 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <div className="absolute top-2 right-2 flex flex-col gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
             <div className="bg-background/80 backdrop-blur-sm rounded-full p-1 shadow-sm border border-primary/10">
               <LogVisitButton
                 shopId={shop.id}

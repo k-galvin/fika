@@ -161,7 +161,7 @@ export function CafePhotoGallery({
                 )}
                 {isAdmin && (
                   <div 
-                    className="absolute inset-0 bg-primary/20 backdrop-blur-[2px] flex flex-col items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-20"
+                    className="absolute inset-0 bg-primary/20 backdrop-blur-[2px] flex flex-col items-center justify-center gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity z-20"
                     onClick={(e) => e.stopPropagation()}
                   >
                     <Button
@@ -268,7 +268,7 @@ export function CafePhotoGallery({
                     </Badge>
                   )}
                   {isAdmin && (
-                    <div className="absolute inset-0 bg-primary/20 backdrop-blur-[2px] flex flex-col items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="absolute inset-0 bg-primary/20 backdrop-blur-[2px] flex flex-col items-center justify-center gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
                       <Button
                         variant="journal"
                         size="sm"

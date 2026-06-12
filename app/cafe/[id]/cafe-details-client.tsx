@@ -105,9 +105,9 @@ export default function CafeDetailsClient({
     <main className="min-h-screen flex flex-col items-center relative overflow-hidden bg-background">
       <div className="w-full flex-1 max-w-7xl px-6 py-12 md:px-12 animate-in fade-in slide-in-from-bottom-4 duration-1000">
         {/* Editorial Header */}
-        <div className="flex flex-col md:flex-row justify-between items-baseline gap-8 mb-16 border-b border-primary/10 pb-10">
-          <div className="flex flex-col gap-2">
-            <h1 className="text-7xl md:text-9xl font-bold font-kate text-primary tracking-tighter leading-[0.8]">
+        <div className="flex flex-col md:flex-row justify-between md:items-baseline items-start gap-6 mb-12 border-b border-primary/10 pb-8 w-full">
+          <div className="flex flex-col gap-2 w-full">
+            <h1 className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-bold font-kate text-primary tracking-tighter leading-[0.8] break-words">
               {shop.name}
             </h1>
             <div className="flex items-center gap-2 mt-4 text-primary/40 font-kate italic text-xl">

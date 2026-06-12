@@ -49,7 +49,7 @@ export function ProfileCafes({
   return (
     <div className="flex flex-col gap-8">
       {/* Editorial Stats Header */}
-      <div className="flex flex-wrap items-center gap-x-12 gap-y-6 px-2 py-4 border-y border-primary/10">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 px-2 py-4 border-y border-primary/10 w-full">
         <div className="flex flex-col gap-1">
           <span className="text-[10px] uppercase tracking-[0.2em] text-primary/40 font-bold">Progress</span>
           <div className="flex items-baseline gap-2">
@@ -62,11 +62,11 @@ export function ProfileCafes({
           <span className="text-[10px] uppercase tracking-[0.2em] text-primary/40 font-bold">Rank</span>
           <div className="flex items-center gap-2">
             <RankIcon className={`size-5 ${rank.color}`} />
-            <span className="font-kate font-bold text-xl text-primary">{rank.title}</span>
+            <span className="font-kate font-bold text-xl text-primary truncate">{rank.title}</span>
           </div>
         </div>
 
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1 col-span-2 sm:col-span-1">
           <span className="text-[10px] uppercase tracking-[0.2em] text-primary/40 font-bold">Total Found</span>
           <div className="flex items-baseline gap-2">
             <span className="font-kate font-bold text-3xl text-primary">{visitedCount}</span>
