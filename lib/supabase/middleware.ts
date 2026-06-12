@@ -71,7 +71,9 @@ export async function updateSession(request: NextRequest) {
     !request.nextUrl.pathname.startsWith("/login") &&
     !request.nextUrl.pathname.startsWith("/auth") &&
     !request.nextUrl.pathname.startsWith("/discover") &&
-    !request.nextUrl.pathname.startsWith("/cafe/")
+    !request.nextUrl.pathname.startsWith("/cafe/") &&
+    !request.nextUrl.pathname.startsWith("/apple-splash") &&
+    !request.nextUrl.pathname.startsWith("/manifest.webmanifest")
   ) {
     // no user, potentially respond by redirecting the user to the login page
     const url = request.nextUrl.clone();
