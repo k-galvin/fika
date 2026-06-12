@@ -6,13 +6,23 @@ import path from "path";
 // Force standard Node.js runtime so we can read files from disk safely
 export const runtime = "nodejs";
 
-export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url);
-  const wStr = searchParams.get("w");
-  const hStr = searchParams.get("h");
+type Props = {
+  params: Promise<{ slug: string }>;
+};
 
-  const width = wStr ? parseInt(wStr, 10) : 1179;
-  const height = hStr ? parseInt(hStr, 10) : 2556;
+export async function GET(request: NextRequest, { params }: Props) {
+  const { slug } = await params;
+  
+  // Parse dimensions from paths like "1179x2556.png"
+  const match = slug.match(/^(\d+)x(\d+)\.png$/);
+  
+  let width = 1179;
+  let height = 2556;
+  
+  if (match) {
+    width = parseInt(match[1], 10);
+    height = parseInt(match[2], 10);
+  }
 
   let base64Image = "";
   try {

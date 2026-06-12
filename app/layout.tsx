@@ -29,59 +29,59 @@ export const metadata: Metadata = {
     statusBarStyle: "default",
     startupImage: [
       {
-        url: "/apple-splash?w=640&h=1136",
+        url: "/apple-splash/640x1136.png",
         media: "(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)",
       },
       {
-        url: "/apple-splash?w=750&h=1334",
+        url: "/apple-splash/750x1334.png",
         media: "(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)",
       },
       {
-        url: "/apple-splash?w=1242&h=2208",
+        url: "/apple-splash/1242x2208.png",
         media: "(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3)",
       },
       {
-        url: "/apple-splash?w=1125&h=2436",
+        url: "/apple-splash/1125x2436.png",
         media: "(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)",
       },
       {
-        url: "/apple-splash?w=1242&h=2688",
+        url: "/apple-splash/1242x2688.png",
         media: "(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)",
       },
       {
-        url: "/apple-splash?w=828&h=1792",
+        url: "/apple-splash/828x1792.png",
         media: "(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)",
       },
       {
-        url: "/apple-splash?w=1170&h=2532",
+        url: "/apple-splash/1170x2532.png",
         media: "(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)",
       },
       {
-        url: "/apple-splash?w=1284&h=2778",
+        url: "/apple-splash/1284x2778.png",
         media: "(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3)",
       },
       {
-        url: "/apple-splash?w=1179&h=2556",
+        url: "/apple-splash/1179x2556.png",
         media: "(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)",
       },
       {
-        url: "/apple-splash?w=1290&h=2796",
+        url: "/apple-splash/1290x2796.png",
         media: "(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)",
       },
       {
-        url: "/apple-splash?w=1536&h=2048",
+        url: "/apple-splash/1536x2048.png",
         media: "(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2)",
       },
       {
-        url: "/apple-splash?w=1668&h=2224",
+        url: "/apple-splash/1668x2224.png",
         media: "(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2)",
       },
       {
-        url: "/apple-splash?w=1668&h=2388",
+        url: "/apple-splash/1668x2388.png",
         media: "(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2)",
       },
       {
-        url: "/apple-splash?w=2048&h=2732",
+        url: "/apple-splash/2048x2732.png",
         media: "(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2)",
       },
     ],
