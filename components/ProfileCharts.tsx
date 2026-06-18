@@ -77,6 +77,7 @@ const ProfileCharts: React.FC<ProfileChartsProps> = ({
   }, [visitedCafes, selectedColumn]);
 
   const formattedTitle = useMemo(() => {
+    if (selectedColumn === "city") return "Location";
     return capitalizeWords(selectedColumn.replace(/_/g, " "));
   }, [selectedColumn]);
 

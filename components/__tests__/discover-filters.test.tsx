@@ -18,14 +18,14 @@ describe("DiscoverFilters", () => {
   it("renders filter dropdowns", () => {
     render(
       <DiscoverFilters
-        cities={["Los Angeles", "New York"]}
+        locations={["Los Angeles", "New York"]}
         parkings={["Easy", "Medium", "Hard"]}
         seatings={["Plenty", "Some", "None"]}
         vibes={["Cozy", "Modern", "Industrial"]}
       />
     );
 
-    expect(screen.getByText("City")).toBeInTheDocument();
+    expect(screen.getByText("Location")).toBeInTheDocument();
     expect(screen.getByText("Parking")).toBeInTheDocument();
     expect(screen.getByText("Seating")).toBeInTheDocument();
     expect(screen.getByText("Vibe")).toBeInTheDocument();
@@ -38,27 +38,27 @@ describe("DiscoverFilters", () => {
     const user = userEvent.setup();
     render(
       <DiscoverFilters
-        cities={["Los Angeles", "New York"]}
+        locations={["Los Angeles", "New York"]}
         parkings={["Easy", "Medium", "Hard"]}
         seatings={["Plenty", "Some", "None"]}
         vibes={["Cozy", "Modern", "Industrial"]}
       />
     );
 
-    const cityTrigger = screen.getByText("City");
-    await user.click(cityTrigger);
+    const locationTrigger = screen.getByText("Location");
+    await user.click(locationTrigger);
 
     const laOption = await screen.findByText("Los Angeles");
     await user.click(laOption);
 
-    expect(mockRouter.push).toHaveBeenCalledWith("/?city=Los+Angeles");
+    expect(mockRouter.push).toHaveBeenCalledWith("/?location=Los+Angeles");
   });
 
   it("renders 'Clear Filters' button and clears filters on click", async () => {
     const user = userEvent.setup();
     render(
       <DiscoverFilters
-        cities={["Los Angeles", "New York"]}
+        locations={["Los Angeles", "New York"]}
         parkings={["Easy", "Medium", "Hard"]}
         seatings={["Plenty", "Some", "None"]}
         vibes={["Cozy", "Modern", "Industrial"]}

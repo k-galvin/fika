@@ -55,7 +55,7 @@ describe('ColumnSelectDropdown', () => {
         columns={mockColumns}
       />
     );
-    expect(screen.getByText('City')).toBeInTheDocument();
+    expect(screen.getByText('Location')).toBeInTheDocument();
     expect(screen.getByText('Busyness')).toBeInTheDocument();
     expect(screen.getByText('Has Wifi')).toBeInTheDocument();
   });

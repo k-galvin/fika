@@ -49,8 +49,9 @@ export default async function DiscoverPage({ searchParams: searchParamsPromise }
   `
   );
 
-  if (searchParams.city)
-    query = query.eq("city", searchParams.city as string);
+  const locationParam = (searchParams.location || searchParams.city) as string | undefined;
+  if (locationParam)
+    query = query.eq("city", locationParam);
   if (searchParams.parking)
     query = query.eq("parking", searchParams.parking as string);
   if (searchParams.seating)
@@ -72,12 +73,12 @@ export default async function DiscoverPage({ searchParams: searchParamsPromise }
   const to = from + PAGE_SIZE - 1;
   query = query.range(from, to);
 
-  const [ { data: initialShopsData }, { data: citiesData } ] = await Promise.all([
+  const [ { data: initialShopsData }, { data: locationsData } ] = await Promise.all([
     query,
     supabase.from("cities").select("name").order("name")
   ]);
 
-  const cities = citiesData?.map(c => c.name) || [];
+  const locations = locationsData?.map(c => c.name) || [];
 
   const initialShops: CoffeeShop[] =
     initialShopsData?.map((shop) => {
@@ -149,7 +150,7 @@ export default async function DiscoverPage({ searchParams: searchParamsPromise }
         className="hidden lg:block fixed top-[80%] right-8 z-[-1]"
       />
       <div className="flex-1 w-full flex flex-col gap-4 items-center">
-        <DiscoverContent initialShops={initialShops} user={user} cities={cities} />
+        <DiscoverContent initialShops={initialShops} user={user} locations={locations} />
       </div>
     </main>
   );

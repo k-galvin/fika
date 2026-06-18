@@ -12,7 +12,7 @@ type FooterProps = {
   setIsAfterHours?: (value: boolean) => void;
   isWineBar?: boolean | null;
   user: User | null;
-  cities?: string[];
+  locations?: string[];
 };
 
 export function Footer({
@@ -20,7 +20,7 @@ export function Footer({
   setIsAfterHours,
   isWineBar,
   user,
-  cities,
+  locations,
 }: FooterProps) {
   const [isSuggestCafeOpen, setIsSuggestCafeOpen] = useState(false);
   const router = useRouter();
@@ -86,7 +86,7 @@ export function Footer({
       <SuggestCafeForm
         isOpen={isSuggestCafeOpen}
         onOpenChange={setIsSuggestCafeOpen}
-        cities={cities}
+        locations={locations}
       />
     </>
   );

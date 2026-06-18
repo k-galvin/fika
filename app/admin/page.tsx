@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Coffee, Camera, Edit3, ChevronRight, Star, MapPin } from "lucide-react";
-import { getSuggestedCafes, getUnapprovedPhotos, getCafeUpdates, getFeaturedCafes, getCities, getAllCafes } from "@/app/actions";
+import { getSuggestedCafes, getUnapprovedPhotos, getCafeUpdates, getFeaturedCafes, getLocations, getAllCafes } from "@/app/actions";
 import { Badge } from "@/components/ui/badge";
 
 export default async function AdminDashboard() {
@@ -23,12 +23,12 @@ export default async function AdminDashboard() {
   }
 
   // Fetch counts for badges
-  const [suggestions, photos, updates, featured, cities, cafes] = await Promise.all([
+  const [suggestions, photos, updates, featured, locations, cafes] = await Promise.all([
     getSuggestedCafes(),
     getUnapprovedPhotos(),
     getCafeUpdates(),
     getFeaturedCafes(),
-    getCities(),
+    getLocations(),
     getAllCafes(),
   ]);
 
@@ -37,7 +37,7 @@ export default async function AdminDashboard() {
     photos: photos?.length || 0,
     updates: updates?.length || 0,
     featured: featured?.length || 0,
-    cities: cities?.length || 0,
+    locations: locations?.length || 0,
     cafes: cafes?.length || 0,
   };
 
@@ -88,13 +88,13 @@ export default async function AdminDashboard() {
       count: counts.featured,
     },
     {
-      title: "Cities",
-      description: "Manage the list of supported cities across the application.",
-      href: "/admin/cities",
+      title: "Locations",
+      description: "Manage the list of supported locations across the application.",
+      href: "/admin/locations",
       icon: MapPin,
       color: "text-emerald-600",
       bgColor: "bg-emerald-50 dark:bg-emerald-900/10",
-      count: 0, // No badge needed for total cities
+      count: 0, // No badge needed for total locations
     },
   ];
 

@@ -12,7 +12,7 @@ import { Label } from "./ui/label";
 import { Button } from "./ui/button";
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
-import { suggestCafe, getCities } from "@/app/actions";
+import { suggestCafe, getLocations } from "@/app/actions";
 import { Constants } from "@/lib/supabase/database.types";
 import {
   DropdownMenu,
@@ -51,33 +51,33 @@ export function SuggestCafeForm({
   isOpen,
   onOpenChange,
   withDialog = true,
-  cities: propCities,
+  locations: propLocations,
 }: {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
   withDialog?: boolean;
-  cities?: string[];
+  locations?: string[];
 }) {
   const [formData, setFormData] = useState(initialState);
   const [pending, setPending] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<SelectedFile[]>([]);
   const [message, setMessage] = useState("");
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
-  const [cities, setCities] = useState<string[]>(propCities || []);
+  const [locations, setLocations] = useState<string[]>(propLocations || []);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Fetch cities if not provided as props
+  // Fetch locations if not provided as props
   useEffect(() => {
-    if (!propCities || propCities.length === 0) {
-      const fetchCitiesList = async () => {
-        const data = await getCities();
-        setCities(data.map(c => c.name));
+    if (!propLocations || propLocations.length === 0) {
+      const fetchLocationsList = async () => {
+        const data = await getLocations();
+        setLocations(data.map(c => c.name));
       };
-      fetchCitiesList();
+      fetchLocationsList();
     } else {
-      setCities(propCities);
+      setLocations(propLocations);
     }
-  }, [propCities]);
+  }, [propLocations]);
 
   // Clean up object URLs
   useEffect(() => {
@@ -226,11 +226,11 @@ export function SuggestCafeForm({
 
         <div className="grid grid-cols-2 gap-4">
           <div className="grid gap-2">
-            <Label htmlFor="city">City</Label>
+            <Label htmlFor="city">Location</Label>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" className="w-full mt-1 justify-start handwritten-border !border-primary/10">
-                  {formData.city || "Select a city"}
+                  {formData.city || "Select a location"}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="font-kate">
@@ -238,9 +238,9 @@ export function SuggestCafeForm({
                   value={formData.city}
                   onValueChange={(value) => handleDropdownChange("city", value)}
                 >
-                  {cities.map((city) => (
-                    <DropdownMenuRadioItem key={city} value={city}>
-                      {city}
+                  {locations.map((loc) => (
+                    <DropdownMenuRadioItem key={loc} value={loc}>
+                      {loc}
                     </DropdownMenuRadioItem>
                   ))}
                 </DropdownMenuRadioGroup>

@@ -540,9 +540,9 @@ export async function logVisit(
   return { success: true };
 }
 
-// --- City Management Actions ---
+// --- Location Management Actions ---
 
-export async function getCities() {
+export async function getLocations() {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("cities")
@@ -550,14 +550,14 @@ export async function getCities() {
     .order("name");
 
   if (error) {
-    console.error("Error fetching cities:", error.message);
+    console.error("Error fetching locations:", error.message);
     return [];
   }
 
   return data;
 }
 
-export async function addCity(name: string) {
+export async function addLocation(name: string) {
   const supabase = await createClient();
   
   // Verify admin status
@@ -576,16 +576,16 @@ export async function addCity(name: string) {
     .single();
 
   if (error) {
-    console.error("Error adding city:", error.message);
+    console.error("Error adding location:", error.message);
     return { success: false, message: error.message };
   }
 
-  revalidatePath("/admin/cities");
+  revalidatePath("/admin/locations");
   revalidatePath("/discover");
   return { success: true, data };
 }
 
-export async function deleteCity(id: number) {
+export async function deleteLocation(id: number) {
   const supabase = await createClient();
   
   // Verify admin status
@@ -603,11 +603,11 @@ export async function deleteCity(id: number) {
     .eq("id", id);
 
   if (error) {
-    console.error("Error deleting city:", error.message);
+    console.error("Error deleting location:", error.message);
     return { success: false, message: error.message };
   }
 
-  revalidatePath("/admin/cities");
+  revalidatePath("/admin/locations");
   revalidatePath("/discover");
   return { success: true };
 }

@@ -11,6 +11,11 @@ interface ColumnSelectDropdownProps {
   columns: string[];
 }
 
+const formatColumnName = (columnName: string) => {
+  if (columnName === 'city') return 'location';
+  return columnName.replace(/_/g, ' ');
+};
+
 const ColumnSelectDropdown: React.FC<ColumnSelectDropdownProps> = ({
   selectedColumn,
   onSelectColumn,
@@ -20,14 +25,14 @@ const ColumnSelectDropdown: React.FC<ColumnSelectDropdownProps> = ({
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" className="capitalize">
-          {selectedColumn.replace(/_/g, ' ')} <ChevronDown className="ml-2 h-4 w-4" />
+          {formatColumnName(selectedColumn)} <ChevronDown className="ml-2 h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Select Breakdown Category</DropdownMenuLabel>
         {columns.map((column) => (
           <DropdownMenuItem key={column} onClick={() => onSelectColumn(column)} className="capitalize">
-            {column.replace(/_/g, ' ')}
+            {formatColumnName(column)}
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>

@@ -19,15 +19,15 @@ const PAGE_SIZE = 20;
 export function DiscoverContent({
   initialShops,
   user,
-  cities: initialCities,
+  locations: initialLocations,
 }: {
   initialShops: CoffeeShop[];
   user: User | null;
-  cities: string[];
+  locations: string[];
 }) {
   const [shops, setShops] = useState<CoffeeShop[]>(initialShops);
-  const [cities, setCities] = useState<string[]>(initialCities);
-  const [prevInitialCities, setPrevInitialCities] = useState<string[]>(initialCities);
+  const [locations, setLocations] = useState<string[]>(initialLocations);
+  const [prevInitialLocations, setPrevInitialLocations] = useState<string[]>(initialLocations);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(initialShops.length === PAGE_SIZE);
   const [loading, setLoading] = useState(false);
@@ -35,10 +35,10 @@ export function DiscoverContent({
   const paramsString = searchParams.toString();
   const prevParamsStringRef = useRef(paramsString);
 
-  // Update cities if they change from props
-  if (initialCities !== prevInitialCities) {
-    setCities(initialCities);
-    setPrevInitialCities(initialCities);
+  // Update locations if they change from props
+  if (initialLocations !== prevInitialLocations) {
+    setLocations(initialLocations);
+    setPrevInitialLocations(initialLocations);
   }
 
   useEffect(() => {
@@ -84,8 +84,9 @@ export function DiscoverContent({
     );
 
     // Apply filters
-    if (searchParams.get("city"))
-      query = query.eq("city", searchParams.get("city") as string);
+    const locationParam = searchParams.get("location") || searchParams.get("city");
+    if (locationParam)
+      query = query.eq("city", locationParam);
     if (searchParams.get("parking"))
       query = query.eq("parking", searchParams.get("parking") as string);
     if (searchParams.get("seating"))
@@ -163,7 +164,7 @@ export function DiscoverContent({
       </div>
       <div className="flex-1 flex flex-col gap-10 max-w-7xl p-5 w-full">
         <DiscoverFilters
-          cities={cities}
+          locations={locations}
           parkings={
             Constants.public.Enums["Parking Difficulty"] as unknown as string[]
           }
@@ -211,7 +212,7 @@ export function DiscoverContent({
           </div>
         )}
       </div>
-      <Footer user={user} cities={cities} />
+      <Footer user={user} locations={locations} />
     </div>
   );
 }
