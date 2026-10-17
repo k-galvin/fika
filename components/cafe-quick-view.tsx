@@ -1,6 +1,6 @@
 import { CoffeeShop } from "@/lib/types";
 import Link from "next/link";
-import Image from "next/image";
+import { SafeImage } from "./safe-image";
 import { LogVisitButton } from "./log-visit-button";
 import { SaveButton } from "./save-button";
 import { User } from "@supabase/supabase-js";
@@ -33,7 +33,7 @@ export function CafeQuickView({
       <div className="relative h-full flex flex-col p-3 transition-all duration-300 group-hover:-translate-y-1">
         {/* The 'Photo' Container */}
         <div className="relative aspect-square w-full overflow-hidden rounded-sm bg-secondary/20 shadow-[0_4px_20px_-2px_rgba(0,0,0,0.1)] handwritten-border !border-primary/20">
-          <Image
+          <SafeImage
             src={imageUrl}
             alt={shop.name || "No name found"}
             fill

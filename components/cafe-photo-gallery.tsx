@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import Image from "next/image";
+import { SafeImage } from "./safe-image";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -146,7 +146,7 @@ export function CafePhotoGallery({
                   getPhotoClass(index, approvedPhotos.length)
                 )}
               >
-                <Image
+                <SafeImage
                   src={photo.photo_url}
                   alt={`Photo of ${shopId}`}
                   fill
@@ -249,7 +249,7 @@ export function CafePhotoGallery({
                     getExpandedPhotoClass(index)
                   )}
                 >
-                  <Image
+                  <SafeImage
                     src={photo.photo_url}
                     alt="Gallery Photo"
                     fill

@@ -18,7 +18,7 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import Image from "next/image";
+import { SafeImage } from "../safe-image";
 import { GripVertical, Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { updatePhotoOrder } from "@/app/actions";
@@ -71,7 +71,7 @@ function SortablePhoto({ photo, index }: SortablePhotoProps) {
         getExpandedPhotoClass(index)
       )}
     >
-      <Image
+      <SafeImage
         src={photo.photo_url}
         alt="Gallery Photo"
         fill

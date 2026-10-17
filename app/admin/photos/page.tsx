@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useTransition } from "react";
 import { getUnapprovedPhotos, approvePhotosBatch, denyPhotosBatch, UnapprovedPhoto } from "@/app/actions";
-import Image from "next/image";
+import { SafeImage } from "@/components/safe-image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AdminPhotoActions } from "@/components/admin/admin-photo-actions";
 import { AdminEmptyState } from "@/components/admin/admin-empty-state";
@@ -146,7 +146,7 @@ export default function AdminPhotosPage() {
                   className="relative w-full h-48 rounded-xl overflow-hidden bg-muted cursor-pointer group"
                   onClick={() => toggleSelect(photo.id)}
                 >
-                  <Image
+                  <SafeImage
                     src={photo.photo_url}
                     alt="Review Photo"
                     fill

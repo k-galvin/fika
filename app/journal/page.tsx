@@ -3,6 +3,7 @@ import { getAllUserJournalEntries } from "@/app/actions";
 import { Footer } from "@/components/footer";
 import Link from "next/link";
 import Image from "next/image";
+import { SafeImage } from "@/components/safe-image";
 import { MapPin, BookOpen } from "lucide-react";
 import { redirect } from "next/navigation";
 
@@ -121,7 +122,7 @@ export default async function JournalPage() {
 
                             if (primaryPhoto?.photo_url) {
                               return (
-                                <Image
+                                <SafeImage
                                   src={primaryPhoto.photo_url}
                                   alt={entry.coffee_shops?.name || "Cafe"}
                                   fill
