@@ -203,6 +203,7 @@ export default function CafeDetailsClient({
                   photos={shop.shop_photos}
                   user={user}
                   userRole={userRole}
+                  cafeName={shop.name}
                 />
               </div>
             </section>

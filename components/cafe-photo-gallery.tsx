@@ -35,6 +35,7 @@ type CafePhotoGalleryProps = {
   photos: ShopPhoto[];
   user: User | null;
   userRole: "user" | "admin" | null;
+  cafeName?: string | null;
 };
 
 export function CafePhotoGallery({
@@ -42,6 +43,7 @@ export function CafePhotoGallery({
   photos,
   user,
   userRole,
+  cafeName,
 }: CafePhotoGalleryProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -129,7 +131,7 @@ export function CafePhotoGallery({
             </Button>
           )}
           {user && (
-            <PhotoUploadModal shopId={shopId} user={user} />
+            <PhotoUploadModal shopId={shopId} user={user} cafeName={cafeName} />
           )}
         </div>
       </div>

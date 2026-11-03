@@ -18,10 +18,12 @@ import { uploadShopPhotosBatch } from "@/app/actions";
 import { User } from "@supabase/supabase-js";
 import Image from "next/image";
 import { Plus, X, UploadCloud, Image as ImageIcon } from "lucide-react";
+import { slugify } from "@/lib/utils";
 
 interface PhotoUploadModalProps {
   shopId: number;
   user: User | null;
+  cafeName?: string | null;
 }
 
 interface SelectedFile {
@@ -30,7 +32,7 @@ interface SelectedFile {
   id: string;
 }
 
-export function PhotoUploadModal({ shopId, user }: PhotoUploadModalProps) {
+export function PhotoUploadModal({ shopId, user, cafeName }: PhotoUploadModalProps) {
   const [open, setOpen] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<SelectedFile[]>([]);
   const [uploading, setUploading] = useState(false);
@@ -71,12 +73,13 @@ export function PhotoUploadModal({ shopId, user }: PhotoUploadModalProps) {
 
     try {
       // 1. Upload files to storage one by one
+      const folder = cafeName ? slugify(cafeName) || String(shopId) : String(shopId);
       for (const selectedFile of selectedFiles) {
         const { file } = selectedFile;
         // Ensure filename is unique even if selected multiple times or with same name
         const randomStr = Math.random().toString(36).substring(2, 8);
-        const fileName = `${Date.now()}-${randomStr}-${file.name.replace(/\s+/g, "_")}`;
-        const filePath = `${shopId}/${fileName}`;
+        const fileName = `photo-${Date.now()}-${randomStr}-${file.name.replace(/\s+/g, "_")}`;
+        const filePath = `${folder}/${fileName}`;
 
         try {
           const { error: uploadError } = await supabase.storage
