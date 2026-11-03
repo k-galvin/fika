@@ -14,12 +14,6 @@ jest.mock("../featured-cafes", () => ({
   FeaturedCafes: () => <h2>Current Favorites</h2>,
 }));
 
-// Mock the FriendFeed component
-jest.mock("@/components/friend-feed", () => ({
-  FriendFeed: () => <div>Friend Feed</div>,
-  FriendFeedSkeleton: () => <div>Loading Friends...</div>,
-}));
-
 // Mock the Footer component
 jest.mock("@/components/footer", () => ({
   Footer: () => <footer>Mock Footer</footer>,

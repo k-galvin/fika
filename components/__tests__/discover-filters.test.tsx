@@ -1,10 +1,11 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { DiscoverFilters } from "../discover-filters";
 
 // Create a mock router
 const mockRouter = {
   push: jest.fn(),
+  replace: jest.fn(),
 };
 
 // Mock the next/navigation module
@@ -71,5 +72,24 @@ describe("DiscoverFilters", () => {
     await user.click(clearFiltersButton);
 
     expect(mockRouter.push).toHaveBeenCalledWith("/");
+  });
+
+  it("opens the mobile filters sheet and applies a filter chip", async () => {
+    const user = userEvent.setup();
+    render(
+      <DiscoverFilters
+        locations={["Los Angeles", "New York"]}
+        parkings={["Easy", "Medium", "Hard"]}
+        seatings={["Plenty", "Some", "None"]}
+        vibes={["Cozy", "Modern", "Industrial"]}
+      />
+    );
+
+    await user.click(screen.getByRole("button", { name: /^filters/i }));
+
+    const sheet = await screen.findByRole("dialog");
+    await user.click(within(sheet).getByRole("button", { name: "Cozy" }));
+
+    expect(mockRouter.replace).toHaveBeenCalledWith("/?vibe=Cozy", { scroll: false });
   });
 });

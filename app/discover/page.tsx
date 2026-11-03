@@ -91,7 +91,7 @@ export default async function DiscoverPage({ searchParams: searchParamsPromise }
     }) || [];
 
   return (
-    <main className="min-h-screen flex flex-col items-center pt-8 relative">
+    <main className="min-h-dvh flex flex-col items-center pt-4 md:pt-8 relative">
       {/* Row 1 */}
       <Image
         src="/cardamomBun.png"

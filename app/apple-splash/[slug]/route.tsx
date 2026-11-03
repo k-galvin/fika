@@ -59,7 +59,7 @@ export async function GET(request: NextRequest, { params }: Props) {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor: "#faf8f5", // Always light warm paper background for branding consistency
+          backgroundColor: "#f6f4ef", // Always light warm paper background for branding consistency
         }}
       >
         <div

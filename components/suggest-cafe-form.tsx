@@ -496,7 +496,7 @@ export function SuggestCafeForm({
     return (
       <>
         <Dialog open={isOpen} onOpenChange={onOpenChange}>
-          <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto font-kate">
+          <DialogContent className="max-w-xl max-h-[90dvh] overflow-y-auto font-kate">
             <DialogHeader>
               <DialogTitle className="text-3xl font-bold text-primary tracking-tighter">Suggest a Cafe</DialogTitle>
               <DialogDescription className="italic text-primary/60">

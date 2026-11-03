@@ -23,7 +23,7 @@ type LogVisitButtonProps = {
   shopId: number;
   isInitiallyVisited: boolean;
   initialRating: number | null;
-  size?: "icon-sm" | "icon-lg";
+  size?: "icon-sm" | "icon" | "icon-lg";
 };
 
 export function LogVisitButton({
@@ -126,7 +126,8 @@ export function LogVisitButton({
     setRating(initialRating || 0);
   };
 
-  const iconSize = size === "icon-lg" ? "h-8 w-8" : "h-4 w-4";
+  const iconSize =
+    size === "icon-lg" ? "h-8 w-8" : size === "icon" ? "h-5 w-5" : "h-4 w-4";
 
   return (
     <>

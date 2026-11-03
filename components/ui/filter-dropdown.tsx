@@ -3,6 +3,7 @@
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuRadioGroup, DropdownMenuRadioItem } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export function FilterDropdown({ title, options, filterKey }: { title: string, options: string[], filterKey: string }) {
   const router = useRouter();
@@ -26,7 +27,19 @@ export function FilterDropdown({ title, options, filterKey }: { title: string, o
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" className="uppercase font-kate font-bold shrink-0">{title}</Button>
+        <Button
+          variant="outline"
+          className={cn(
+            "uppercase font-kate font-bold shrink-0 gap-1.5",
+            selectedValue &&
+              "bg-primary text-primary-foreground border-primary hover:bg-primary/90 hover:text-primary-foreground"
+          )}
+        >
+          <span>{title}</span>
+          {selectedValue && (
+            <span className="normal-case opacity-80">· {selectedValue}</span>
+          )}
+        </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuRadioGroup value={selectedValue} onValueChange={handleFilterChange}>

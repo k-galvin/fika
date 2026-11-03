@@ -157,12 +157,12 @@ export function DiscoverContent({
 
   return (
     <div className="flex-1 w-full flex flex-col items-center animate-in fade-in slide-in-from-bottom-4 duration-1000">
-      <div className="flex flex-col items-center text-center px-6 pt-4 pb-2">
-        <h1 className="text-6xl md:text-7xl font-bold font-kate text-primary tracking-tighter">
+      <div className="flex flex-col items-center text-center px-6 pt-0 md:pt-4 pb-0 md:pb-2">
+        <h1 className="text-5xl md:text-7xl font-bold font-kate text-primary tracking-tighter">
           Discover
         </h1>
       </div>
-      <div className="flex-1 flex flex-col gap-10 max-w-7xl p-5 w-full">
+      <div className="flex-1 flex flex-col gap-6 md:gap-10 max-w-7xl p-5 w-full">
         <DiscoverFilters
           locations={locations}
           parkings={
@@ -177,14 +177,16 @@ export function DiscoverContent({
         />
         {shops.length > 0 ? (
           <section className="flex flex-col gap-6">
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {shops.map((shop) => (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-2 gap-y-1 md:gap-4">
+              {shops.map((shop, index) => (
                 <CafeQuickView
                   key={shop.id}
                   shop={shop}
                   user={user}
                   isInitiallySaved={shop.isInitiallySaved}
                   isInitiallyVisited={shop.isInitiallyVisited}
+                  // Only the first row or two is above the fold on a phone.
+                  priority={index < 4}
                 />
               ))}
             </div>
@@ -201,7 +203,7 @@ export function DiscoverContent({
             )}
           </section>
         ) : loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {[...Array(PAGE_SIZE)].map((_, i) => (
               <CafeCardSkeleton key={i} />
             ))}

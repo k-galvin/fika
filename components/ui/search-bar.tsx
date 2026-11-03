@@ -34,7 +34,9 @@ export function SearchBar({
         id={id}
         name={name}
         placeholder={placeholder}
-        className="w-full md:w-64"
+        enterKeyHint="search"
+        autoComplete="off"
+        className="w-full md:w-64 h-11 md:h-9"
         defaultValue={searchParams.get("search") || ""}
         onChange={(e) => handleSearch(e.target.value)}
       />

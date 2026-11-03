@@ -29,14 +29,14 @@ export default async function FriendProfilePage({
 
   if (profileError || !profile) {
     return (
-      <main className="min-h-screen flex flex-col items-center justify-center">
+      <main className="min-h-dvh flex flex-col items-center justify-center">
         <p className="text-gray-500">Profile not found.</p>
       </main>
     );
   }
 
   return (
-    <main className="min-h-screen flex flex-col items-center pt-10 pb-20 relative bg-background">
+    <main className="min-h-dvh flex flex-col items-center pt-10 pb-20 relative bg-background">
       <div className="flex-1 w-full flex flex-col gap-12 max-w-5xl p-6 animate-in fade-in slide-in-from-bottom-4 duration-1000">
         {/* Editorial Header */}
         <div className="flex flex-col md:flex-row items-baseline gap-6 border-b border-primary/10 pb-8">

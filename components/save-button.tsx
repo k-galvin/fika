@@ -12,7 +12,7 @@ type SaveButtonProps = {
   shopId: number;
   isInitiallySaved: boolean;
   onUnsave?: (shopId: number) => void;
-  size?: "icon-sm" | "icon-lg";
+  size?: "icon-sm" | "icon" | "icon-lg";
 };
 
 export function SaveButton({

@@ -10,6 +10,11 @@ const config = {
     "./src/**/*.{ts,tsx}",
   ],
   prefix: "",
+  future: {
+    // Only apply hover: styles on devices that can actually hover, so taps on
+    // iOS don't leave cards stuck in their hover state.
+    hoverOnlyWhenSupported: true,
+  },
   theme: {
     container: {
       center: true,

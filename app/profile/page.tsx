@@ -9,6 +9,7 @@ import { getSavedCafes, getVisitedCafes, getCafeCount } from "@/app/actions"; //
 import { ProfileCafes } from "@/components/profile-cafes";
 import ProfileCharts from "@/components/ProfileCharts";
 import { FindFriends } from "@/components/find-friends";
+import { LogoutButton } from "@/components/logout-button";
 
 export default async function ProfilePage() {
   const { user } = await getUser();
@@ -44,7 +45,7 @@ export default async function ProfilePage() {
   });
 
   return (
-    <main className="min-h-screen flex flex-col items-center pt-10 pb-20 relative">
+    <main className="min-h-dvh flex flex-col items-center pt-10 pb-20 relative">
       <div className="flex-1 w-full flex flex-col gap-12 max-w-5xl p-6 animate-in fade-in slide-in-from-bottom-4 duration-1000">
         {/* Editorial Header */}
         <div className="flex flex-col md:flex-row items-baseline gap-6 border-b border-primary/10 pb-8">
@@ -100,6 +101,8 @@ export default async function ProfilePage() {
                   <span className="text-primary/80 font-bold">{joinedFullDate}</span>
                 </div>
               </div>
+              {/* Mobile only: desktop has log out in the top nav */}
+              <LogoutButton className="md:hidden mt-6 self-start" />
             </div>
 
             <FindFriends />

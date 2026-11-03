@@ -7,8 +7,8 @@ export default function manifest(): MetadataRoute.Manifest {
     description: "A coffee shop rating app.",
     start_url: "/",
     display: "standalone",
-    background_color: "#faf8f5",
-    theme_color: "#34261b",
+    background_color: "#f6f4ef",
+    theme_color: "#f6f4ef",
     icons: [
       {
         src: "/cardamomBun.png",

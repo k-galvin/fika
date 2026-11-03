@@ -1,4 +1,4 @@
-import { CafeQuickView } from "@/components/cafe-quick-view";
+import { FavoritesCarousel } from "@/components/favorites-carousel";
 import { createClient } from "@/lib/supabase/server";
 import { CoffeeShop } from "@/lib/types";
 import { User } from "@supabase/supabase-js";
@@ -67,27 +67,11 @@ export async function FeaturedCafes({ user }: { user: User | null }) {
   return (
     <>
       {shopsWithStatus && shopsWithStatus.length > 0 && (
-        <section className="flex flex-col gap-10 w-full">
-          <h2 className="text-6xl md:text-7xl font-bold font-kate text-primary text-center tracking-tighter">
+        <section className="flex flex-col gap-2 md:gap-6 w-full">
+          <h2 className="text-4xl md:text-7xl font-bold font-kate text-primary text-center tracking-tighter">
             Current Favorites
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-6 w-full">
-            {shopsWithStatus.map((shop, index) => (
-              <div 
-                key={shop.id} 
-                className={index === 2 ? "col-span-2 md:col-span-1 flex justify-center md:block" : ""}
-              >
-                <div className={index === 2 ? "w-full max-w-[50%] md:max-w-none" : "w-full"}>
-                  <CafeQuickView
-                    shop={shop}
-                    user={user}
-                    isInitiallySaved={shop.isInitiallySaved}
-                    isInitiallyVisited={shop.isInitiallyVisited}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
+          <FavoritesCarousel shops={shopsWithStatus} />
         </section>
       )}
     </>

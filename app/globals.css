@@ -28,6 +28,8 @@
     --chart-5: 27 87% 67%;
     --radius: 0.75rem;
     --skeleton-brown: 30 20% 90%;
+    /* Height of the mobile bottom tab bar (excluding the safe-area inset). */
+    --tabbar-height: 4.25rem;
   }
 
   .dark {
@@ -63,7 +65,7 @@
   }
 
   .paper-texture {
-    background-image: url("https://www.transparenttextures.com/patterns/natural-paper.png");
+    background-image: url("/natural-paper.png");
   }
 
   .notebook-lines {
@@ -114,8 +116,30 @@
   * {
     @apply border-border;
   }
+  html {
+    /* Remove the grey flash iOS draws over tapped elements; we use our own
+       active states instead. */
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
+  }
   body {
     @apply bg-background text-foreground;
+    /* Leave room for the fixed bottom tab bar on phones. */
+    padding-bottom: calc(var(--tabbar-height) + env(safe-area-inset-bottom));
+  }
+  @media (min-width: 768px) {
+    body {
+      padding-bottom: 0;
+    }
+  }
+  a,
+  button,
+  [role="button"],
+  input,
+  select,
+  textarea {
+    /* Disable double-tap-to-zoom delay on interactive elements. */
+    touch-action: manipulation;
   }
 }
 

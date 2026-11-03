@@ -3,7 +3,7 @@
 import { Database } from "@/lib/supabase/database.types";
 import { User } from "@supabase/supabase-js";
 import { Plus, Pencil, Trash2, BookOpen, Loader2 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import {
   Dialog,
@@ -19,6 +19,9 @@ import { addJournalEntry, updateJournalEntry, deleteJournalEntry } from "@/app/a
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+
+/** Dispatch on `window` to open the "new journal entry" sheet. */
+export const NEW_JOURNAL_ENTRY_EVENT = "fika:new-journal-entry";
 
 type JournalEntry = Database["public"]["Tables"]["journal_entries"]["Row"];
 
@@ -44,6 +47,19 @@ export function JournalSection({
     setVisitDate(new Date().toISOString().split("T")[0]);
     setIsModalOpen(true);
   };
+
+  // Lets other UI on the page (e.g. the mobile cafe action bar) open the
+  // "new entry" sheet without lifting this component's state.
+  useEffect(() => {
+    const open = () => {
+      setEditingEntry(null);
+      setContent("");
+      setVisitDate(new Date().toISOString().split("T")[0]);
+      setIsModalOpen(true);
+    };
+    window.addEventListener(NEW_JOURNAL_ENTRY_EVENT, open);
+    return () => window.removeEventListener(NEW_JOURNAL_ENTRY_EVENT, open);
+  }, []);
 
   const handleEditClick = (entry: JournalEntry) => {
     setEditingEntry(entry);
@@ -92,14 +108,14 @@ export function JournalSection({
   if (!user) return null;
 
   return (
-    <section className="relative -mt-4 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+    <section id="journal" className="relative -mt-4 scroll-mt-24 animate-in fade-in slide-in-from-bottom-4 duration-1000">
       <div className="absolute -top-6 -left-6 text-primary/10 font-kate font-bold text-8xl z-0 select-none">
         03
       </div>
       <div className="relative z-10 flex flex-col gap-8">
         <div className="flex justify-between items-center relative">
-          <h2 className="text-4xl font-bold font-kate text-primary tracking-tighter flex items-center gap-3">
-            <BookOpen className="size-8 rotate-[-5deg]" />
+          <h2 className="text-3xl md:text-4xl font-bold font-kate text-primary tracking-tighter flex items-center gap-3">
+            <BookOpen className="size-7 md:size-8 rotate-[-5deg]" />
             Your Journal
           </h2>
           {/* Decorative Doodle */}
@@ -179,7 +195,7 @@ export function JournalSection({
       </div>
 
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="font-kate">
+        <DialogContent className="font-kate paper-texture">
           <DialogHeader>
             <DialogTitle className="text-3xl font-bold text-primary tracking-tighter">
               {editingEntry ? "Edit Entry" : "New Journal Entry"}
@@ -208,7 +224,7 @@ export function JournalSection({
                 onChange={(e) => setContent(e.target.value)}
                 placeholder="What did you order? How was the atmosphere today?"
                 required
-                className="min-h-[250px] w-full rounded-md border-2 border-primary/10 bg-background px-6 py-4 text-2xl focus:outline-none focus:ring-2 focus:ring-primary/20 handwritten-border paper-texture notebook-lines leading-[2rem]"
+                className="min-h-[180px] md:min-h-[250px] w-full rounded-md border-2 border-primary/10 bg-background px-5 md:px-6 py-4 text-xl md:text-2xl focus:outline-none focus:ring-2 focus:ring-primary/20 handwritten-border paper-texture notebook-lines leading-[2rem]"
               />
             </div>
             <DialogFooter>

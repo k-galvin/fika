@@ -213,7 +213,7 @@ export function CafePhotoGallery({
           if (!open) setIsRearranging(false);
         }}
       >
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto font-kate">
+        <DialogContent className="max-w-4xl max-h-[90dvh] overflow-y-auto font-kate">
           <DialogHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
             <DialogTitle className="text-3xl font-bold tracking-tighter">
               {isRearranging ? "Rearrange Photos" : "Photo Gallery"}

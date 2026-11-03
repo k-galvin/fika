@@ -5,7 +5,7 @@ import { Footer } from "@/components/footer";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { User } from "@supabase/supabase-js";
-import { Bookmark, MapPin, Trash2 } from "lucide-react";
+import { Bookmark, MapPin, Navigation, NotebookPen, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
 import { useTheme } from "../../theme-context";
@@ -15,7 +15,7 @@ import { LogVisitButton } from "@/components/log-visit-button";
 import { UpdateForm } from "@/components/update-form";
 import { CafePhotoGallery } from "@/components/cafe-photo-gallery";
 import { CafeMap } from "@/components/cafe-map";
-import { JournalSection } from "@/components/journal-section";
+import { JournalSection, NEW_JOURNAL_ENTRY_EVENT } from "@/components/journal-section";
 import { deleteCafe } from "@/app/actions";
 import { toast } from "sonner";
 import {
@@ -83,30 +83,41 @@ export default function CafeDetailsClient({
     const displayValue = typeof value === 'boolean' ? (value ? 'Yes' : 'No') : value;
     
     return (
-      <div className="flex items-center justify-between py-5 border-b border-primary/5 last:border-0 group">
-        <div className="flex items-center gap-4">
-          <div className="bg-secondary/20 p-2 rounded-full group-hover:bg-secondary/40 transition-colors">
+      // Phones: compact 2-up tiles. lg: the original full-width rows.
+      <div className="flex flex-col items-start gap-2 p-3 rounded-xl bg-background/40 border border-primary/5 lg:flex-row lg:items-center lg:justify-between lg:gap-0 lg:p-0 lg:py-5 lg:rounded-none lg:bg-transparent lg:border-0 lg:border-b lg:border-primary/5 lg:last:border-0 group">
+        <div className="flex items-center gap-2 lg:gap-4">
+          <div className="bg-secondary/20 p-1.5 lg:p-2 rounded-full group-hover:bg-secondary/40 transition-colors shrink-0">
             <Image
               src={isAfterHours ? `${icon}Dark.png` : `${icon}.png`}
               alt={label}
               width={40}
               height={40}
+              className="w-7 lg:w-10"
               style={{ height: 'auto' }}
             />
           </div>
-          <span className="font-kate text-primary/70 uppercase tracking-widest text-sm font-bold">{label}</span>
+          <span className="font-kate text-primary/70 uppercase tracking-widest text-xs lg:text-sm font-bold">{label}</span>
         </div>
-        <Badge variant="journal" className="text-base px-6 py-1">{displayValue}</Badge>
+        <Badge variant="journal" className="text-sm lg:text-base px-3 lg:px-6 py-0.5 lg:py-1">{displayValue}</Badge>
       </div>
     );
   };
 
+  const directionsUrl = shop.address
+    ? `https://maps.apple.com/?q=${encodeURIComponent(shop.address)}`
+    : null;
+
   return (
-    <main className="min-h-screen flex flex-col items-center relative overflow-hidden bg-background">
-      <div className="w-full flex-1 max-w-7xl px-6 py-12 md:px-12 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+    <main className="min-h-dvh flex flex-col items-center relative overflow-hidden bg-background">
+      {/*
+        Note: the entrance animation is applied to the blocks inside this
+        wrapper rather than the wrapper itself — an animated transform here
+        would become the containing block for the fixed mobile action bar.
+      */}
+      <div className="w-full flex-1 max-w-7xl px-6 py-6 md:py-12 md:px-12">
         {/* Editorial Header */}
-        <div className="flex flex-col md:flex-row justify-between md:items-baseline items-start gap-6 mb-12 border-b border-primary/10 pb-8 w-full">
-          <div className="flex flex-col gap-2 w-full">
+        <div className="flex flex-col md:flex-row justify-between md:items-baseline items-start gap-6 mb-8 md:mb-12 border-b border-primary/10 pb-6 md:pb-8 w-full">
+          <div className="flex flex-col gap-2 w-full animate-in fade-in slide-in-from-bottom-4 duration-1000">
             <h1 className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-bold font-kate text-primary tracking-tighter leading-[0.8] break-words">
               {shop.name}
             </h1>
@@ -116,8 +127,13 @@ export default function CafeDetailsClient({
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
-            <div className="bg-secondary/10 p-3 rounded-2xl handwritten-border !border-primary/10 flex items-center gap-4">
+          {/*
+            Actions. On phones this becomes a floating bar pinned just above the
+            bottom tab bar so log/save/directions are always in thumb reach; from
+            md up it sits inline in the header as before.
+          */}
+          <div className="fixed z-40 inset-x-4 bottom-[calc(var(--tabbar-height)+env(safe-area-inset-bottom)+0.5rem)] md:static md:inset-auto md:bottom-auto flex items-center gap-4 md:animate-in md:fade-in md:slide-in-from-bottom-4 md:duration-1000">
+            <div className="w-full md:w-auto bg-background/95 md:bg-secondary/10 backdrop-blur-md md:backdrop-blur-none shadow-lg md:shadow-none p-2 md:p-3 rounded-2xl handwritten-border !border-primary/15 md:!border-primary/10 flex items-center justify-around md:justify-start gap-2 md:gap-4">
               {userRole === "admin" && (
                 <>
                   <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
@@ -127,7 +143,7 @@ export default function CafeDetailsClient({
                         size="icon-lg"
                         className="text-destructive/60 hover:text-destructive hover:bg-destructive/10"
                       >
-                        <Trash2 className="h-8 w-8" />
+                        <Trash2 className="h-6 w-6 md:h-8 md:w-8" />
                       </Button>
                     </DialogTrigger>
                     <DialogContent>
@@ -185,15 +201,52 @@ export default function CafeDetailsClient({
                   <Bookmark className="h-8 w-8" fill="none" />
                 </Button>
               )}
+              {/* Mobile-only shortcuts */}
+              {directionsUrl && (
+                <>
+                  <div className="h-8 w-px bg-primary/10 md:hidden" />
+                  <Button
+                    asChild
+                    variant="ghost"
+                    size="icon-lg"
+                    className="md:hidden text-primary/80"
+                  >
+                    <a href={directionsUrl} target="_blank" rel="noopener noreferrer">
+                      <Navigation className="h-7 w-7" />
+                      <span className="sr-only">Directions</span>
+                    </a>
+                  </Button>
+                </>
+              )}
+              {user && (
+                <>
+                  <div className="h-8 w-px bg-primary/10 md:hidden" />
+                  <Button
+                    variant="ghost"
+                    size="icon-lg"
+                    className="md:hidden text-primary/80"
+                    onClick={() =>
+                      window.dispatchEvent(new Event(NEW_JOURNAL_ENTRY_EVENT))
+                    }
+                  >
+                    <NotebookPen className="h-7 w-7" />
+                    <span className="sr-only">Add journal note</span>
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-stretch">
-          {/* Left Column: Gallery and Location Stacked */}
-          <div className="lg:col-span-7 flex flex-col gap-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-stretch animate-in fade-in slide-in-from-bottom-4 duration-1000">
+          {/*
+            Left Column: Gallery and Location Stacked.
+            Below lg the wrapper uses `display: contents` so Field Notes can sit
+            between the gallery and the map on phones.
+          */}
+          <div className="contents lg:flex lg:col-span-7 lg:flex-col lg:gap-10">
             {/* 01: Gallery */}
-            <section className="relative">
+            <section className="relative order-1 lg:order-none">
               <div className="absolute -top-6 -left-6 text-primary/10 font-kate font-bold text-8xl z-0 select-none">
                 01
               </div>
@@ -209,7 +262,7 @@ export default function CafeDetailsClient({
             </section>
 
             {/* 02: Location */}
-            <section className="relative">
+            <section className="relative order-3 lg:order-none">
               <div className="absolute -top-6 -left-6 text-primary/10 font-kate font-bold text-8xl z-0 select-none">
                 02
               </div>
@@ -227,19 +280,30 @@ export default function CafeDetailsClient({
                     </div>
                   )}
                 </div>
-                <p className="text-center font-kate text-primary/40 text-lg">{shop.address}</p>
+                {directionsUrl ? (
+                  <a
+                    href={directionsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-center font-kate text-primary/50 hover:text-primary text-lg underline decoration-primary/20 underline-offset-4 transition-colors"
+                  >
+                    {shop.address}
+                  </a>
+                ) : (
+                  <p className="text-center font-kate text-primary/40 text-lg">{shop.address}</p>
+                )}
               </div>
             </section>
           </div>
 
           {/* Right Column: Field Notes and Drawing */}
-          <aside className="lg:col-span-5 flex flex-col gap-0">
-            <div className="bg-secondary/20 p-8 rounded-2xl handwritten-border !border-primary/10 shadow-sm flex flex-col">
-              <h2 className="text-3xl font-bold font-kate text-primary mb-1 border-b border-primary/10 pb-1">
+          <aside className="order-2 lg:order-none lg:col-span-5 flex flex-col gap-0">
+            <div className="bg-secondary/20 p-5 lg:p-8 rounded-2xl handwritten-border !border-primary/10 shadow-sm flex flex-col">
+              <h2 className="text-3xl font-bold font-kate text-primary mb-3 lg:mb-1 border-b border-primary/10 pb-1">
                 Field Notes
               </h2>
               
-              <div className="flex flex-col flex-grow justify-between">
+              <div className="grid grid-cols-2 gap-2 lg:flex lg:flex-col lg:flex-grow lg:justify-between lg:gap-0">
                 {attributeRow("/heart", "Vibe", shop.vibe)}
                 {attributeRow("/money", "Pricing", shop.pricing)}
                 {attributeRow("/person", "Busyness", shop.busyness)}
@@ -250,33 +314,61 @@ export default function CafeDetailsClient({
                 {attributeRow("/laptop", "Laptop Friendly", shop.is_laptop_friendly)}
               </div>
 
-              <div className="mt-2 pt-2 border-t border-primary/5 flex flex-col items-center gap-2">
+              <div className="mt-4 lg:mt-2 pt-2 border-t border-primary/5 flex flex-col items-center gap-2">
                 <UpdateForm shopId={shop.id} user={user} />
                 <p className="font-kate text-[10px] uppercase tracking-[0.2em] text-primary/30 text-center">
                   Help us keep the journal accurate.
                 </p>
               </div>
-            </div>
 
-            {/* Decorative Drawing - Tucked tightly */}
-            <div className="relative w-full h-80 transition-all duration-700 select-none pointer-events-none group -mt-10 opacity-80">
-                <Image
-                src={isAfterHours ? "/wineBarExterior.png" : "/cafeExterior.png"}
-                alt="Cafe exterior"
-                fill
-                sizes="(max-width: 768px) 100vw, 33vw"
-                className="object-contain"
-              />
+              {/* Architectural Sketch & Wine Bar Toggle */}
+              <div className="relative w-full h-36 md:h-44 mt-3 pt-2 border-t border-primary/5 flex items-center justify-center">
+                <div className="relative w-full h-full select-none">
+                  <Image
+                    src={isAfterHours ? "/wineBarExterior.png" : "/cafeExterior.png"}
+                    alt="Cafe exterior"
+                    fill
+                    sizes="(max-width: 1024px) 85vw, 30vw"
+                    className="object-contain opacity-85 transition-opacity duration-500"
+                  />
+                </div>
+
+                {/* If it's a wine bar, place the interactive wine glass Easter Egg right here */}
+                {shop.wine_bar && (
+                  <button
+                    type="button"
+                    onClick={() => setIsAfterHours(!isAfterHours)}
+                    className="absolute right-1 bottom-1 z-10 flex items-center gap-1.5 px-3 py-1 rounded-full bg-background/90 backdrop-blur-xs border border-primary/20 shadow-xs hover:bg-background active:scale-95 transition-all group/wine cursor-pointer"
+                    title={isAfterHours ? "Switch to daytime" : "Switch to after hours"}
+                    aria-label={isAfterHours ? "Switch to daytime" : "Switch to after hours"}
+                  >
+                    <div className="relative size-5 shrink-0">
+                      <Image
+                        src={isAfterHours ? "/wineGlassDark.png" : "/wineGlass.png"}
+                        alt="Wine glass"
+                        fill
+                        sizes="20px"
+                        className="object-contain group-hover/wine:rotate-12 transition-transform"
+                      />
+                    </div>
+                    <span className="font-kate text-xs font-bold text-primary/80 uppercase tracking-wider">
+                      {isAfterHours ? "day mode" : "after hours"}
+                    </span>
+                  </button>
+                )}
+              </div>
             </div>
           </aside>
         </div>
 
         {/* Row 3: Journal Section */}
-        <JournalSection
-          cafeId={shop.id}
-          user={user}
-          entries={journalEntries}
-        />
+        <div className="mt-12 lg:mt-0">
+          <JournalSection
+            cafeId={shop.id}
+            user={user}
+            entries={journalEntries}
+          />
+        </div>
       </div>
       <Footer
         user={user}
@@ -284,6 +376,8 @@ export default function CafeDetailsClient({
         setIsAfterHours={setIsAfterHours}
         isWineBar={shop.wine_bar}
       />
+      {/* Room for the floating action bar on phones */}
+      <div aria-hidden className="h-20 md:hidden" />
     </main>
   );
 }

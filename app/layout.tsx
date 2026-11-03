@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Karla } from "next/font/google";
 import localFont from "next/font/local";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
@@ -10,6 +10,7 @@ import "./globals.css";
 import { Toaster } from "sonner";
 import { NavBarWrapper } from "@/components/nav-bar-wrapper";
 import { NavBarFallback } from "@/components/nav-bar-fallback";
+import { StandaloneRefresh } from "@/components/standalone-refresh";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -179,6 +180,16 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  // Let the page extend under the iPhone home indicator / notch; individual
+  // fixed elements pad themselves with env(safe-area-inset-*).
+  viewportFit: "cover",
+  // Matches --background so the status bar blends into the page.
+  themeColor: "#f6f4ef",
+};
+
 const karla = Karla({
   subsets: ["latin"],
   variable: "--font-karla",
@@ -220,7 +231,15 @@ export default function RootLayout({
               <NavBarWrapper />
             </Suspense>
             {children}
-            <Toaster richColors position="bottom-right" />
+            <StandaloneRefresh />
+            <Toaster
+              richColors
+              position="bottom-right"
+              // On phones, float toasts above the bottom tab bar.
+              mobileOffset={{
+                bottom: "calc(var(--tabbar-height) + env(safe-area-inset-bottom) + 0.75rem)",
+              }}
+            />
           </NextThemesProvider>
         </BodyWrapper>
       </CustomThemeProvider>

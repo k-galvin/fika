@@ -103,7 +103,7 @@ export function UpdateForm({
       </Button>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-h-[90dvh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-center">Update Cafe Info</DialogTitle>
           </DialogHeader>
